@@ -47,9 +47,14 @@ export class User {
     @Column()
     cin: string;
 
-    @Column()
-    doc: string;
-    // Add other properties as needed
+    @Column({ default: false })
+    hasNationalIDcard: boolean;
+
+    @Column({ default: false })
+    hasGuaranteedBirthCertificate: boolean;
+
+    @Column({ default: false })
+    hasPassport: boolean;
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;

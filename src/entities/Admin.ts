@@ -5,21 +5,21 @@ export class Admin {
     id: string;
 
     @Column()
+    username: string;
+
+    @Column()
     firstName: string;
 
     @Column()
     lastName: string;
 
     @Column()
-    email: string;
-
-    @Column()
     password: string;
 
     @Column({
         type: "enum",
-        enum: ["admin", "user"],
-        default: "user", // Optional: Set a default role
+        enum: ["fullAccessAdmin", "limitedAccess", "readOnly"],
+        default: "fullAccessAdmin",
     })
-    role: "admin" | "user";
+    role: "fullAccessAdmin" | "limitedAccess" | "readOnly";
 }

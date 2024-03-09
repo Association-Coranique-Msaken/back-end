@@ -1,24 +1,34 @@
 version: "3.9"
 services:
-    express:
-        build: .
-        ports:
-            - "5000:5000"
-        depends_on:
-            - mysqldb
-
     mysqldb:
         image: mysql:latest
-        command: --default-authentication-plugin=mysql_native_password
-        restart: unless-stopped
+        restart: always
         ports:
-            - "3307:3306"
+            - 3360:3306
         environment:
-            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-            MYSQL_DATABASE: AssociationCoranique
-            MYSQL_ROOT_HOST: localhost
+            MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+            MYSQL_DATABASE: "AssociationCoranique"
         volumes:
             - db:/var/lib/mysql
+    express:
+        depends_on:
+            - mysqldb
+        build: .
+        restart: unless-stopped
+        ports:
+            - 5000:5000
+        stdin_open: true
+        tty: true
+        volumes:
+            - ./src:/app/src/
+
+    phpmyadmin:
+        image: phpmyadmin
+        restart: always
+        ports:
+            - 6000:8011
+        environment:
+            - PMA_ARBITRARY=1
 
 volumes:
     db:

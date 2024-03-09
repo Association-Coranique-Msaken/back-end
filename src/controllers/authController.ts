@@ -1,50 +1,127 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
 import { encrypt } from "../helpers/helpers";
+import { adminCreationValidator } from "../validators/AdminValidator";
+import { User } from "../entities/User";
+import { Teacher } from "../entities/Teacher";
 
-const userRepository = appDataSource.getRepository(Admin);
+const userRepository = appDataSource.getRepository(User);
+const adminRepository = appDataSource.getRepository(Admin);
+const teacherRepository = appDataSource.getRepository(Teacher);
 
-const login = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+//User Login
+const userLogin = async (req: Request, res: Response) => {
+    const { identifier, birthday } = req.body;
     try {
-        if (!email || !password) {
-            return res.status(500).json({ message: " email and password required" });
+        if (!identifier || !birthday) {
+            return res.status(400).json({ message: "identifier and password are required" });
         }
-        const user = await userRepository.findOne({ where: { email } });
+        const user = await userRepository.findOne({ where: { identifier: identifier } });
 
-        const isPasswordValid = encrypt.comparepassword(user!.password, password);
+        const isPasswordValid = user!.birthday.toISOString() !== new Date(birthday).toISOString();
+
         if (!user || !isPasswordValid) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(401).json({ message: "Invalid username or password" });
         }
+
+        // Generate JWT token
         const token = encrypt.generateToken({ id: user.id });
 
-        return res.status(200).json({ success: true, message: "Login successful", user, token });
+        return res.status(200).json({
+            success: true,
+            message: "Login successful",
+            data: user,
+            accessToken: token,
+        });
     } catch (errors) {
         console.error(errors);
         return res.status(500).json({ success: false, message: "Internal server error", errors });
     }
 };
 
-const signup = async (req: Request, res: Response) => {
+const adminLogin = async (req: Request, res: Response) => {
+    const { username, password } = req.body;
     try {
-        const { firstName, email, password, role } = req.body;
-        const encryptedPassword = await encrypt.encryptpass(password);
-        const user = new Admin();
-        user.firstName = firstName;
-        user.email = email;
-        user.password = encryptedPassword;
-        user.role = role;
+        if (!username || !password) {
+            return res.status(400).json({ message: "Username and password are required" });
+        }
+        const user = await adminRepository.findOne({ where: { username: username } });
 
-        await userRepository.save(user);
+        const isPasswordValid = encrypt.comparepassword(user!.password, password);
 
+        if (!user || !isPasswordValid) {
+            return res.status(401).json({ message: "Invalid username or password" });
+        }
+
+        // Generate JWT token
         const token = encrypt.generateToken({ id: user.id });
-        return res.status(201).json({ success: true, message: "User created successfully", token, user: user });
+        // Generate refresh token
+        // const refreshToken = encrypt.generateRefreshToken(user.id);
+
+        // // Send refresh token to client as an HTTP-only cookie
+        // res.cookie("refreshToken", refreshToken, {
+        //     httpOnly: true,
+        //     secure: true,
+        //     maxAge: 60 * 4000,
+
+        //     path: "/api/auth/admin/refresh",
+        // });
+
+        return res.status(200).json({
+            success: true,
+            message: "Login successful",
+            data: user,
+            accessToken: token,
+            // refreshToken: refreshToken,
+        });
+    } catch (errors) {
+        console.error(errors);
+        return res.status(500).json({ success: false, message: "Internal server error", errors });
+    }
+};
+
+//Admin signup
+const adminSignup = async (req: Request, res: Response) => {
+    const { error } = adminCreationValidator.validate(req.body);
+    if (error) return res.status(400).json({ success: false, message: error.details[0].message });
+    try {
+        const { username, firstName, lastName, password, role } = req.body;
+        let admin = await adminRepository.findOne({ where: { username: username } });
+
+        if (admin) {
+            return res.status(409).json({ success: false, message: "Email already exists" });
+        }
+
+        const encryptedPassword = await encrypt.encryptpass(password);
+        const newAdmin = new Admin();
+
+        newAdmin.username = username;
+        newAdmin.firstName = firstName;
+        newAdmin.lastName = lastName;
+        newAdmin.password = encryptedPassword;
+        newAdmin.role = role;
+
+        await adminRepository.save(newAdmin);
+
+        return res.status(201).json({ success: true, message: "Admin created successfully", data: newAdmin });
     } catch (error) {
         console.error("Error during signup:", error);
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
+// export const signout = async (req: Request, res: Response) => {
+//     res.clearCookie("refreshtoken", {
+//         httpOnly: true,
+//         sameSite: "none",
+//         secure: true,
+//         path: "/api/auth/admin/refresh",
+//     });
+//     res.status(200).json({
+//         success: true,
+//         message: "Signout Successfully",
+//     });
+//     res.end();
+// };
 
-export default { login, signup };
+export default { adminLogin, adminSignup, userLogin };

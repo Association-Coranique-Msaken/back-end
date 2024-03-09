@@ -24,7 +24,7 @@ appDataSource
 dotenv.config();
 
 const app: Application = express();
-const port = process.env.PORT || 5000;
+const port = 5000;
 
 // Middleware
 app.use(cors());
@@ -36,9 +36,10 @@ app.use("/api/v1/admin", AdminRouter);
 app.use("/api/v1/user", UserRouter);
 app.use("/api/v1/teacher", TeacherRouter);
 
+//s chaima
 // Default route
 app.get("/", (req: Request, res: Response) => {
-    res.send("Welcome to Express & TypeScript Server");
+    res.send("Welcome to Express & TypeScript Server :) nice");
 });
 
 // Dynamically generate and write Swagger JSON file

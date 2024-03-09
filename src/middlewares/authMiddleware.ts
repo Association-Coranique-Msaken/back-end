@@ -4,7 +4,7 @@ import { Admin } from "../entities/Admin";
 import * as dotenv from "dotenv";
 import { appDataSource } from "../config/Database";
 dotenv.config();
-const authentification = async (req: Request, res: Response, next: NextFunction) => {
+export const authentification = async (req: Request, res: Response, next: NextFunction) => {
     const header = req.headers.authorization;
     if (!header) {
         return res.status(401).json({ message: "Unauthorized" });

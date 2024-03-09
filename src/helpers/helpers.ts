@@ -16,4 +16,9 @@ export class encrypt {
         if (!process.env.TOKEN_SECRET_KEY) throw new Error("TOKEN_SECRET is undefined");
         return jwt.sign(id, process.env.TOKEN_SECRET_KEY, { expiresIn: "1d" });
     }
+
+    static generateRefreshToken(id: any) {
+        if (!process.env.REFRESH_TOKEN_SECRET) throw new Error("REFRESH_TOKEN_SECRET is undefined");
+        return jwt.sign(id, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+    }
 }

@@ -8,7 +8,7 @@ const adminRepository = appDataSource.getRepository(Admin);
 export const getAdmin = async (req: Request, res: Response) => {
     try {
         const admins = await adminRepository.find();
-        res.status(200).json({ succss: true, message: "get admins successfully", data: admins });
+        res.status(200).json({ succss: true, message: "fetch users successfully", data: admins });
     } catch (error) {
         res.status(404).json({ succss: false, message: error });
     }
@@ -22,7 +22,6 @@ export const createAdmin = async (req: Request, res: Response) => {
         const admin = new Admin();
         admin.firstName = firstName;
         admin.lastName = lastName;
-        admin.email = email;
         admin.password = password;
         admin.role = role;
         await adminRepository.save(admin);

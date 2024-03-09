@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
+import { User } from "./User";
 
 @Entity({ name: "teacher" })
 export class Teacher {
@@ -6,29 +7,24 @@ export class Teacher {
     id: string;
 
     @Column()
-    firstName: string;
-
-    @Column()
-    lastName: string;
-
-    @Column()
     code: string;
 
     @Column()
-    phoneNumber: string;
+    password: string;
 
     @Column()
-    paasword: string;
-
-    @Column()
-    koteb: string;
+    kotebName: string;
 
     @Column()
     prim: string;
 
     @Column()
-    type: string;
+    teacherType: string; //TODO: change to enum
 
     @Column()
     statue: string;
+
+    @OneToOne(() => User)
+    @JoinColumn()
+    user: User;
 }

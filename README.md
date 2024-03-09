@@ -20,3 +20,6 @@ npm install
 docker-compose up -d --build
 
 ```
+
+create Admin api :http://localhost:5000/api/v1/auth/admin/signup
+login admin api http://localhost:5000/api/v1/auth/admin/login
