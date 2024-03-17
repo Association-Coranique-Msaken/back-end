@@ -1,10 +1,18 @@
 import express from "express";
-import { createUser, getUsers } from "../controllers/userController";
-import { authentification, authorization } from "../middlewares/authMiddleware";
+import { createUser, deleteUser, getUserById, getUsers, updateUser } from "../controllers/userController";
+import { adminAuthentification } from "../middlewares/authMiddleware";
+import { adminAuthorization } from "../middlewares/checkAdminRole";
 
 const userRouter = express.Router();
-userRouter.use(authentification);
-userRouter.post("/", authorization(["fullAccessAdmin"]), createUser); //TODO: add authentication and authorization admin
+
+userRouter.post("/", adminAuthentification, adminAuthorization("fullAccessAdmin"), createUser);
+
 userRouter.get("/", getUsers);
+
+userRouter.get("/:id", getUserById);
+
+userRouter.patch("/:id", updateUser);
+
+userRouter.delete("/:id", deleteUser);
 
 export default userRouter;

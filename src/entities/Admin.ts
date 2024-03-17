@@ -16,6 +16,9 @@ export class Admin {
     @Column()
     password: string;
 
+    @Column({ default: false })
+    isDeleted: boolean;
+
     @Column({
         type: "enum",
         enum: ["fullAccessAdmin", "limitedAccess", "readOnly"],

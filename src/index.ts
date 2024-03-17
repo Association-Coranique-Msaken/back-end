@@ -24,7 +24,7 @@ appDataSource
 dotenv.config();
 
 const app: Application = express();
-const port = 5000;
+const port = process.env.SERVER_PORT || 5000;
 
 // Middleware
 app.use(cors());

@@ -24,6 +24,9 @@ export class Teacher {
     @Column()
     currentStatus: string;
 
+    @Column({ default: false })
+    isDeleted: boolean;
+
     @OneToOne(() => User)
     @JoinColumn()
     user: User;

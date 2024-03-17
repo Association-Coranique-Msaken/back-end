@@ -13,8 +13,13 @@ export class encrypt {
     }
 
     static generateToken(id: any) {
-        if (!process.env.TOKEN_SECRET_KEY) throw new Error("TOKEN_SECRET is undefined");
-        return jwt.sign(id, process.env.TOKEN_SECRET_KEY, { expiresIn: "1d" });
+        if (!process.env.JWT_TOKEN_SECRET) throw new Error("TOKEN_SECRET is undefined");
+        return jwt.sign(id, process.env.JWT_TOKEN_SECRET, { expiresIn: process.env.JWT_EXP_IN });
+    }
+
+    static generateRefreshToken(id: any) {
+        if (!process.env.JWT_REFRESH_TOKEN_SECRET) throw new Error("REFRESH_TOKEN_SECRET is undefined");
+        return jwt.sign(id, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: process.env.JWT_REFRESH_EXP_IN });
     }
 
     static generateRefreshToken(id: any) {

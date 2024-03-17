@@ -55,6 +55,9 @@ export class User {
     hasGuaranteedBirthCertificate: boolean;
 
     @Column({ default: false })
+    isDeleted: boolean;
+
+    @Column({ default: false })
     hasPassport: boolean;
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
