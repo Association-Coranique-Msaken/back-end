@@ -20,7 +20,7 @@ export const createUser = async (req: Request, res: Response) => {
 export const getUsers = async (req: Request, res: Response) => {
     try {
         const users = await usersRepository.find();
-        res.status(200).json({ success: true, message: "get users successfully", data: users });
+        res.status(200).json({ success: true, message: "users fetched successfully.", data: users });
     } catch (error) {
         res.status(404).json({ success: false, message: error });
     }

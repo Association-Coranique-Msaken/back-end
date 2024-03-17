@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
-import { encrypt } from "../helpers/helpers";
+import { encrypt, formatDate } from "../helpers/helpers";
 import { adminCreationValidator } from "../validators/AdminValidator";
 import { User } from "../entities/User";
 import { Teacher } from "../entities/Teacher";
@@ -12,16 +12,18 @@ const teacherRepository = appDataSource.getRepository(Teacher);
 
 //User Login
 const userLogin = async (req: Request, res: Response) => {
-    const { identifier, birthday } = req.body;
+    const { identifier, birthDate } = req.body;
     try {
-        if (!identifier || !birthday) {
+        if (!identifier || !birthDate) {
             return res.status(400).json({ message: "identifier and password are required" });
         }
         const user = await userRepository.findOne({ where: { identifier: identifier } });
+        if (!user) {
+            return res.status(401).json({ message: "Invalid username or password" });
+        }
 
-        const isPasswordValid = user!.birthday.toISOString() !== new Date(birthday).toISOString();
-
-        if (!user || !isPasswordValid) {
+        const isPasswordValid = formatDate(user.birthDate) === birthDate;
+        if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid username or password" });
         }
 
@@ -47,6 +49,10 @@ const adminLogin = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "Username and password are required" });
         }
         const user = await adminRepository.findOne({ where: { username: username } });
+
+        if (!user) {
+            return res.status(401).json({ message: "Invalid username or password" });
+        }
 
         const isPasswordValid = encrypt.comparepassword(user!.password, password);
 

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { encrypt } from "../helpers/helpers";
 import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
 import { adminCreationValidator } from "../validators/AdminValidator";
@@ -18,11 +19,12 @@ export const createAdmin = async (req: Request, res: Response) => {
     if (error) return res.status(400).json({ success: false, message: error.details[0].message });
     try {
         // const admin = new Admin({ ...req.body });
-        const { firstName, lastName, email, password, role } = req.body;
+        const { username, firstName, lastName, password, role } = req.body;
         const admin = new Admin();
+        admin.username = username;
         admin.firstName = firstName;
         admin.lastName = lastName;
-        admin.password = password;
+        admin.password = await encrypt.encryptpass(password);
         admin.role = role;
         await adminRepository.save(admin);
         res.status(201).json({ success: true, message: "Admin created successfully", data: admin });
