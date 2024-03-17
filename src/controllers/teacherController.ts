@@ -1,11 +1,7 @@
 import { Request, Response } from "express";
 import { appDataSource } from "../config/Database";
 import { Teacher } from "../entities/Teacher";
-import {
-    oldUserTeacherCreationValidator,
-    newUserTeacherCreationValidator,
-    teacherUpdateValidator,
-} from "../validators/TeacherValidator";
+import { teacherCreationValidator, teacherUpdateValidator } from "../validators/TeacherValidator";
 import { User } from "../entities/User";
 
 const teacherRepository = appDataSource.getRepository(Teacher);
@@ -17,7 +13,6 @@ export const insertTeacher = async (
     kottebName: string,
     bonus: string,
     type: string,
-    status: string,
     user: User
 ): Promise<Teacher> => {
     const teacher = new Teacher();
@@ -26,7 +21,6 @@ export const insertTeacher = async (
     teacher.kotebName = kottebName;
     teacher.bonus = bonus;
     teacher.teacherType = type;
-    teacher.currentStatus = status;
     teacher.teacherType = type;
     teacher.user = user;
     await teacherRepository.save(teacher);
@@ -35,32 +29,19 @@ export const insertTeacher = async (
 
 export const createTeacher = async (req: Request, res: Response) => {
     try {
+        const { error } = teacherCreationValidator.validate(req.body);
+        if (error) return res.status(400).json({ success: false, message: error.details[0].message });
         const userId = req.body?.identifier;
-        if (userId) {
-            const { error } = oldUserTeacherCreationValidator.validate(req.body);
-            if (error) return res.status(400).json({ success: false, message: error.details[0].message });
-            let user = await userRepository.findOne({ where: { identifier: userId } });
-            if (user) {
-                const { code, password, kotebName, bonus, type, currentStatus } = req.body;
-                const teacher = await insertTeacher(code, password, kotebName, bonus, type, currentStatus, user);
-                res.status(201).json({ success: true, message: "Teacher created successfully", data: teacher });
-            } else {
-                res.status(404).json({
-                    success: false,
-                    message: `Unable to find corresponding user with identifier: ${userId}`,
-                });
-            }
-        } else {
-            const { error } = newUserTeacherCreationValidator.validate(req.body);
-            if (error) return res.status(400).json({ success: false, message: error.details[0].message });
-            const { code, password, kotebName, bonus, type, currentStatus, firstName, lastName, birthDate } = req.body;
-            var user = new User();
-            user.firstName = firstName;
-            user.lastName = lastName;
-            user.birthDate = birthDate;
-            await userRepository.save(user);
-            const teacher = await insertTeacher(code, password, kotebName, bonus, type, currentStatus, user);
+        let user = await userRepository.findOne({ where: { identifier: userId } });
+        if (user) {
+            const { code, password, kotebName, bonus, type } = req.body;
+            const teacher = await insertTeacher(code, password, kotebName, bonus, type, user);
             res.status(201).json({ success: true, message: "Teacher created successfully", data: teacher });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: `Unable to find corresponding user with identifier: ${userId}`,
+            });
         }
     } catch (error) {
         res.status(500).json({ success: false, message: "Internal server error", error: error });

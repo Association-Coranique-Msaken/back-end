@@ -21,11 +21,6 @@ export class encrypt {
         if (!process.env.JWT_REFRESH_TOKEN_SECRET) throw new Error("REFRESH_TOKEN_SECRET is undefined");
         return jwt.sign(id, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: process.env.JWT_REFRESH_EXP_IN });
     }
-
-    static generateRefreshToken(id: any) {
-        if (!process.env.REFRESH_TOKEN_SECRET) throw new Error("REFRESH_TOKEN_SECRET is undefined");
-        return jwt.sign(id, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
-    }
 }
 
 export function formatDate(date: Date): string {

@@ -21,8 +21,8 @@ export class Teacher {
     @Column()
     teacherType: string; //TODO: change to enum
 
-    @Column()
-    currentStatus: string;
+    @Column({ default: true })
+    isActive: boolean;
 
     @Column({ default: false })
     isDeleted: boolean;

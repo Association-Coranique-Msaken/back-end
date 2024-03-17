@@ -1,7 +1,6 @@
 import Joi from "joi";
 
 export const userCreationValidator = Joi.object({
-    identifier: Joi.string(),
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     fatherName: Joi.string(),

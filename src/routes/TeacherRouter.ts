@@ -13,12 +13,12 @@ const teacherRouter = express.Router();
 
 teacherRouter.post("/", adminAuthentification, adminAuthorization("fullAccessAdmin"), createTeacher);
 
-teacherRouter.get("/", getTeachers);
+teacherRouter.get("/", adminAuthentification, adminAuthorization("fullAccessAdmin"), getTeachers);
 
-teacherRouter.get("/:id", getTeacherById);
+teacherRouter.get("/:id", adminAuthentification, adminAuthorization("fullAccessAdmin"), getTeacherById);
 
-teacherRouter.patch("/:id", updateTeacher);
+teacherRouter.patch("/:id", adminAuthentification, adminAuthorization("fullAccessAdmin"), updateTeacher);
 
-teacherRouter.delete("/:id", deleteTeacher);
+teacherRouter.delete("/:id", adminAuthentification, adminAuthorization("fullAccessAdmin"), deleteTeacher);
 
 export default teacherRouter;
