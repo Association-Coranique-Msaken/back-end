@@ -18,7 +18,7 @@ export const createAdmin = async (req: Request, res: Response) => {
     if (error) return res.status(400).json({ success: false, message: error.details[0].message });
     try {
         // const admin = new Admin({ ...req.body });
-        const { firstName, lastName, email, password, role } = req.body;
+        const { firstName, lastName, password, role } = req.body;
         const admin = new Admin();
         admin.firstName = firstName;
         admin.lastName = lastName;
