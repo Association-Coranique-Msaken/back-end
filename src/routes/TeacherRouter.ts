@@ -6,19 +6,19 @@ import {
     getTeachers,
     updateTeacher,
 } from "../controllers/teacherController";
-import { adminAuthentification } from "../middlewares/authMiddleware";
+import { adminAuthentication } from "../middlewares/authMiddleware";
 import { adminAuthorization } from "../middlewares/checkAdminRole";
 
 const teacherRouter = express.Router();
 
-teacherRouter.post("/", adminAuthentification, adminAuthorization("fullAccessAdmin"), createTeacher);
+teacherRouter.put("/", adminAuthentication, adminAuthorization("fullAccessAdmin"), createTeacher);
 
-teacherRouter.get("/", adminAuthentification, adminAuthorization("fullAccessAdmin"), getTeachers);
+teacherRouter.get("/", adminAuthentication, adminAuthorization("fullAccessAdmin"), getTeachers);
 
-teacherRouter.get("/:id", adminAuthentification, adminAuthorization("fullAccessAdmin"), getTeacherById);
+teacherRouter.get("/:id", adminAuthentication, adminAuthorization("fullAccessAdmin"), getTeacherById);
 
-teacherRouter.patch("/:id", adminAuthentification, adminAuthorization("fullAccessAdmin"), updateTeacher);
+teacherRouter.patch("/:id", adminAuthentication, adminAuthorization("fullAccessAdmin"), updateTeacher);
 
-teacherRouter.delete("/:id", adminAuthentification, adminAuthorization("fullAccessAdmin"), deleteTeacher);
+teacherRouter.delete("/:id", adminAuthentication, adminAuthorization("fullAccessAdmin"), deleteTeacher);
 
 export default teacherRouter;

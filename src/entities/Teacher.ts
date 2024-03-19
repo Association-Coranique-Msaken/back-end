@@ -3,7 +3,7 @@ import { User } from "./User";
 
 @Entity({ name: "teacher" })
 export class Teacher {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn("uuid")
     id: string;
 
     @Column()
@@ -19,7 +19,7 @@ export class Teacher {
     bonus: string;
 
     @Column()
-    teacherType: string; //TODO: change to enum
+    teacherType: string; // TODO: change to enum
 
     @Column({ default: true })
     isActive: boolean;

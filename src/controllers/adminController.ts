@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import { encrypt } from "../helpers/helpers";
 import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
@@ -12,7 +12,7 @@ export const getAdmin = async (req: Request, res: Response) => {
         const admins = await adminRepository.find();
         return Responses.FetchSucess(res, admins);
     } catch (error) {
-        return Responses.NotFound(res);
+        return Responses.InternalServerError(res);
     }
 };
 

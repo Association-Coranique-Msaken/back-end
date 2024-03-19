@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import { appDataSource } from "../config/Database";
 import { User } from "../entities/User";
 import { userCreationValidator, userUpdateValidator } from "../validators/UserValidator";
-import { Not, LessThan } from "typeorm";
+import { Not } from "typeorm";
 import { Responses } from "../helpers/Responses";
 
 const userRepository = appDataSource.getRepository(User);
@@ -16,7 +16,11 @@ export const createUser = async (req: Request, res: Response) => {
         // Get the current year
         const currentYear = new Date().getFullYear();
         // Get the latest user to retrieve the counter value
-        const latestUser = await userRepository.findOne({ where: { id: Not("") }, order: { id: "DESC" } });
+        // TODO: replace with query to avoid the 'not'.
+        const latestUser = await userRepository.findOne({
+            where: { identifier: Not("") },
+            order: { identifier: "DESC" },
+        });
 
         // Determine the new identifier based on the latest user's counter
         const counter = latestUser ? parseInt(latestUser.identifier) : 1;
@@ -25,11 +29,12 @@ export const createUser = async (req: Request, res: Response) => {
         await userRepository.save(newUser);
         return Responses.CreateSucess(res, newUser);
     } catch (error) {
+        console.error(error);
         return Responses.InternalServerError(res);
     }
 };
 
-//TODO Add pagination and redis caching
+// TODO Add pagination and redis caching
 export const getUsers = async (req: Request, res: Response) => {
     try {
         const users = await userRepository.find({ where: { isDeleted: false } });

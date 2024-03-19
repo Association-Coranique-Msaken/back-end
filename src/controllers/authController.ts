@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
 import { encrypt, formatDate } from "../helpers/helpers";
@@ -6,19 +6,21 @@ import { adminCreationValidator } from "../validators/AdminValidator";
 import { User } from "../entities/User";
 import { Teacher } from "../entities/Teacher";
 import { Responses } from "../helpers/Responses";
+import { Tokens } from "../helpers/TokenTypes";
+import { invalidTokensCache } from "../helpers/InvalidTokensCache";
 
 const userRepository = appDataSource.getRepository(User);
 const adminRepository = appDataSource.getRepository(Admin);
 const teacherRepository = appDataSource.getRepository(Teacher);
 
-//User Login
+// User Login
 const userLogin = async (req: Request, res: Response) => {
     const { identifier, birthDate } = req.body;
     try {
         if (!identifier || !birthDate) {
             return Responses.BadRequest(res, "Identifier and password are required.");
         }
-        const user = await userRepository.findOne({ where: { identifier: identifier } });
+        const user = await userRepository.findOne({ where: { identifier } });
         if (!user) {
             return Responses.BadCredentials(res);
         }
@@ -29,8 +31,8 @@ const userLogin = async (req: Request, res: Response) => {
         }
 
         // Generate JWT token
-        const accessToken = encrypt.generateToken({ id: user.id });
-        const refreshToken = encrypt.generateRefreshToken({ id: user.id });
+        const accessToken = Tokens.GenerateUserToken(user);
+        const refreshToken = Tokens.GenerateUserRefreshToken(user);
         return Responses.LoginSuccess(res, user, accessToken, refreshToken);
     } catch (errors) {
         console.error(errors);
@@ -44,20 +46,20 @@ const adminLogin = async (req: Request, res: Response) => {
         if (!username || !password) {
             return Responses.BadRequest(res, "Username and password are required");
         }
-        const admin = await adminRepository.findOne({ where: { username: username } });
+        const admin = await adminRepository.findOne({ where: { username } });
 
         if (!admin) {
             return Responses.BadCredentials(res);
         }
 
-        const isPasswordValid = encrypt.comparepassword(admin!.password, password);
+        const isPasswordValid = encrypt.comparepassword(admin.password, password);
         if (!isPasswordValid) {
             return Responses.BadCredentials(res);
         }
 
         // Generate JWT token
-        const token = encrypt.generateToken({ id: admin.id });
-        const refreshToken = encrypt.generateRefreshToken({ id: admin.id });
+        const token = Tokens.GenerateAdminToken(admin);
+        const refreshToken = Tokens.GenerateAdminRefreshToken(admin);
         return Responses.LoginSuccess(res, admin, token, refreshToken);
     } catch (errors) {
         console.error(errors);
@@ -65,24 +67,24 @@ const adminLogin = async (req: Request, res: Response) => {
     }
 };
 
-//Teacher Login
+// Teacher Login
 const teacherLogin = async (req: Request, res: Response) => {
     const { code, password } = req.body;
     try {
         if (!code || !password) {
             return Responses.BadRequest(res, "Code and password are required.");
         }
-        const teacher = await teacherRepository.findOne({ where: { code: code } });
-        const isPasswordValid = teacher?.password == password;
+        const teacher = await teacherRepository.findOne({ where: { code } });
+        const isPasswordValid = teacher?.password === password;
 
         if (!teacher || !isPasswordValid) {
             return Responses.BadCredentials(res);
         }
 
         // Generate JWT token
-        const token = encrypt.generateToken({ id: teacher.id });
+        const token = Tokens.GenerateTeacherToken(teacher);
         // Generate refresh token
-        const refreshToken = encrypt.generateRefreshToken({ id: teacher.id });
+        const refreshToken = Tokens.GenerateTeacherRefreshToken(teacher);
         return Responses.LoginSuccess(res, teacher, token, refreshToken);
     } catch (errors) {
         console.error(errors);
@@ -90,7 +92,7 @@ const teacherLogin = async (req: Request, res: Response) => {
     }
 };
 
-//Admin signup
+// Admin signup - only for testing.
 const adminSignup = async (req: Request, res: Response) => {
     const { error } = adminCreationValidator.validate(req.body);
     if (error) {
@@ -98,7 +100,7 @@ const adminSignup = async (req: Request, res: Response) => {
     }
     try {
         const { username, firstName, lastName, password, role } = req.body;
-        let admin = await adminRepository.findOne({ where: { username: username } });
+        const admin = await adminRepository.findOne({ where: { username } });
 
         if (admin) {
             return Responses.AlreadyExists(res);
@@ -121,22 +123,19 @@ const adminSignup = async (req: Request, res: Response) => {
     }
 };
 
-const signout = async (req: Request, res: Response) => {
+const logout = async (req: Request, res: Response) => {
     try {
-        // Clear the refresh token from the client-side storage
-        // For example, if you're using local storage
-        localStorage.removeItem("refreshToken"); //TODO: fix this
-        localStorage.removeItem("token");
-        // Or if you're using session storage
-        // sessionStorage.removeItem("refreshToken");
-
-        return Responses.SignoutSucess(res);
+        const decodedToken = res.locals.decodedToken;
+        const header = req.headers.authorization;
+        const rawToken = header!.split(" ")[1];
+        await invalidTokensCache.invalidate(rawToken, decodedToken.id, decodedToken.expiration);
+        return Responses.LogoutSucess(res);
     } catch (error) {
-        console.error("Error during signout:", error);
+        console.error(error);
         return Responses.InternalServerError(res);
     }
 };
 
 // Refresh Access Token
-//TDOD: implement refresh token
-export default { adminLogin, adminSignup, userLogin, teacherLogin, signout };
+// TODO: implement refresh token
+export default { adminLogin, adminSignup, userLogin, teacherLogin, logout };

@@ -1,27 +1,31 @@
-import { Response } from "express";
-import Joi from "joi";
+import { type Response } from "express";
+import type Joi from "joi";
 
 export namespace Responses {
-    export const FetchSucess = (response: Response, data: any) => {
-        return response.status(200).json({ succss: true, message: "Data successfully fetched.", data: data });
+    export const OperationSuccess = (response: Response) => {
+        return response.status(200).json({ succss: true, message: "Operation completed successfully." });
     };
 
-    export const LoginSuccess = (response: Response, data: any, accessToken: String, refreshToken: string) => {
+    export const FetchSucess = (response: Response, data: any) => {
+        return response.status(200).json({ succss: true, message: "Data successfully fetched.", data });
+    };
+
+    export const LoginSuccess = (response: Response, data: any, accessToken: string, refreshToken: string) => {
         return response.status(200).json({
             succss: true,
             message: "Login Successfull.",
-            data: data,
-            accessToken: accessToken,
-            refreshToken: refreshToken,
+            data,
+            accessToken,
+            refreshToken,
         });
     };
 
-    export const SignoutSucess = (response: Response) => {
-        return response.status(200).json({ success: true, message: "Signout completed successfully." });
+    export const LogoutSucess = (response: Response) => {
+        return response.status(200).json({ success: true, message: "Logout completed successfully." });
     };
 
     export const DeleteSuccess = (response: Response) => {
-        return response.status(200).json({ success: true, message: "Item successfully deleted." });
+        return response.status(200).json({ success: true, message: "Item(s) successfully deleted." });
     };
 
     export const UpdateSucess = (response: Response) => {
@@ -29,7 +33,7 @@ export namespace Responses {
     };
 
     export const CreateSucess = (response: Response, data: any) => {
-        return response.status(201).json({ success: true, message: "Data created.", data: data });
+        return response.status(201).json({ success: true, message: "Data created.", data });
     };
 
     export const BadRequest = (response: Response, info: string = "Bad Request.") => {
