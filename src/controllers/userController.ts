@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { appDataSource } from "../config/Database";
 import { User } from "../entities/User";
 import { userCreationValidator, userUpdateValidator } from "../validators/UserValidator";
+import { Not, LessThan } from "typeorm";
 
 const userRepository = appDataSource.getRepository(User);
 
@@ -9,17 +10,10 @@ export const createUser = async (req: Request, res: Response) => {
     const { error } = userCreationValidator.validate(req.body);
     if (error) return res.status(400).json({ success: false, message: error.details[0].message });
     try {
-        const userIdentifier = req.body.identifier;
-
-        let user = await userRepository.findOne({ where: { identifier: userIdentifier } });
-
-        if (user) {
-            return res.status(409).json({ success: false, message: "Username already exists" });
-        }
         // Get the current year
         const currentYear = new Date().getFullYear();
         // Get the latest user to retrieve the counter value
-        const latestUser = await userRepository.findOne({ order: { id: "DESC" } });
+        const latestUser = await userRepository.findOne({ where: { id: Not("") }, order: { id: "DESC" } });
 
         // Determine the new identifier based on the latest user's counter
         const counter = latestUser ? parseInt(latestUser.identifier) : 1;

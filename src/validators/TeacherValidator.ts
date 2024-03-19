@@ -1,22 +1,17 @@
 import Joi from "joi";
 
-export const teacherValidator = Joi.object({
+export const teacherCreationValidator = Joi.object({
     code: Joi.string().required(),
     password: Joi.string().required(),
-    firstName: Joi.string(),
-    lastName: Joi.string(),
-    birthday: Joi.date(),
-    identifier: Joi.string(),
     kotebName: Joi.string(),
-    prim: Joi.string(),
-    teacherType: Joi.string(),
-    statue: Joi.string(),
+    bonus: Joi.string(),
+    type: Joi.string(),
+    identifier: Joi.string(),
 }).options({ stripUnknown: true });
 
 export const teacherUpdateValidator = Joi.object({
     code: Joi.string().required(),
     kotebName: Joi.string(),
-    prim: Joi.string(),
-    teacherType: Joi.string(),
-    statue: Joi.string(),
+    bonus: Joi.string(),
+    type: Joi.string(),
 }).options({ stripUnknown: true });

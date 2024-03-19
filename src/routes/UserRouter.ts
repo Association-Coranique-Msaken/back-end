@@ -7,12 +7,12 @@ const userRouter = express.Router();
 
 userRouter.post("/", adminAuthentification, adminAuthorization("fullAccessAdmin"), createUser);
 
-userRouter.get("/", getUsers);
+userRouter.get("/", adminAuthentification, adminAuthorization("fullAccessAdmin"), getUsers);
 
-userRouter.get("/:id", getUserById);
+userRouter.get("/:id", adminAuthentification, adminAuthorization("fullAccessAdmin"), getUserById);
 
-userRouter.patch("/:id", updateUser);
+userRouter.patch("/:id", adminAuthentification, adminAuthorization("fullAccessAdmin"), updateUser);
 
-userRouter.delete("/:id", deleteUser);
+userRouter.delete("/:id", adminAuthentification, adminAuthorization("fullAccessAdmin"), deleteUser);
 
 export default userRouter;

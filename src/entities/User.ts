@@ -1,11 +1,12 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity({ name: "user" })
 export class User {
     @PrimaryGeneratedColumn()
     id: string;
 
-    @Column()
+    @Index({ unique: true })
+    @Column({ unique: true })
     identifier: string;
 
     @Column()
@@ -27,7 +28,7 @@ export class User {
     motherLastName: string;
 
     @Column()
-    birthday: Date;
+    birthDate: Date;
 
     @Column()
     birthPlace: string;
@@ -44,7 +45,7 @@ export class User {
     @Column()
     gender: string;
 
-    @Column()
+    @Column({ nullable: true, default: null })
     cin: string;
 
     @Column({ default: false })
@@ -59,9 +60,9 @@ export class User {
     @Column({ default: false })
     hasPassport: boolean;
 
-    @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     createdAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
     updatedAt: Date;
 }

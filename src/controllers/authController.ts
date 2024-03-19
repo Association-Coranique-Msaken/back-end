@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
-import { encrypt } from "../helpers/helpers";
+import { encrypt, formatDate } from "../helpers/helpers";
 import { adminCreationValidator } from "../validators/AdminValidator";
 import { User } from "../entities/User";
 import { Teacher } from "../entities/Teacher";
@@ -12,28 +12,64 @@ const teacherRepository = appDataSource.getRepository(Teacher);
 
 //User Login
 const userLogin = async (req: Request, res: Response) => {
-    const { identifier, birthday } = req.body;
+    const { identifier, birthDate } = req.body;
     try {
-        if (!identifier || !birthday) {
+        if (!identifier || !birthDate) {
             return res.status(400).json({ message: "identifier and password are required" });
         }
         const user = await userRepository.findOne({ where: { identifier: identifier } });
+        if (!user) {
+            return res.status(401).json({ message: "Invalid username or password" });
+        }
 
-        const isPasswordValid = user!.birthday.toISOString() !== new Date(birthday).toISOString();
-
-        if (!user || !isPasswordValid) {
+        const isPasswordValid = formatDate(user.birthDate) === birthDate;
+        if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid username or password" });
         }
 
         // Generate JWT token
         const token = encrypt.generateToken({ id: user.id });
-        // Generate refresh token
         const refreshToken = encrypt.generateRefreshToken({ id: user.id });
 
         return res.status(200).json({
             success: true,
             message: "User Login successful",
             data: user,
+            accessToken: token,
+            refreshToken: refreshToken,
+        });
+    } catch (errors) {
+        console.error(errors);
+        return res.status(500).json({ success: false, message: "Internal server error", errors });
+    }
+};
+
+const adminLogin = async (req: Request, res: Response) => {
+    const { username, password } = req.body;
+    try {
+        if (!username || !password) {
+            return res.status(400).json({ message: "Username and password are required" });
+        }
+        const admin = await adminRepository.findOne({ where: { username: username } });
+
+        if (!admin) {
+            return res.status(401).json({ message: "Invalid username or password" });
+        }
+
+        const isPasswordValid = encrypt.comparepassword(admin!.password, password);
+
+        if (!admin || !isPasswordValid) {
+            return res.status(401).json({ message: "Invalid username or password" });
+        }
+
+        // Generate JWT token
+        const token = encrypt.generateToken({ id: admin.id });
+        const refreshToken = encrypt.generateRefreshToken({ id: admin.id });
+
+        return res.status(200).json({
+            success: true,
+            message: "Admin Login successful",
+            data: admin,
             accessToken: token,
             refreshToken: refreshToken,
         });
@@ -75,39 +111,6 @@ const teacherLogin = async (req: Request, res: Response) => {
     }
 };
 
-//Admin Login
-const adminLogin = async (req: Request, res: Response) => {
-    const { username, password } = req.body;
-    try {
-        if (!username || !password) {
-            return res.status(400).json({ message: "Username and password are required" });
-        }
-        const admin = await adminRepository.findOne({ where: { username: username } });
-
-        const isPasswordValid = encrypt.comparepassword(admin!.password, password);
-
-        if (!admin || !isPasswordValid) {
-            return res.status(401).json({ message: "Invalid username or password" });
-        }
-
-        // Generate JWT token
-        const token = encrypt.generateToken({ id: admin.id });
-        // Generate refresh token
-        const refreshToken = encrypt.generateRefreshToken({ id: admin.id });
-
-        return res.status(200).json({
-            success: true,
-            message: "Admin Login successful",
-            data: admin,
-            accessToken: token,
-            refreshToken: refreshToken,
-        });
-    } catch (errors) {
-        console.error(errors);
-        return res.status(500).json({ success: false, message: "Internal server error", errors });
-    }
-};
-
 //Admin signup
 const adminSignup = async (req: Request, res: Response) => {
     const { error } = adminCreationValidator.validate(req.body);
@@ -137,6 +140,7 @@ const adminSignup = async (req: Request, res: Response) => {
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
+
 const signout = async (req: Request, res: Response) => {
     try {
         // Clear the refresh token from the client-side storage

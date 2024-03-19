@@ -16,13 +16,13 @@ export class Teacher {
     kotebName: string;
 
     @Column()
-    prim: string;
+    bonus: string;
 
     @Column()
     teacherType: string; //TODO: change to enum
 
-    @Column()
-    statue: string;
+    @Column({ default: true })
+    isActive: boolean;
 
     @Column({ default: false })
     isDeleted: boolean;
