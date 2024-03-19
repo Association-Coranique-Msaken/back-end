@@ -3,6 +3,7 @@ import { appDataSource } from "../config/Database";
 import { Teacher } from "../entities/Teacher";
 import { teacherCreationValidator, teacherUpdateValidator } from "../validators/TeacherValidator";
 import { User } from "../entities/User";
+import { Responses } from "../helpers/Responses";
 
 const teacherRepository = appDataSource.getRepository(Teacher);
 const userRepository = appDataSource.getRepository(User);
@@ -30,30 +31,30 @@ export const insertTeacher = async (
 export const createTeacher = async (req: Request, res: Response) => {
     try {
         const { error } = teacherCreationValidator.validate(req.body);
-        if (error) return res.status(400).json({ success: false, message: error.details[0].message });
+        if (error) {
+            return Responses.ValidationBadRequest(res, error);
+        }
+
         const userId = req.body?.identifier;
         let user = await userRepository.findOne({ where: { identifier: userId } });
         if (user) {
             const { code, password, kotebName, bonus, type } = req.body;
             const teacher = await insertTeacher(code, password, kotebName, bonus, type, user);
-            res.status(201).json({ success: true, message: "Teacher created successfully", data: teacher });
+            return Responses.CreateSucess(res, teacher);
         } else {
-            res.status(404).json({
-                success: false,
-                message: `Unable to find corresponding user with identifier: ${userId}`,
-            });
+            return Responses.NotFound(res, `Unable to find corresponding user with identifier: ${userId}`);
         }
     } catch (error) {
-        res.status(500).json({ success: false, message: "Internal server error", error: error });
+        return Responses.InternalServerError(res);
     }
 };
 
 export const getTeachers = async (req: Request, res: Response) => {
     try {
         const teachers = await teacherRepository.find({ where: { isDeleted: false } });
-        res.status(200).json({ success: true, message: "get teachers successfully", data: teachers });
+        return Responses.FetchSucess(res, teachers);
     } catch (error) {
-        res.status(404).json({ success: false, message: error });
+        return Responses.InternalServerError(res);
     }
 };
 
@@ -66,46 +67,37 @@ export const getTeacherById = async (req: Request, res: Response) => {
         });
 
         if (!teacher) {
-            return res.status(404).json({ success: false, message: "Teacher not found" });
+            return Responses.NotFound(res);
         }
 
-        res.status(200).json({ success: true, message: "get teacher successfully", data: teacher });
+        return Responses.FetchSucess(res, teacher);
     } catch (error) {
-        res.status(404).json({ success: false, message: error });
+        return Responses.InternalServerError(res);
     }
 };
 
 export const updateTeacher = async (req: Request, res: Response) => {
     const { error } = teacherUpdateValidator.validate(req.body);
     if (error) {
-        return res.status(400).json({ success: false, message: error.details[0].message });
+        return Responses.ValidationBadRequest(res, error);
     }
-
     try {
         const teacherId = req.params.id;
         const updatedFields = req.body; // Get updated fields from request body
 
         const teacher = await teacherRepository.findOne({
             where: { id: teacherId, isDeleted: false },
-            relations: ["user"],
         });
 
         if (!teacher) {
-            return res.status(404).json({ success: false, message: "Teacher not found" });
+            return Responses.NotFound(res);
         }
 
         // Update teacher fields
         await teacherRepository.update(teacherId, updatedFields);
-
-        // Update associated user fields if exists
-        if (teacher.user) {
-            const userId = teacher.user.id;
-            await userRepository.update(userId, updatedFields);
-        }
-
-        res.status(200).json({ success: true, message: "Teacher and associated user updated successfully" });
+        return Responses.FetchSucess(res, teacher);
     } catch (error) {
-        res.status(500).json({ success: false, message: "Internal server error" });
+        return Responses.InternalServerError(res);
     }
 };
 
@@ -115,17 +107,16 @@ export const deleteTeacher = async (req: Request, res: Response) => {
         const teacher = await teacherRepository.findOne({ where: { id: teacherId } });
 
         if (!teacher) {
-            return res.status(404).json({ success: false, message: "Teacher not found" });
+            return Responses.NotFound(res);
         }
 
         if (teacher.isDeleted) {
-            return res.status(400).json({ success: false, message: "Teacher is already marked for deletion!" });
+            return Responses.BadRequest(res);
         }
         await teacherRepository.update(teacherId, { isDeleted: true });
-
-        res.status(200).json({ success: true, message: "Teacher is marked for deletion!is marked for deletion!" });
+        return Responses.DeleteSuccess(res);
     } catch (error) {
-        res.status(500).json({ success: false, message: error });
+        return Responses.InternalServerError(res);
     }
 };
 
@@ -135,11 +126,10 @@ export const getTeacherByCode = async (req: Request, res: Response) => {
         const teacher = await teacherRepository.findOne({ where: { code: teacherCode, isDeleted: false } });
 
         if (!teacher) {
-            return res.status(404).json({ success: false, message: "Teacher not found" });
+            return Responses.NotFound(res);
         }
-
-        res.status(200).json({ success: true, message: "get teacher successfully", data: teacher });
+        return Responses.FetchSucess(res, teacher);
     } catch (error) {
-        res.status(404).json({ success: false, message: error });
+        return Responses.InternalServerError(res);
     }
 };

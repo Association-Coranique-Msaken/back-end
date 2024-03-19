@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { appDataSource } from "../config/Database";
 import * as jwt from "jsonwebtoken";
 import { Admin } from "../entities/Admin";
+import { Responses } from "../helpers/Responses";
 
 export const adminAuthorization = (role: string) => async (req: Request, res: Response, next: NextFunction) => {
     const header = req.headers.authorization;
@@ -21,10 +22,10 @@ export const adminAuthorization = (role: string) => async (req: Request, res: Re
         }
         const adminRole = admin!.role;
         if (role !== adminRole) {
-            return res.status(403).json({ message: "Forbidden" });
+            Responses.Forbidden(res);
         }
         next();
     } catch (error: any) {
-        return res.status(403).json({ message: "Forbidden", error: error.message });
+        return Responses.InternalServerError(res);
     }
 };
