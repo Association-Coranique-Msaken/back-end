@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import { appDataSource } from "../config/Database";
 import { Teacher } from "../entities/Teacher";
 import { teacherCreationValidator, teacherUpdateValidator } from "../validators/TeacherValidator";
@@ -18,7 +18,7 @@ export const insertTeacher = async (
 ): Promise<Teacher> => {
     const teacher = new Teacher();
     teacher.code = code;
-    teacher.password = password; //TODO: hash password or auto generate
+    teacher.password = password; // TODO: hash password or auto generate
     teacher.kotebName = kottebName;
     teacher.bonus = bonus;
     teacher.teacherType = type;
@@ -36,7 +36,7 @@ export const createTeacher = async (req: Request, res: Response) => {
         }
 
         const userId = req.body?.identifier;
-        let user = await userRepository.findOne({ where: { identifier: userId } });
+        const user = await userRepository.findOne({ where: { identifier: userId } });
         if (user) {
             const { code, password, kotebName, bonus, type } = req.body;
             const teacher = await insertTeacher(code, password, kotebName, bonus, type, user);
