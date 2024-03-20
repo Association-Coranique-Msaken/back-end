@@ -1,38 +1,46 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import { appDataSource } from "../config/Database";
 import { User } from "../entities/User";
 import { userCreationValidator, userUpdateValidator } from "../validators/UserValidator";
-import { Not, LessThan } from "typeorm";
+import { Not } from "typeorm";
+import { Responses } from "../helpers/Responses";
 
 const userRepository = appDataSource.getRepository(User);
 
 export const createUser = async (req: Request, res: Response) => {
     const { error } = userCreationValidator.validate(req.body);
-    if (error) return res.status(400).json({ success: false, message: error.details[0].message });
+    if (error) {
+        return Responses.ValidationBadRequest(res, error);
+    }
     try {
         // Get the current year
         const currentYear = new Date().getFullYear();
         // Get the latest user to retrieve the counter value
-        const latestUser = await userRepository.findOne({ where: { id: Not("") }, order: { id: "DESC" } });
+        // TODO: replace with query to avoid the 'not'.
+        const latestUser = await userRepository.findOne({
+            where: { identifier: Not("") },
+            order: { identifier: "DESC" },
+        });
 
         // Determine the new identifier based on the latest user's counter
         const counter = latestUser ? parseInt(latestUser.identifier) : 1;
         const identifier = `${currentYear}${counter.toString()}`;
         const newUser = await userRepository.create({ ...req.body, identifier });
         await userRepository.save(newUser);
-        res.status(201).json({ success: true, message: "User created successfully", data: newUser });
+        return Responses.CreateSucess(res, newUser);
     } catch (error) {
-        res.status(500).json({ success: false, message: error });
+        console.error(error);
+        return Responses.InternalServerError(res);
     }
 };
 
-//TODO Add pagination and redis caching
+// TODO Add pagination and redis caching
 export const getUsers = async (req: Request, res: Response) => {
     try {
         const users = await userRepository.find({ where: { isDeleted: false } });
-        res.status(200).json({ success: true, message: "get users successfully", data: users });
+        return Responses.FetchSucess(res, users);
     } catch (error) {
-        res.status(404).json({ success: false, message: error });
+        return Responses.InternalServerError(res);
     }
 };
 
@@ -42,31 +50,32 @@ export const getUserById = async (req: Request, res: Response) => {
         const user = await userRepository.findOne({ where: { id: userId, isDeleted: false } });
 
         if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
+            return Responses.NotFound(res);
         }
 
-        res.status(200).json({ success: true, message: "get user successfully", data: user });
+        return Responses.FetchSucess(res, user);
     } catch (error) {
-        res.status(404).json({ success: false, message: error });
+        return Responses.InternalServerError(res);
     }
 };
 
 export const updateUser = async (req: Request, res: Response) => {
     const { error } = userUpdateValidator.validate(req.body);
-    if (error) return res.status(400).json({ success: false, message: error.details[0].message });
+    if (error) {
+        return Responses.ValidationBadRequest(res, error);
+    }
 
     try {
         const userId = req.params.id;
         const user = await userRepository.findOne({ where: { id: userId, isDeleted: false } });
 
         if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
+            return Responses.NotFound(res);
         }
-
         await userRepository.update(userId, req.body);
-        res.status(200).json({ success: true, message: "User updated successfully" });
+        return Responses.UpdateSucess(res);
     } catch (error) {
-        res.status(500).json({ success: false, message: error });
+        return Responses.InternalServerError(res);
     }
 };
 
@@ -76,15 +85,14 @@ export const deleteUser = async (req: Request, res: Response) => {
         const user = await userRepository.findOne({ where: { id: userId } });
 
         if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
+            return Responses.NotFound(res);
         }
         if (user.isDeleted) {
-            return res.status(400).json({ success: false, message: "User is already marked for deletion!" });
+            return Responses.AlreadyDeleted(res);
         }
         await userRepository.update(userId, { isDeleted: true });
-
-        res.status(200).json({ success: true, message: "User is marked for deletion!is marked for deletion!" });
+        return Responses.DeleteSuccess(res);
     } catch (error) {
-        res.status(500).json({ success: false, message: error });
+        return Responses.InternalServerError(res);
     }
 };

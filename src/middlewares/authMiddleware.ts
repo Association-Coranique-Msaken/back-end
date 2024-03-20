@@ -1,99 +1,60 @@
-import { Request, Response, NextFunction } from "express";
+import { type Request, type Response, type NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
-import { Admin } from "../entities/Admin";
 import * as dotenv from "dotenv";
-import { appDataSource } from "../config/Database";
-import { User } from "../entities/User";
-import { Teacher } from "../entities/Teacher";
+import { Responses } from "../helpers/Responses";
+import {
+    type AdminToken,
+    type EntityToken,
+    type TeacherToken,
+    Tokens,
+    type UserToken,
+    type TokenType,
+} from "../helpers/TokenTypes";
+import { invalidTokensCache } from "../helpers/InvalidTokensCache";
+
 dotenv.config();
-// Since they are 3 diffrent tables in the database so we do not need to check the role of the user
-// we can just check it for the admin coz he has diffrent roles
-export const adminAuthentification = async (req: Request, res: Response, next: NextFunction) => {
+
+export const genericAuthentication = async (req: Request, res: Response, next: NextFunction) => {
     const header = req.headers.authorization;
     if (!header) {
-        return res.status(401).json({ message: "Unauthorized" });
+        return Responses.Unauthorized(res);
     }
-
-    const token = header.split(" ")[1];
-    if (!token) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-
+    const token: string = header.split(" ")[1];
     try {
-        const decode = jwt.verify(token, process.env.JWT_TOKEN_SECRET!) as jwt.JwtPayload;
-
-        if (!decode || !decode.id) {
-            throw new Error("Invalid token!");
-        }
-        const adminRepository = appDataSource.getRepository(Admin);
-        const admin = await adminRepository.findOne({ where: { id: decode.id } });
-
-        if (!admin) {
-            throw new Error("Admin not found");
-        }
-
+        const decodedToken = Tokens.verifyToken(token);
+        await invalidTokensCache.checkValidity(token, decodedToken.id, decodedToken.expiration);
+        res.locals.decodedToken = decodedToken;
         next();
-    } catch (error: any) {
-        return res.status(401).json({ error: error.message });
+    } catch (error) {
+        if (error instanceof jwt.JsonWebTokenError) {
+            return Responses.Unauthorized(res);
+        }
+        return Responses.BadRequest(res);
     }
 };
 
-export const userAuthentification = async (req: Request, res: Response, next: NextFunction) => {
-    const header = req.headers.authorization;
-    if (!header) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    const token = header.split(" ")[1];
-    if (!token) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    try {
-        const decode = jwt.verify(token, process.env.JWT_TOKEN_SECRET!) as jwt.JwtPayload;
-        if (!decode || !decode.id) {
-            throw new Error("Invalid token!");
+const baseAuthentication =
+    <T extends EntityToken>(typeName: TokenType) =>
+    async (req: Request, res: Response, next: NextFunction) => {
+        const header = req.headers.authorization;
+        if (!header) {
+            return Responses.Unauthorized(res);
         }
-
-        const userRepository = appDataSource.getRepository(User);
-        const user = await userRepository.findOne({ where: { id: decode.id } });
-
-        if (!user) {
-            throw new Error("user not found or invalid token!");
+        const token: string = header.split(" ")[1];
+        try {
+            const decodedToken = Tokens.DecodeAs<T>(typeName, token);
+            await invalidTokensCache.checkValidity(token, decodedToken.id, decodedToken.expiration);
+            res.locals.decodedToken = decodedToken;
+            res.locals.token = token;
+            next();
+        } catch (error) {
+            if (error instanceof jwt.JsonWebTokenError) {
+                return Responses.Unauthorized(res);
+            }
+            return Responses.BadRequest(res);
         }
+    };
 
-        next();
-    } catch (error: any) {
-        return res.status(401).json({ message: "Invalid token!" + error.message });
-    }
-};
-
-export const teacherAuthentification = async (req: Request, res: Response, next: NextFunction) => {
-    const header = req.headers.authorization;
-    if (!header) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    const token = header.split(" ")[1];
-    if (!token) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    try {
-        const decode = jwt.verify(token, process.env.JWT_TOKEN_SECRET!) as jwt.JwtPayload;
-        if (!decode || !decode.id) {
-            throw new Error("Invalid token!");
-        }
-
-        const teacherRepository = appDataSource.getRepository(Teacher);
-        const teacher = await teacherRepository.findOne({ where: { id: decode.id } });
-
-        if (!teacher) {
-            throw new Error("Teacher not found or invalid token!");
-        }
-
-        next();
-    } catch (error: any) {
-        return res.status(401).json({ message: error.message });
-    }
-};
+export const adminAuthentication = baseAuthentication<AdminToken>("Admin");
+export const userAuthentication = baseAuthentication<UserToken>("User");
+export const teacherAuthentication = baseAuthentication<TeacherToken>("Teacher");

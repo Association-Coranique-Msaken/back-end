@@ -1,4 +1,4 @@
-import express, { Request, Response, Application } from "express";
+import express, { type Request, type Response, type Application } from "express";
 import dotenv from "dotenv";
 import * as bodyParser from "body-parser";
 import cors from "cors";
@@ -8,6 +8,8 @@ import authRouter from "./routes/AuthRouter";
 import UserRouter from "./routes/UserRouter";
 import TeacherRouter from "./routes/TeacherRouter";
 import fs from "fs";
+import InvalidTokensRouter from "./routes/InvalidTokensRouter";
+import { ScheduleInvalidTokensWorker } from "./workers/InvalidTokensWorker";
 const swaggerUi = require("swagger-ui-express");
 
 // establish database connection
@@ -20,7 +22,7 @@ appDataSource
         console.error("Error during Data Source initialization:", err);
     });
 
-//For env File
+// For env File
 dotenv.config();
 
 const app: Application = express();
@@ -35,8 +37,9 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/admin", AdminRouter);
 app.use("/api/v1/user", UserRouter);
 app.use("/api/v1/teacher", TeacherRouter);
+app.use("/api/v1/token", InvalidTokensRouter);
 
-//s chaima
+// s chaima
 // Default route
 app.get("/", (req: Request, res: Response) => {
     res.send("Welcome to Express & TypeScript Server :) nice");
@@ -68,3 +71,5 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: t
 app.listen(port, () => {
     console.log(`Server is live at http://localhost:${port}`);
 });
+
+ScheduleInvalidTokensWorker();
