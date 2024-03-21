@@ -65,7 +65,7 @@ export class InvalidTokensCache {
             return false;
         }
         const wildCardInDB = await this.isWildcardInDB(elementId);
-        if (wildCardInDB) {
+        if (wildCardInDB && expiration < wildCardInDB.expiration) {
             const wildcardDate = wildCardInDB.expiration.getTime() / 1000;
             this.cache.set(wildcardKey, wildcardDate);
             return false;
