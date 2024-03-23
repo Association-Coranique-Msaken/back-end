@@ -2,7 +2,6 @@ import { type Request, type Response } from "express";
 import { appDataSource } from "../config/Database";
 import { User } from "../entities/User";
 import { userCreationValidator, userUpdateValidator } from "../validators/UserValidator";
-import { Not } from "typeorm";
 import { Responses } from "../helpers/Responses";
 
 const userRepository = appDataSource.getRepository(User);
@@ -16,21 +15,45 @@ export const createUser = async (req: Request, res: Response) => {
         // Get the current year
         const currentYear = new Date().getFullYear();
         // Get the latest user to retrieve the counter value
-        // TODO: replace with query to avoid the 'not'.
-        const latestUser = await userRepository.findOne({
-            where: { identifier: Not("") },
-            order: { identifier: "DESC" },
-        });
 
-        // Determine the new identifier based on the latest user's counter
-        const counter = latestUser ? parseInt(latestUser.identifier) : 1;
-        const identifier = `${currentYear}${counter.toString()}`;
-        const newUser = await userRepository.create({ ...req.body, identifier });
+        // TODO: Add lock here to prevent race condition in case of parallel requests.
+        const identifier = await getNewUserIdentifier();
+        const newUser = userRepository.create({ ...req.body, identifier });
         await userRepository.save(newUser);
         return Responses.CreateSucess(res, newUser);
     } catch (error) {
         console.error(error);
         return Responses.InternalServerError(res);
+    }
+};
+
+export const getNewUserIdentifier = async () => {
+    const queryResult = await appDataSource
+        .createQueryBuilder()
+        .select("MAX(`identifier`)", "id")
+        .from(User, "user")
+        .execute();
+    const perviousIdentifier = queryResult?.[0]?.id;
+    const currentYear = new Date().getFullYear();
+    return computeNextIdentifier(currentYear, perviousIdentifier);
+};
+
+export const computeNextIdentifier = (currentYear: number, perviousIdentifier?: string): string => {
+    if (perviousIdentifier) {
+        const previousIdentifierYear = parseInt(perviousIdentifier.substring(0, 4));
+        if (currentYear > previousIdentifierYear) {
+            return `${currentYear}001`;
+        } else {
+            const previousIncrementalOrder = parseInt(perviousIdentifier.substring(4, 8)) ?? 1;
+            const nextIncrementalOrder = previousIncrementalOrder + 1;
+            if (nextIncrementalOrder >= 1000) {
+                return `${previousIdentifierYear + 1}000`;
+            } else {
+                return `${previousIdentifierYear}${nextIncrementalOrder.toString().padStart(3, "0")}`;
+            }
+        }
+    } else {
+        return `${currentYear}001`;
     }
 };
 

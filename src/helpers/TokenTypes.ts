@@ -68,7 +68,7 @@ export namespace Tokens {
             throw new jwt.JsonWebTokenError("Invalid token.");
         }
         if (decode.exp) {
-            decode.value.expiration = new Date(decode.exp);
+            decode.value.expiration = new Date(decode.exp * 1000);
         }
         return decode.value;
     };
