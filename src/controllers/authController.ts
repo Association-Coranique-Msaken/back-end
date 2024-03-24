@@ -2,12 +2,13 @@ import { type Request, type Response } from "express";
 import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
 import { encrypt, formatDate } from "../helpers/helpers";
-import { adminCreationValidator } from "../validators/AdminValidator";
+import { AdminValidator } from "../validators/AdminValidator";
 import { User } from "../entities/User";
 import { Teacher } from "../entities/Teacher";
 import { Responses } from "../helpers/Responses";
 import { Tokens } from "../helpers/TokenTypes";
 import { invalidTokensCache } from "../helpers/InvalidTokensCache";
+import { AdminService } from "../services/adminService";
 
 const userRepository = appDataSource.getRepository(User);
 const adminRepository = appDataSource.getRepository(Admin);
@@ -94,29 +95,12 @@ const teacherLogin = async (req: Request, res: Response) => {
 
 // Admin signup - only for testing.
 const adminSignup = async (req: Request, res: Response) => {
-    const { error } = adminCreationValidator.validate(req.body);
+    const { error } = AdminValidator.creationWithUser.validate(req.body);
     if (error) {
         return Responses.ValidationBadRequest(res, error);
     }
     try {
-        const { username, firstName, lastName, password, role } = req.body;
-        const admin = await adminRepository.findOne({ where: { username } });
-
-        if (admin) {
-            return Responses.AlreadyExists(res);
-        }
-
-        const encryptedPassword = await encrypt.encryptpass(password);
-        const newAdmin = new Admin();
-
-        newAdmin.username = username;
-        newAdmin.firstName = firstName;
-        newAdmin.lastName = lastName;
-        newAdmin.password = encryptedPassword;
-        newAdmin.role = role;
-
-        await adminRepository.save(newAdmin);
-        return Responses.CreateSucess(res, newAdmin);
+        return await AdminService.createAdminWithUser(req.body);
     } catch (error) {
         console.error("Error during signup:", error);
         return Responses.InternalServerError(res);

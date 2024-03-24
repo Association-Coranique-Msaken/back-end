@@ -1,9 +1,9 @@
-import { type Request, type Response } from "express";
-import { encrypt } from "../helpers/helpers";
+import { NextFunction, type Request, type Response } from "express";
 import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
-import { adminCreationValidator } from "../validators/AdminValidator";
+import { AdminValidator } from "../validators/AdminValidator";
 import { Responses } from "../helpers/Responses";
+import { AdminService } from "../services/adminService";
 
 const adminRepository = appDataSource.getRepository(Admin);
 
@@ -16,23 +16,14 @@ export const getAdmin = async (req: Request, res: Response) => {
     }
 };
 
-export const createAdmin = async (req: Request, res: Response) => {
-    const { error } = adminCreationValidator.validate(req.body);
+export const createAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    const { error } = AdminValidator.creation.validate(req.body);
     if (error) {
         return Responses.ValidationBadRequest(res, error);
     }
     try {
-        // const admin = new Admin({ ...req.body });
-        const { username, firstName, lastName, password, role } = req.body;
-        const admin = new Admin();
-        admin.username = username;
-        admin.firstName = firstName;
-        admin.lastName = lastName;
-        admin.password = await encrypt.encryptpass(password);
-        admin.role = role;
-        await adminRepository.save(admin);
-        return Responses.CreateSucess(res, admin);
+        return await AdminService.createAdmin(req.body);
     } catch (error) {
-        return Responses.InternalServerError(res);
+        next(error);
     }
 };
