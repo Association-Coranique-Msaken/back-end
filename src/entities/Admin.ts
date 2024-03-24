@@ -1,4 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
+import { User } from "./User";
+
+export type AdminRole = "fullAccessAdmin" | "limitedAccess" | "readOnly";
+
 @Entity({ name: "admin" })
 export class Admin {
     @PrimaryGeneratedColumn("uuid")
@@ -6,12 +10,6 @@ export class Admin {
 
     @Column({ unique: true })
     username: string;
-
-    @Column()
-    firstName: string;
-
-    @Column()
-    lastName: string;
 
     @Column()
     password: string;
@@ -24,5 +22,9 @@ export class Admin {
         enum: ["fullAccessAdmin", "limitedAccess", "readOnly"],
         default: "fullAccessAdmin",
     })
-    role: "fullAccessAdmin" | "limitedAccess" | "readOnly";
+    role: AdminRole;
+
+    @OneToOne(() => User)
+    @JoinColumn()
+    user: User;
 }

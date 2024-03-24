@@ -10,6 +10,7 @@ import TeacherRouter from "./routes/TeacherRouter";
 import fs from "fs";
 import InvalidTokensRouter from "./routes/InvalidTokensRouter";
 import { ScheduleInvalidTokensWorker } from "./workers/InvalidTokensWorker";
+import { errorHandler } from "./middlewares/error.middleware";
 const swaggerUi = require("swagger-ui-express");
 
 // establish database connection
@@ -38,6 +39,8 @@ app.use("/api/v1/admin", AdminRouter);
 app.use("/api/v1/user", UserRouter);
 app.use("/api/v1/teacher", TeacherRouter);
 app.use("/api/v1/token", InvalidTokensRouter);
+
+app.use(errorHandler);
 
 // s chaima
 // Default route
