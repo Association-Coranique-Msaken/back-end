@@ -52,7 +52,8 @@ const adminSignup = async (req: Request, res: Response, next: NextFunction) => {
         return Responses.ValidationBadRequest(res, error);
     }
     try {
-        return await AdminService.createAdminWithUser(req.body);
+        const admin = await AdminService.createAdminWithUser(req.body);
+        return Responses.CreateSucess(res, admin);
     } catch (error) {
         next(error);
     }

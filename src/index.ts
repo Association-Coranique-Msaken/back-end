@@ -35,10 +35,10 @@ app.use(bodyParser.json());
 
 // Define API routes
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/admin", AdminRouter);
-app.use("/api/v1/user", UserRouter);
-app.use("/api/v1/teacher", TeacherRouter);
-app.use("/api/v1/token", InvalidTokensRouter);
+app.use("/api/v1/adminapi", AdminRouter);
+app.use("/api/v1/userapi", UserRouter);
+app.use("/api/v1/teacherapi", TeacherRouter);
+app.use("/api/v1/tokenapi", InvalidTokensRouter);
 
 app.use(errorHandler);
 

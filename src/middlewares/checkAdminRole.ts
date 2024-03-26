@@ -7,7 +7,7 @@ export const adminAuthorization = (roles: string[]) => async (req: Request, res:
         if (!adminToken) {
             throw new Error("Invalid token!");
         }
-        if (!(adminToken?.role in roles)) {
+        if (!roles.includes(adminToken?.role)) {
             return Responses.Forbidden(res);
         }
         next();

@@ -2,22 +2,22 @@ import Joi from "joi";
 
 export class UserValidator {
     private static schema = Joi.object({
-        firstName: Joi.string(),
-        lastName: Joi.string(),
-        fatherName: Joi.string(),
-        grandFatherName: Joi.string(),
-        motherFirstName: Joi.string(),
-        motherLastName: Joi.string(),
-        birthDate: Joi.date(),
-        birthPlace: Joi.string(),
-        phoneNumber: Joi.string(),
-        fatherPhoneNumber: Joi.string(),
-        motherPhoneNumber: Joi.string(),
-        gender: Joi.string(),
-        cin: Joi.string(),
-        hasNationalIDcard: Joi.boolean(),
-        hasGuaranteedBirthCertificate: Joi.boolean(),
-        hasPassport: Joi.boolean(),
+        firstName: Joi.string().optional(),
+        lastName: Joi.string().optional(),
+        fatherFirstName: Joi.string().optional(),
+        grandFatherFirstName: Joi.string().optional(),
+        motherFirstName: Joi.string().optional(),
+        motherLastName: Joi.string().optional(),
+        birthDate: Joi.date().optional(),
+        birthPlace: Joi.string().optional(),
+        phoneNumber: Joi.string().optional(),
+        fatherPhoneNumber: Joi.string().optional(),
+        motherPhoneNumber: Joi.string().optional(),
+        gender: Joi.string().optional(),
+        cin: Joi.string().optional(),
+        hasNationalIDcard: Joi.boolean().optional(),
+        hasGuaranteedBirthCertificate: Joi.boolean().optional(),
+        hasPassport: Joi.boolean().optional(),
     }).options({ stripUnknown: true });
 
     public static creation = this.schema.fork(["firstName", "lastName", "birthDate"], (s) => s.required());
@@ -25,7 +25,7 @@ export class UserValidator {
     public static update = this.schema.concat(
         Joi.object({
             id: Joi.string().required(),
-            identifier: Joi.string(),
+            identifier: Joi.string().optional(),
         })
     );
 }
