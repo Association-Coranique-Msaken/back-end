@@ -12,13 +12,13 @@ export class Teacher {
     @Column()
     password: string;
 
-    @Column()
+    @Column({ nullable: true, default: null })
     kotebName: string;
 
-    @Column()
+    @Column({ nullable: true, default: null })
     bonus: string;
 
-    @Column()
+    @Column({ nullable: true, default: null })
     teacherType: string; // TODO: change to enum
 
     @Column({ default: true })

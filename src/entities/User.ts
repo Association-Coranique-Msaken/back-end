@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, IsNull, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity({ name: "user" })
 export class User {
@@ -15,34 +15,37 @@ export class User {
     @Column()
     lastName: string;
 
-    @Column()
-    fatherName: string;
+    @Column({ nullable: true, default: null })
+    fatherFirstName: string;
 
-    @Column()
-    grandFatherName: string;
+    @Column({ nullable: true, default: null })
+    grandFatherFirstName: string;
 
-    @Column()
+    @Column({ nullable: true, default: null })
     motherFirstName: string;
 
-    @Column()
+    @Column({ nullable: true, default: null })
     motherLastName: string;
 
     @Column()
     birthDate: Date;
 
-    @Column()
+    @Column({ nullable: true, default: null })
     birthPlace: string;
 
-    @Column()
+    @Column({ nullable: true, default: null })
     phoneNumber: string;
 
-    @Column()
+    @Column({ nullable: true, default: null })
     fatherPhoneNumber: string;
 
-    @Column()
+    @Column({ nullable: true, default: null })
     motherPhoneNumber: string;
 
-    @Column()
+    @Column({
+        type: "enum",
+        enum: ["male", "female"],
+    })
     gender: string;
 
     @Column({ nullable: true, default: null })
