@@ -1,11 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
 import { User } from "./User";
+import { AbstractEntity } from "./AbstractEntity";
 
 @Entity({ name: "teacher" })
-export class Teacher {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-
+export class Teacher extends AbstractEntity {
     @Column()
     code: string;
 
@@ -23,9 +21,6 @@ export class Teacher {
 
     @Column({ default: true })
     isActive: boolean;
-
-    @Column({ default: false })
-    isDeleted: boolean;
 
     @OneToOne(() => User)
     @JoinColumn()

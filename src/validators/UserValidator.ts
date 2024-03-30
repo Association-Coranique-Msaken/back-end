@@ -13,7 +13,7 @@ export class UserValidator {
         phoneNumber: Joi.string().optional(),
         fatherPhoneNumber: Joi.string().optional(),
         motherPhoneNumber: Joi.string().optional(),
-        gender: Joi.string().optional(),
+        gender: Joi.string().valid("male", "female").optional(),
         cin: Joi.string().optional(),
         hasNationalIDcard: Joi.boolean().optional(),
         hasGuaranteedBirthCertificate: Joi.boolean().optional(),

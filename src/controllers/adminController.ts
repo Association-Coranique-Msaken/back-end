@@ -1,20 +1,16 @@
 import { NextFunction, type Request, type Response } from "express";
-import { appDataSource } from "../config/Database";
-import { Admin } from "../entities/Admin";
 import { AdminValidator } from "../validators/AdminValidator";
 import { Responses } from "../helpers/Responses";
 import { AdminService } from "../services/adminService";
 import { TeacherValidator } from "../validators/TeacherValidator";
 import { UserValidator } from "../validators/UserValidator";
 
-const adminRepository = appDataSource.getRepository(Admin);
-
-export const getAdmins = async (req: Request, res: Response) => {
+export const getAdmins = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const admins = await adminRepository.find();
-        return Responses.FetchSucess(res, admins);
+        const pagedAdmins = await AdminService.getAdmins(res.locals.paging);
+        return Responses.FetchPagedSucess(res, pagedAdmins);
     } catch (error) {
-        return Responses.InternalServerError(res);
+        next(error);
     }
 };
 
@@ -47,8 +43,8 @@ export const createTeacher = async (req: Request, res: Response, next: NextFunct
 
 export const getTeachers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const teachers = await AdminService.getTeachers();
-        return Responses.FetchSucess(res, teachers);
+        const pagedTeachers = await AdminService.getTeachers(res.locals.paging);
+        return Responses.FetchPagedSucess(res, pagedTeachers);
     } catch (error) {
         next(error);
     }
@@ -119,8 +115,8 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
 // TODO Add pagination
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const users = await AdminService.getUsers();
-        return Responses.FetchSucess(res, users);
+        const pagedUsers = await AdminService.getUsers(res.locals.paging);
+        return Responses.FetchPagedSucess(res, pagedUsers);
     } catch (error) {
         next(error);
     }

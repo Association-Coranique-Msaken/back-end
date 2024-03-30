@@ -1,13 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
 import { User } from "./User";
+import { AbstractEntity } from "./AbstractEntity";
 
 export type AdminRole = "fullAccessAdmin" | "limitedAccess" | "readOnly";
 
 @Entity({ name: "admin" })
-export class Admin {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-
+export class Admin extends AbstractEntity {
     @Column({ unique: true })
     username: string;
 
