@@ -1,10 +1,8 @@
 import { Column, CreateDateColumn, Entity, Index, IsNull, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AbstractEntity } from "./AbstractEntity";
 
 @Entity({ name: "user" })
-export class User {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-
+export class User extends AbstractEntity {
     @Index()
     @Column({ unique: true })
     identifier: string;
@@ -58,14 +56,5 @@ export class User {
     hasGuaranteedBirthCertificate: boolean;
 
     @Column({ default: false })
-    isDeleted: boolean;
-
-    @Column({ default: false })
     hasPassport: boolean;
-
-    @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
-    createdAt: Date;
-
-    @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
-    updatedAt: Date;
 }

@@ -35,19 +35,6 @@ export namespace AppErrors {
     }
 
     export class InternalError extends WithResponse {
-        constructor(errorOrMessage?: any) {
-            if (errorOrMessage instanceof QueryFailedError) {
-                switch (errorOrMessage.driverError.code) {
-                    case "ER_DUP_ENTRY":
-                        super("Item already Exists");
-                        break;
-                    default:
-                        super(errorOrMessage.driverError.code);
-                }
-            } else {
-                super(errorOrMessage);
-            }
-        }
         override respond(res: Response<any, Record<string, any>>): void {
             Responses.InternalServerError(res, this.message);
         }

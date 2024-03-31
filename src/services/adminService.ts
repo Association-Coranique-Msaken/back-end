@@ -8,12 +8,26 @@ import { AppErrors } from "../helpers/appErrors";
 import { encrypt } from "../helpers/helpers";
 import { Teacher } from "../entities/Teacher";
 import { CreateTeacherDto, UpdateTeacherDto } from "../DTOs/TeacherDto";
+import { PageOptionsDto } from "../DTOs/PageOptionsDto";
+import { PageMetaDto } from "../DTOs/PageMetaDto";
+import { PageDto } from "../DTOs/PageDto";
 
 const userRepository = appDataSource.getRepository(User);
 const adminRepository = appDataSource.getRepository(Admin);
 const teacherRepository = appDataSource.getRepository(Teacher);
 
 export class AdminService {
+    public static getAdmins = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<Admin>> => {
+        const query = appDataSource
+            .createQueryBuilder()
+            .select()
+            .from(Admin, "admin")
+            .where({ isDeleted: false })
+            .addPaging(pageOptionsDto);
+        const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
+        return new PageDto(entities, new PageMetaDto({ itemCount, pageOptionsDto }));
+    };
+
     public static createAdmin = async (adminData: CreateAdminDto): Promise<Admin> => {
         // Check if admin exists.
         if (await adminRepository.findOne({ where: { username: adminData.username } })) {
@@ -69,8 +83,15 @@ export class AdminService {
         }
     };
 
-    public static getTeachers = async () => {
-        return await teacherRepository.find({ where: { isDeleted: false } });
+    public static getTeachers = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<Teacher>> => {
+        const query = appDataSource
+            .createQueryBuilder()
+            .select()
+            .from(Teacher, "teacher")
+            .where({ isDeleted: false })
+            .addPaging(pageOptionsDto);
+        const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
+        return new PageDto(entities, new PageMetaDto({ itemCount, pageOptionsDto }));
     };
 
     public static getTeacherById = async (id: string): Promise<Teacher> => {
@@ -153,9 +174,15 @@ export class AdminService {
         }
     };
 
-    public static getUsers = async (): Promise<User[]> => {
-        const users = await userRepository.find({ where: { isDeleted: false } });
-        return users;
+    public static getUsers = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<User>> => {
+        const query = appDataSource
+            .createQueryBuilder()
+            .select()
+            .from(User, "user")
+            .where({ isDeleted: false })
+            .addPaging(pageOptionsDto);
+        const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
+        return new PageDto(entities, new PageMetaDto({ itemCount, pageOptionsDto }));
     };
 
     public static getUserById = async (id: string): Promise<User> => {

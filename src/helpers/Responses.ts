@@ -1,5 +1,7 @@
 import { type Response } from "express";
 import type Joi from "joi";
+import { PageOptionsDto } from "../DTOs/PageOptionsDto";
+import { PageDto } from "../DTOs/PageDto";
 
 export namespace Responses {
     export const OperationSuccess = (response: Response) => {
@@ -8,6 +10,15 @@ export namespace Responses {
 
     export const FetchSucess = (response: Response, data: any) => {
         return response.status(200).json({ succss: true, message: "Data successfully fetched.", data });
+    };
+
+    export const FetchPagedSucess = <T>(response: Response, pagingInfo: PageDto<T>) => {
+        return response.status(200).json({
+            succss: true,
+            message: "Data successfully fetched.",
+            data: pagingInfo.data,
+            meta: pagingInfo.meta,
+        });
     };
 
     export const LoginSuccess = (response: Response, data: any, accessToken: string, refreshToken: string) => {
