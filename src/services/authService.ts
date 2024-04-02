@@ -33,7 +33,10 @@ export class AuthService {
     };
 
     public static adminLogin = async (username: string, password: string) => {
-        const admin = await adminRepository.findOne({ where: { username } });
+        const admin = await adminRepository.findOne({
+            where: { username },
+            relations: ["user"],
+        });
         if (!admin) {
             throw new AppErrors.BadCredentials();
         }
@@ -52,7 +55,7 @@ export class AuthService {
     };
 
     public static teacherLogin = async (code: string, password: string) => {
-        const teacher = await teacherRepository.findOne({ where: { code } });
+        const teacher = await teacherRepository.findOne({ where: { code }, relations: ["user"] });
         const isPasswordValid = teacher?.password === password;
 
         if (!teacher || !isPasswordValid) {

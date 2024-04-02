@@ -1,14 +1,7 @@
-import { AdminRole } from "../entities/Admin";
-import { CreateUserDto } from "./UserDto";
+import { AdminValidator } from "../validators/AdminValidator";
+import * as Joi from "@hapi/joi";
+import "joi-extract-type";
 
-export interface CreateAdminDto {
-    username: string;
-    password: string;
-    role: AdminRole;
-    identifier: string;
-}
-export interface CreateAdminWithUserDto extends CreateUserDto {
-    username: string;
-    password: string;
-    role: AdminRole;
-}
+export type CreateAdminDto = Joi.extractType<typeof AdminValidator.creation>;
+export type UpdateAdminDto = Joi.extractType<typeof AdminValidator.update>;
+export type CreateAdminWithUserDto = Joi.extractType<typeof AdminValidator.creationWithUser>;

@@ -1,19 +1,6 @@
-import { AdminRole } from "../entities/Admin";
+import * as Joi from "@hapi/joi";
+import "joi-extract-type";
+import { TeacherValidator } from "../validators/TeacherValidator";
 
-export interface CreateTeacherDto {
-    code: string;
-    password: string;
-    kotebName?: AdminRole;
-    bonus?: string;
-    type?: string;
-    identifier: string;
-}
-export interface UpdateTeacherDto {
-    id: string;
-    code?: string;
-    password?: string;
-    kotebName?: AdminRole;
-    bonus?: string;
-    type?: string;
-    identifier?: string;
-}
+export type CreateTeacherDto = Joi.extractType<typeof TeacherValidator.creation>;
+export type UpdateTeacherDto = Joi.extractType<typeof TeacherValidator.update>;

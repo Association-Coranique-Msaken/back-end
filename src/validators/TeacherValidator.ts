@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { EntityValidator } from "./EntityValidator";
 
 export class TeacherValidator {
     private static schema = Joi.object({
@@ -8,14 +9,10 @@ export class TeacherValidator {
         bonus: Joi.string().optional(),
         type: Joi.string().optional(),
         identifier: Joi.string().optional(),
+        isActive: Joi.boolean().optional(),
     }).options({ stripUnknown: true });
 
     public static creation = this.schema.fork(["code", "password", "identifier"], (s) => s.required());
 
-    public static update = this.schema.concat(
-        Joi.object({
-            id: Joi.string().required(),
-            isActive: Joi.string(),
-        })
-    );
+    public static update = this.schema.concat(EntityValidator.schema);
 }
