@@ -1,7 +1,11 @@
 import express from "express";
-import { adminAuthentication } from "../middlewares/authMiddleware";
-import { readOnlyAdminAuthorization, fullAccessAdminAuthorization } from "../middlewares/checkAdminRole";
+import { teacherAuthentication } from "../middlewares/authMiddleware";
+import { getGroups, updateData } from "../controllers/teacherController";
+import { pagingMiddleware } from "../middlewares/pagingMiddleware";
 
 const teacherRouter = express.Router();
+
+teacherRouter.patch("teacher", teacherAuthentication, updateData);
+teacherRouter.post("/group/list", teacherAuthentication, pagingMiddleware, getGroups);
 
 export default teacherRouter;

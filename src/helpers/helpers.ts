@@ -1,8 +1,8 @@
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 import * as dotenv from "dotenv";
-import { PagingOrder } from "../DTOs/Order";
-import { PageOptionsDto } from "../DTOs/PageOptionsDto";
+import { PagingOrder } from "../DTOs/paging/Order";
+import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
 import { SelectQueryBuilder } from "typeorm";
 
 dotenv.config();
@@ -34,6 +34,31 @@ export function formatDate(date: Date): string {
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
+}
+
+export async function transformQueryOutput(entities: any[], aliases: string[]): Promise<Record<string, any>[][]> {
+    const editedEntities: Record<string, any>[][] = await Promise.all(
+        entities.map(async (entity) => {
+            const objects: Record<string, any>[] = Array.from({ length: aliases.length }, () => ({}));
+            await Promise.all(
+                Object.keys(entity).map(async (key) => {
+                    for (let i = 0; i < aliases.length; i++) {
+                        if (key.startsWith(aliases[i])) {
+                            const fieldName = key.replace(aliases[i], "");
+                            objects[i][fieldName] = entity[key];
+                        }
+                    }
+                })
+            );
+            return objects;
+        })
+    );
+    let entitiesLists: Record<string, any>[][] = await Promise.all(
+        aliases.map(async (alias, index) => {
+            return await Promise.all(editedEntities.map(async (e) => e[index]));
+        })
+    );
+    return entitiesLists;
 }
 
 export function parseAsNumber(
@@ -74,12 +99,13 @@ export function parseAsOrder(
 // Declare the Extension
 declare module "typeorm" {
     interface SelectQueryBuilder<Entity> {
-        addPaging(pageOptionsDto: PageOptionsDto): this;
+        addPaging(pageOptionsDto: PageOptionsDto, alias?: string): this;
     }
 }
 
-SelectQueryBuilder.prototype.addPaging = function (pageOptionsDto: PageOptionsDto) {
-    return this.orderBy(pageOptionsDto.orderBy, pageOptionsDto.order)
-        .skip(pageOptionsDto.skip)
-        .take(pageOptionsDto.pageSize);
+SelectQueryBuilder.prototype.addPaging = function (pageOptionsDto: PageOptionsDto, alias?: string) {
+    alias = alias ? `${alias}.` : "";
+    return this.orderBy(`${alias}${pageOptionsDto.orderBy}`, pageOptionsDto.order)
+        .offset((pageOptionsDto.pageNumber - 1) * pageOptionsDto.pageSize)
+        .limit(pageOptionsDto.pageSize);
 };

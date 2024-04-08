@@ -1,11 +1,9 @@
 import express from "express";
-import { adminAuthentication } from "../middlewares/authMiddleware";
-import {
-    adminAuthorization,
-    fullAccessAdminAuthorization,
-    readOnlyAdminAuthorization,
-} from "../middlewares/checkAdminRole";
+import { userAuthentication } from "../middlewares/authMiddleware";
+import { updateData } from "../controllers/userController";
 
 const userRouter = express.Router();
+
+userRouter.patch("teacher", userAuthentication, updateData);
 
 export default userRouter;

@@ -28,12 +28,14 @@ export class AdminToken implements EntityToken {
         this.tokenType = "Admin";
         this.id = admin.id;
         this.role = admin.role;
+        this.userId = admin.user.id;
     }
 
     tokenType: TokenType;
     expiration: Date;
     id: string;
     role: string;
+    userId: string;
 }
 
 export class TeacherToken implements EntityToken {
@@ -41,12 +43,14 @@ export class TeacherToken implements EntityToken {
         this.tokenType = "Teacher";
         this.id = teacher.id;
         this.isActive = teacher.isActive;
+        this.userId = teacher.user.id;
     }
 
     tokenType: TokenType;
     expiration: Date;
     id: string;
     isActive: boolean;
+    userId: string;
 }
 
 export namespace Tokens {

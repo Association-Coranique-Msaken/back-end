@@ -1,42 +1,47 @@
-import { DeepPartial } from "typeorm";
-import { CreateAdminDto, CreateAdminWithUserDto } from "../DTOs/AdminDto";
-import { UpdateUserDto } from "../DTOs/UserDto";
+import { CreateAdminDto, CreateAdminWithUserDto, UpdateAdminDto } from "../DTOs/AdminDto";
 import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
 import { User } from "../entities/User";
 import { AppErrors } from "../helpers/appErrors";
-import { encrypt } from "../helpers/helpers";
-import { Teacher } from "../entities/Teacher";
-import { CreateTeacherDto, UpdateTeacherDto } from "../DTOs/TeacherDto";
-import { PageOptionsDto } from "../DTOs/PageOptionsDto";
-import { PageMetaDto } from "../DTOs/PageMetaDto";
-import { PageDto } from "../DTOs/PageDto";
+import { encrypt, transformQueryOutput } from "../helpers/helpers";
+import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
+import { PageMetaDto } from "../DTOs/paging/PageMetaDto";
+import { PageDto } from "../DTOs/paging/PageDto";
+import { UserService } from "./userService";
+import { SelectQueryBuilder } from "typeorm";
 
 const userRepository = appDataSource.getRepository(User);
 const adminRepository = appDataSource.getRepository(Admin);
-const teacherRepository = appDataSource.getRepository(Teacher);
 
 export class AdminService {
-    public static getAdmins = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<Admin>> => {
+    public static getAdmins = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<Partial<Admin>>> => {
         const query = appDataSource
             .createQueryBuilder()
-            .select()
+            .select(["admin"])
             .from(Admin, "admin")
             .where({ isDeleted: false })
-            .addPaging(pageOptionsDto);
+            .leftJoinAndSelect("admin.user", "user")
+            .addPaging(pageOptionsDto, "admin");
+
         const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
-        return new PageDto(entities, new PageMetaDto({ itemCount, pageOptionsDto }));
+        const [admins, users] = await transformQueryOutput(entities, ["admin_", "user_"]);
+        for (let i = 0; i < admins.length; i++) {
+            admins[i].user = users[i];
+        }
+        return new PageDto(admins, new PageMetaDto({ itemCount, pageOptionsDto }));
     };
 
     public static createAdmin = async (adminData: CreateAdminDto): Promise<Admin> => {
         // Check if admin exists.
         if (await adminRepository.findOne({ where: { username: adminData.username } })) {
-            throw new AppErrors.AlreadyExists("username aleady exists");
+            throw new AppErrors.AlreadyExists(`username '${adminData.username}' aleady exists`);
         }
         const user = await userRepository.findOne({ where: { identifier: adminData.identifier } });
         if (user) {
-            if (await AdminService.getAdminWithUserId(user.id)) {
-                throw new AppErrors.AlreadyExists("Admin with the same user identifier already exists.");
+            if (await AdminService.adminWithUserIdExists(user.id)) {
+                throw new AppErrors.AlreadyExists(
+                    `Admin with the user identifier '${adminData.identifier}' already exists.`
+                );
             }
             const encryptedPassword = await encrypt.encryptpass(adminData.password);
             const newAdmin = new Admin();
@@ -51,17 +56,27 @@ export class AdminService {
         }
     };
 
-    private static async getAdminWithUserId(userId: string): Promise<Admin | null> {
-        return await appDataSource
-            .createQueryBuilder()
-            .select()
-            .from(Admin, "admin")
-            .where(`userId = '${userId}'`)
-            .getOne();
-    }
+    public static updateAdminById = async (updateData: UpdateAdminDto) => {
+        const admin = await adminRepository.findOne({
+            where: { id: updateData.id, isDeleted: false },
+        });
+        if (!admin) {
+            throw new AppErrors.NotFound(`Unable to find admin with id: ${updateData.id}`);
+        }
+        await adminRepository.update(admin.id, updateData);
+    };
+
+    private static fetchAdminWithUserIdQuery = (userId: string): SelectQueryBuilder<Admin> =>
+        appDataSource.createQueryBuilder().select().from(Admin, "admin").where(`userId = '${userId}'`);
+
+    private static adminWithUserIdExists = async (userId: string): Promise<boolean> =>
+        (await AdminService.fetchAdminWithUserIdQuery(userId).getCount()) > 0;
+
+    private static getAdminWithUserId = async (userId: string): Promise<Admin | null> =>
+        await AdminService.fetchAdminWithUserIdQuery(userId).getOne();
 
     public static createAdminWithUser = async (adminUserData: CreateAdminWithUserDto): Promise<Admin> => {
-        const user = await AdminService.createUser(adminUserData);
+        const user = await UserService.createUser(adminUserData);
         const adminData: CreateAdminDto = {
             username: adminUserData.username,
             password: adminUserData.password,
@@ -71,144 +86,25 @@ export class AdminService {
         return await AdminService.createAdmin(adminData);
     };
 
-    public static createTeacher = async (teacherData: CreateTeacherDto): Promise<Teacher> => {
-        const userId = teacherData.identifier;
-        const user = await userRepository.findOne({ where: { identifier: userId } });
-        if (user) {
-            return teacherRepository.create({ ...teacherData, user: user });
-        } else {
-            throw new AppErrors.NotFound(
-                `Unable to find corresponding user with identifier: ${teacherData.identifier}`
-            );
-        }
-    };
-
-    public static getTeachers = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<Teacher>> => {
-        const query = appDataSource
-            .createQueryBuilder()
-            .select()
-            .from(Teacher, "teacher")
-            .where({ isDeleted: false })
-            .addPaging(pageOptionsDto);
-        const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
-        return new PageDto(entities, new PageMetaDto({ itemCount, pageOptionsDto }));
-    };
-
-    public static getTeacherById = async (id: string): Promise<Teacher> => {
-        const teacher = await teacherRepository.findOne({
+    public static getAdminById = async (id: string): Promise<Admin> => {
+        const admin = await adminRepository.findOne({
             where: { id: id, isDeleted: false },
             relations: ["user"],
         });
-        if (!teacher) {
+        if (!admin) {
             throw new AppErrors.NotFound();
         }
-        return teacher;
+        return admin;
     };
 
-    public static updateTeacherById = async (updateData: UpdateTeacherDto) => {
-        const teacher = await teacherRepository.findOne({
-            where: { code: updateData.code, isDeleted: false },
-        });
-        if (!teacher) {
+    public static deleteAdminById = async (id: string) => {
+        const admin = await adminRepository.findOne({ where: { id: id } });
+        if (!admin) {
             throw new AppErrors.NotFound();
         }
-        // Update teacher fields
-        await teacherRepository.update(teacher.id, updateData);
-    };
-
-    public static deleteTeacherById = async (id: string) => {
-        const teacher = await teacherRepository.findOne({ where: { id: id } });
-        if (!teacher) {
-            throw new AppErrors.NotFound();
-        }
-        if (teacher.isDeleted) {
+        if (admin.isDeleted) {
             throw new AppErrors.AlreadyDeleted();
         }
-        await teacherRepository.update(id, { isDeleted: true });
-    };
-
-    public static getTeacherByCode = async (code: string): Promise<Teacher> => {
-        const teacher = await teacherRepository.findOne({ where: { code: code, isDeleted: false } });
-        if (!teacher) {
-            throw new AppErrors.NotFound();
-        }
-        return teacher;
-    };
-
-    public static createUser = async (user: any): Promise<User> => {
-        // TODO: Add lock here to prevent race condition in case of parallel requests.
-        const identifier = await AdminService.getNewUserIdentifier();
-        const data: DeepPartial<User> = { ...user, identifier };
-        const newUser = await userRepository.create(data);
-        await userRepository.save(newUser);
-        return newUser;
-    };
-
-    public static getNewUserIdentifier = async () => {
-        const queryResult = await appDataSource
-            .createQueryBuilder()
-            .select("MAX(`identifier`)", "id")
-            .from(User, "user")
-            .execute();
-        const perviousIdentifier = queryResult?.[0]?.id;
-        const currentYear = new Date().getFullYear();
-        return AdminService.computeNextIdentifier(currentYear, perviousIdentifier);
-    };
-
-    public static computeNextIdentifier = (currentYear: number, perviousIdentifier?: string): string => {
-        if (perviousIdentifier) {
-            const previousIdentifierYear = parseInt(perviousIdentifier.substring(0, 4));
-            if (currentYear > previousIdentifierYear) {
-                return `${currentYear}001`;
-            } else {
-                const previousIncrementalOrder = parseInt(perviousIdentifier.substring(4, 8)) ?? 1;
-                const nextIncrementalOrder = previousIncrementalOrder + 1;
-                if (nextIncrementalOrder >= 1000) {
-                    return `${previousIdentifierYear + 1}000`;
-                } else {
-                    return `${previousIdentifierYear}${nextIncrementalOrder.toString().padStart(3, "0")}`;
-                }
-            }
-        } else {
-            return `${currentYear}001`;
-        }
-    };
-
-    public static getUsers = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<User>> => {
-        const query = appDataSource
-            .createQueryBuilder()
-            .select()
-            .from(User, "user")
-            .where({ isDeleted: false })
-            .addPaging(pageOptionsDto);
-        const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
-        return new PageDto(entities, new PageMetaDto({ itemCount, pageOptionsDto }));
-    };
-
-    public static getUserById = async (id: string): Promise<User> => {
-        const user = await userRepository.findOne({ where: { id: id, isDeleted: false } });
-        if (!user) {
-            throw new AppErrors.NotFound();
-        }
-        return user;
-    };
-
-    public static updateUser = async (updateData: UpdateUserDto) => {
-        const user = await userRepository.findOne({ where: { id: updateData.id, isDeleted: false } });
-        if (!user) {
-            throw new AppErrors.NotFound();
-        }
-        await userRepository.update(updateData.id, updateData);
-    };
-
-    public static deleteUser = async (id: string) => {
-        const user = await userRepository.findOne({ where: { id: id } });
-        if (!user) {
-            return new AppErrors.NotFound();
-        }
-        if (user.isDeleted) {
-            return new AppErrors.AlreadyDeleted();
-        }
-        await userRepository.update(id, { isDeleted: true });
+        await adminRepository.update(id, { isDeleted: true });
     };
 }
