@@ -19,7 +19,7 @@ export class TeacherService {
         if (user) {
             console.log("successs");
             const teacher: Teacher = teacherRepository.create({ ...teacherData, user: user } as DeepPartial<Teacher>);
-            teacherRepository.save(teacher);
+            await teacherRepository.save(teacher);
             return teacher;
         } else {
             throw new AppErrors.NotFound(

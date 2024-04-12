@@ -10,7 +10,7 @@ export const updateData = async (req: Request, res: Response, next: NextFunction
     }
     try {
         const id = res.locals.decodedToken.id;
-        await UserService.updateUser({ ...req.body, id });
+        await UserService.updateUserById({ ...req.body, id });
         return Responses.UpdateSucess(res);
     } catch (error) {
         next(error);

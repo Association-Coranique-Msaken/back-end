@@ -1,5 +1,4 @@
 import Joi from "joi";
-import { EntityValidator } from "./EntityValidator";
 
 export class TeacherValidator {
     private static schema = Joi.object({
@@ -14,5 +13,5 @@ export class TeacherValidator {
 
     public static creation = this.schema.fork(["code", "password", "identifier"], (s) => s.required());
 
-    public static update = this.schema.concat(EntityValidator.schema);
+    public static update = this.schema;
 }
