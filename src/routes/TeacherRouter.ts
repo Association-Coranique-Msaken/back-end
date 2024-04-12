@@ -6,6 +6,6 @@ import { pagingMiddleware } from "../middlewares/pagingMiddleware";
 const teacherRouter = express.Router();
 
 teacherRouter.patch("teacher", teacherAuthentication, updateData);
-teacherRouter.post("/group/list", teacherAuthentication, pagingMiddleware, getGroups);
+teacherRouter.get("/group/list", teacherAuthentication, pagingMiddleware, getGroups);
 
 export default teacherRouter;

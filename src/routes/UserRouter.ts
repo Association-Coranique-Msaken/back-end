@@ -4,6 +4,6 @@ import { updateData } from "../controllers/userController";
 
 const userRouter = express.Router();
 
-userRouter.patch("teacher", userAuthentication, updateData);
+userRouter.patch("user", userAuthentication, updateData);
 
 export default userRouter;

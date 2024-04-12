@@ -9,9 +9,11 @@ import { PageMetaDto } from "../DTOs/paging/PageMetaDto";
 import { PageDto } from "../DTOs/paging/PageDto";
 import { UserService } from "./userService";
 import { SelectQueryBuilder } from "typeorm";
+import { Group } from "../entities/Group";
 
 const userRepository = appDataSource.getRepository(User);
 const adminRepository = appDataSource.getRepository(Admin);
+const groupRepository = appDataSource.getRepository(Group);
 
 export class AdminService {
     public static getAdmins = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<Partial<Admin>>> => {
@@ -106,5 +108,16 @@ export class AdminService {
             throw new AppErrors.AlreadyDeleted();
         }
         await adminRepository.update(id, { isDeleted: true });
+    };
+
+    public static enrollUserToSummerGroup = async (userId: string, grouId: string) => {
+        const user = await userRepository.findOne({ where: { id: userId, isDeleted: false } });
+        if (!user) {
+            throw new AppErrors.NotFound(`Unable to find user with id : '${userId}'.`);
+        }
+        const group = await groupRepository.findOne({ where: { id: grouId, isDeleted: false } });
+        if (!group) {
+            throw new AppErrors.NotFound(`Unable to find group with id : '${userId}'.`);
+        }
     };
 }

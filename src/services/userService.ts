@@ -68,7 +68,7 @@ export class UserService {
         return user;
     };
 
-    public static updateUser = async (updateData: UpdateUserDto) => {
+    public static updateUserById = async (updateData: UpdateUserDto) => {
         const user = await userRepository.findOne({ where: { id: updateData.id, isDeleted: false } });
         if (!user) {
             throw new AppErrors.NotFound();
