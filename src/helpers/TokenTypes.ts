@@ -4,6 +4,10 @@ import { type User } from "../entities/User";
 import { encrypt } from "./helpers";
 import * as jwt from "jsonwebtoken";
 
+export const TOKEN_TYPE_USER = "User";
+export const TOKEN_TYPE_TEACHER = "Teacher";
+export const TOKEN_TYPE_ADMIN = "Admin";
+
 export type TokenType = "User" | "Teacher" | "Admin";
 
 export interface EntityToken {
@@ -63,11 +67,19 @@ export namespace Tokens {
     export const GenerateTeacherRefreshToken = (teacher: Teacher) =>
         encrypt.generateRefreshToken(new TeacherToken(teacher));
 
-    export const verifyToken = (token?: string) => {
+    export const DecodeAccessTokenAs = <T extends EntityToken>(typeName: string, token?: string) =>
+        DecodeAs<T>(process.env.JWT_TOKEN_SECRET!, typeName, token);
+    export const DecodeRefreshTokenAs = <T extends EntityToken>(typeName: string, token?: string) =>
+        DecodeAs<T>(process.env.JWT_REFRESH_TOKEN_SECRET!, typeName, token);
+
+    export const verifyAccessToken = (token?: string) => verifyToken(process.env.JWT_TOKEN_SECRET!, token);
+    export const verifyRefreshToken = (token?: string) => verifyToken(process.env.JWT_REFRESH_TOKEN_SECRET!, token);
+
+    const verifyToken = (key: jwt.Secret, token?: string) => {
         if (!token) {
             throw new jwt.JsonWebTokenError("Invalid token.");
         }
-        const decode = jwt.verify(token, process.env.JWT_TOKEN_SECRET!) as jwt.JwtPayload;
+        const decode = jwt.verify(token, key) as jwt.JwtPayload;
         if (!decode?.value?.tokenType || !decode.value.id) {
             throw new jwt.JsonWebTokenError("Invalid token.");
         }
@@ -77,35 +89,11 @@ export namespace Tokens {
         return decode.value;
     };
 
-    export const DecodeAs = <T extends EntityToken>(typeName: string, token?: string) => {
-        const decode = verifyToken(token);
+    const DecodeAs = <T extends EntityToken>(key: jwt.Secret, typeName: string, token?: string) => {
+        const decode = verifyToken(key, token);
         if (decode.tokenType !== typeName) {
             throw new jwt.JsonWebTokenError("Not a user token.");
         }
         return decode as T;
-    };
-
-    export const DecodeUserToken = (token?: string) => {
-        const decode = verifyToken(token);
-        if (decode.tokenType !== "User") {
-            throw new jwt.JsonWebTokenError("Not a user token.");
-        }
-        return decode as UserToken;
-    };
-
-    export const DecodeAdminToken = (token?: string) => {
-        const decode = verifyToken(token);
-        if (decode.tokenType !== "Admin") {
-            throw new jwt.JsonWebTokenError("Not an admin token.");
-        }
-        return decode as AdminToken;
-    };
-
-    export const DecodeTeacherToken = (token?: string) => {
-        const decode = verifyToken(token);
-        if (decode.tokenType !== "Teacher") {
-            throw new jwt.JsonWebTokenError("Not a teacher token.");
-        }
-        return decode as TeacherToken;
     };
 }
