@@ -59,6 +59,7 @@ const adminSignup = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
+// FIXME: we need to invalidate refresh token as well?
 const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const decodedToken = res.locals.decodedToken;
@@ -71,6 +72,17 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-// Refresh Access Token
-// TODO: implement refresh token
-export default { adminLogin, adminSignup, userLogin, teacherLogin, logout };
+const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+    const refresh_token = (req.body["refresh_token"] as string) || "";
+    if (!refresh_token) {
+        return Responses.Unauthorized(res, "Invalid refresh token.");
+    }
+    try {
+        const { entity, accessToken, refreshToken } = await AuthService.refreshToken(refresh_token);
+        return Responses.RefreshTokenSuccess(res, entity, accessToken, refreshToken);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export default { adminLogin, adminSignup, userLogin, teacherLogin, logout, refreshToken };

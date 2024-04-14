@@ -1,6 +1,5 @@
 import { type Response } from "express";
 import type Joi from "joi";
-import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
 import { PageDto } from "../DTOs/paging/PageDto";
 
 export namespace Responses {
@@ -45,6 +44,16 @@ export namespace Responses {
 
     export const CreateSucess = (response: Response, data: any) => {
         return response.status(201).json({ success: true, message: "Data created.", data });
+    };
+
+    export const RefreshTokenSuccess = (response: Response, data: any, accessToken: string, refreshToken: string) => {
+        return response.status(200).json({
+            succss: true,
+            message: "Token refreshed successfully.",
+            data,
+            accessToken,
+            refreshToken,
+        });
     };
 
     export const BadRequest = (response: Response, info: string = "Bad Request.") => {
