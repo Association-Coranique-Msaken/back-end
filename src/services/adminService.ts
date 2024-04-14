@@ -9,20 +9,25 @@ import { PageDto } from "../DTOs/paging/PageDto";
 import { UserService } from "./userService";
 import { SelectQueryBuilder } from "typeorm";
 import { Group } from "../entities/Group";
+import { FilterQuery } from "../middlewares/filteringMiddleware";
 
 const userRepository = appDataSource.getRepository(User);
 const adminRepository = appDataSource.getRepository(Admin);
 const groupRepository = appDataSource.getRepository(Group);
 
 export class AdminService {
-    public static getAdmins = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<Partial<Admin>>> => {
+    public static getAdmins = async (
+        pageOptionsDto: PageOptionsDto,
+        filters: FilterQuery
+    ): Promise<PageDto<Partial<Admin>>> => {
         const query = appDataSource
             .createQueryBuilder()
             .select(["admin"])
             .from(Admin, "admin")
             .where({ isDeleted: false })
             .leftJoinAndSelect("admin.user", "user")
-            .addPaging(pageOptionsDto, "admin");
+            .addPaging(pageOptionsDto, "admin")
+            .where(filters.queryString, { ...filters.placeholders });
 
         const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
         const [admins, users] = await transformQueryOutput(entities, ["admin_", "user_"]);

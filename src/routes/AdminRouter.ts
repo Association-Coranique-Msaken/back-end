@@ -26,6 +26,12 @@ import {
 import { adminAuthentication } from "../middlewares/authMiddleware";
 import { readOnlyAdminAuthorization, fullAccessAdminAuthorization } from "../middlewares/checkAdminRole";
 import { pagingMiddleware } from "../middlewares/pagingMiddleware";
+import {
+    adminFilterMiddleware,
+    groupFilterMiddleware,
+    teacherFilterMiddleware,
+    userFilterMiddleware,
+} from "../middlewares/filteringMiddleware";
 
 const adminRouter = express.Router();
 

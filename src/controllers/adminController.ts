@@ -23,7 +23,7 @@ const enrollUserToGroupMeta = generateDtoMetaData("EnrollUserToGroupDto", GroupU
 
 export const getAdmins = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const pagedAdmins = await AdminService.getAdmins(res.locals.paging);
+        const pagedAdmins = await AdminService.getAdmins(res.locals.paging, res.locals.filter);
         return Responses.FetchPagedSucess(res, pagedAdmins);
     } catch (error) {
         next(error);
@@ -90,7 +90,7 @@ export const createTeacher = async (req: Request, res: Response, next: NextFunct
 
 export const getTeachers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const pagedTeachers = await TeacherService.getTeachers(res.locals.paging);
+        const pagedTeachers = await TeacherService.getTeachers(res.locals.paging, res.locals.filter);
         return Responses.FetchPagedSucess(res, pagedTeachers);
     } catch (error) {
         next(error);
@@ -158,7 +158,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const pagedUsers = await UserService.getUsers(res.locals.paging);
+        const pagedUsers = await UserService.getUsers(res.locals.paging, res.locals.filter);
         return Responses.FetchPagedSucess(res, pagedUsers);
     } catch (error) {
         next(error);
@@ -216,7 +216,7 @@ export const createGroup = async (req: Request, res: Response, next: NextFunctio
 
 export const getGroups = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const pagedGroups = await GroupService.getGroups(res.locals.paging);
+        const pagedGroups = await GroupService.getGroups(res.locals.paging, res.locals.filter);
         return Responses.FetchPagedSucess(res, pagedGroups);
     } catch (error) {
         next(error);
