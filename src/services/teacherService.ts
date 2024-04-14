@@ -7,6 +7,7 @@ import { User } from "../entities/User";
 import { AppErrors } from "../helpers/appErrors";
 import { transformQueryOutput } from "../helpers/helpers";
 import { DeepPartial } from "typeorm";
+import { FilterQuery } from "../middlewares/filteringMiddleware";
 
 const userRepository = appDataSource.getRepository(User);
 const teacherRepository = appDataSource.getRepository(Teacher);
@@ -52,14 +53,18 @@ export class TeacherService {
         }
     };
 
-    public static getTeachers = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<Partial<Teacher>>> => {
+    public static getTeachers = async (
+        pageOptionsDto: PageOptionsDto,
+        filters: FilterQuery
+    ): Promise<PageDto<Partial<Teacher>>> => {
         const query = appDataSource
             .createQueryBuilder()
             .select(["teacher"])
             .from(Teacher, "teacher")
             .where({ isDeleted: false })
             .leftJoinAndSelect("teacher.user", "user")
-            .addPaging(pageOptionsDto, "teacher");
+            .addPaging(pageOptionsDto, "teacher")
+            .where(filters.queryString, { ...filters.placeholders });
 
         const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
         const [teachers, users] = await transformQueryOutput(entities, ["teacher_", "user_"]);
