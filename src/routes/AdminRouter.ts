@@ -8,12 +8,13 @@ import {
     deleteGroupById,
     deleteTeacherById,
     deleteUserById,
+    enrollUserToGroup,
     getAdminById,
     getAdmins,
     getGroupById,
+    getGroupUsers,
     getGroups,
     getTeacherById,
-    getTeacherGroups,
     getTeachers,
     getUserById,
     getUsers,
@@ -47,9 +48,17 @@ adminRouter.patch("/user/:id", adminAuthentication, fullAccessAdminAuthorization
 adminRouter.delete("/user/:id", adminAuthentication, fullAccessAdminAuthorization, deleteUserById);
 
 adminRouter.post("/group/", adminAuthentication, fullAccessAdminAuthorization, createGroup);
-adminRouter.get("/group/list", adminAuthentication, fullAccessAdminAuthorization, pagingMiddleware, getGroups);
+adminRouter.get("/group/list", adminAuthentication, readOnlyAdminAuthorization, pagingMiddleware, getGroups);
 adminRouter.get("/group/:id", adminAuthentication, readOnlyAdminAuthorization, getGroupById);
 adminRouter.patch("/group/:id", adminAuthentication, fullAccessAdminAuthorization, updateGroup);
 adminRouter.delete("/group/:id", adminAuthentication, fullAccessAdminAuthorization, deleteGroupById);
+adminRouter.get(
+    "/group/user/list/:id",
+    adminAuthentication,
+    readOnlyAdminAuthorization,
+    pagingMiddleware,
+    getGroupUsers
+);
+adminRouter.post("/group/user/enroll/", adminAuthentication, fullAccessAdminAuthorization, enrollUserToGroup);
 
 export default adminRouter;
