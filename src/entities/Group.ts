@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToMany, JoinTable } from "typeorm";
+import { Entity, Column, OneToOne, JoinColumn, OneToMany } from "typeorm";
 import { Teacher } from "./Teacher";
 import { AbstractEntity } from "./AbstractEntity";
 import { User } from "./User";
+import { GroupUser } from "./GroupUser";
 
 export type CourseType = "practical" | "theoretical" | "summerGroup";
 
@@ -29,19 +30,18 @@ export class Group extends AbstractEntity {
     courseType: CourseType;
 
     @Column()
-    numStudents: number;
+    numStudents: number; // TODO: make this a calculated field.
 
     @Column({ nullable: true, default: null })
     maxStudents?: number;
 
     @Column({ nullable: true, default: null })
-    inactiveStudents?: number;
+    inactiveStudents?: number; // TODO: make this a calculated field.
 
     @OneToOne(() => Teacher)
     @JoinColumn()
     teacher: Teacher;
 
-    @ManyToMany(() => User, (user: User) => user.groups)
-    @JoinTable({ name: "groupUsers" })
-    users: User[];
+    @OneToMany((type) => GroupUser, (groupUsers) => groupUsers.group)
+    users: GroupUser[];
 }
