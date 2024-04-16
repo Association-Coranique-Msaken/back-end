@@ -288,13 +288,37 @@ export const deleteGroupById = async (req: Request, res: Response, next: NextFun
     }
 };
 
-// TODO: this should be implemented as filter for getGroups
-export const getTeacherGroups = async (req: Request, res: Response, next: NextFunction) => {
+// TODO: this should be implemented as filter for getGroups (filter-by: teacherId)
+const getTeacherGroups = async (req: Request, res: Response, next: NextFunction) => {
     if (typeof req.query.teacherId !== "string") {
         return Responses.BadRequest(res, "teacherId is required in the query params.");
     }
     try {
-        await GroupService.getTeacherGroups(req.query.teacherId, res.locals.paging);
+        const entities = await GroupService.getTeacherGroups(req.query.teacherId, res.locals.paging);
+        return Responses.FetchSucess(res, entities);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getGroupUsers = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.params.id) {
+        return Responses.BadRequest(res, "id is required.");
+    }
+    try {
+        const users = await GroupService.getGroupUsers(req.params.id, res.locals.paging);
+        return Responses.FetchSucess(res, users);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const enrollUserToGroup = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.body.userId && !req.body.groupId) {
+        return Responses.BadRequest(res, "userId and groupId are required.");
+    }
+    try {
+        await GroupService.enrollUserToGroup(req.body.userId, req.body.groupId);
         return Responses.UpdateSucess(res);
     } catch (error) {
         next(error);
