@@ -4,6 +4,7 @@ import { appDataSource } from "../config/Database";
 import { type Repository } from "typeorm";
 import * as jwt from "jsonwebtoken";
 import ms from "ms";
+import { Md5 } from "ts-md5";
 
 const options = {
     // number of items at max is 500
@@ -17,7 +18,6 @@ export class InvalidTokensCache {
     private readonly cache = new LRUCache(options);
     // TODO: add valid tokens cache for optimization
     private readonly repository: Repository<InvalidTokens>;
-    private readonly TOKEN_LEN = 40;
 
     constructor() {
         this.repository = appDataSource.getRepository(InvalidTokens);
@@ -26,7 +26,7 @@ export class InvalidTokensCache {
     public readonly invalidate = async (token: string, elementId: string, expiration: Date) => {
         try {
             await this.repository.insert({
-                token: token.substring(0, this.TOKEN_LEN),
+                token: Md5.hashStr(token),
                 elementId,
                 expiration,
             });
@@ -47,7 +47,7 @@ export class InvalidTokensCache {
     };
 
     public readonly isValid = async (token: string, elementId: string, expiration: Date): Promise<boolean> => {
-        const cacheKey = token.substring(0, this.TOKEN_LEN) + elementId;
+        const cacheKey = Md5.hashStr(token) + elementId;
         const wildcardKey = elementId + "**";
         const cachedWildcardValue = this.cache.get(wildcardKey);
 
@@ -84,7 +84,7 @@ export class InvalidTokensCache {
     private readonly isTokenInDB = async (token: string, elementId: string) => {
         return await this.repository.findOne({
             where: {
-                token: token.substring(0, this.TOKEN_LEN),
+                token: Md5.hashStr(token),
                 elementId,
             },
         });
