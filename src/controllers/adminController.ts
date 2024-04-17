@@ -6,10 +6,9 @@ import { TeacherValidator } from "../validators/TeacherValidator";
 import { UserValidator } from "../validators/UserValidator";
 import { UserService } from "../services/userService";
 import { TeacherService } from "../services/teacherService";
-import { SummerGroupService } from "../services/summerGroupService";
-import { SummerGroupValidator } from "../validators/SummerGroupValidator";
-import { FormativeYearGroupService } from "../services/FormativeYearGroupService";
-import { FormativeYearGroupValidator } from "../validators/FormativeYearGroupValidator";
+import { GroupService } from "../services/GroupService";
+import { FormativeYearGroupValidator, SummerGroupValidator } from "../validators/GroupValidator";
+import Joi from "joi";
 
 export const getAdmins = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -34,12 +33,15 @@ export const createAdmin = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const updateAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.params.id) {
+        return Responses.BadRequest(res, "id is required.");
+    }
     const { error } = AdminValidator.update.validate(req.body);
     if (error) {
         return Responses.ValidationBadRequest(res, error);
     }
     try {
-        await AdminService.updateAdminById(req.body);
+        await AdminService.updateAdminById({ ...req.body, id: req.params.id });
         return Responses.UpdateSucess(res);
     } catch (error) {
         next(error);
@@ -49,7 +51,7 @@ export const updateAdmin = async (req: Request, res: Response, next: NextFunctio
 export const getAdminById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.params.id) {
-            return Responses.BadRequest(res);
+            return Responses.BadRequest(res, "id is required.");
         }
         const teacher = await AdminService.getAdminById(req.params.id);
         return Responses.FetchSucess(res, teacher);
@@ -61,7 +63,7 @@ export const getAdminById = async (req: Request, res: Response, next: NextFuncti
 export const deleteAdminById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.params.id) {
-            return Responses.BadRequest(res);
+            return Responses.BadRequest(res, "id is required.");
         }
         await AdminService.deleteAdminById(req.params.id);
         return Responses.DeleteSuccess(res);
@@ -96,7 +98,7 @@ export const getTeachers = async (req: Request, res: Response, next: NextFunctio
 export const getTeacherById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.params.id) {
-            return Responses.BadRequest(res);
+            return Responses.BadRequest(res, "id is required.");
         }
         const teacher = await TeacherService.getTeacherById(req.params.id);
         return Responses.FetchSucess(res, teacher);
@@ -106,12 +108,15 @@ export const getTeacherById = async (req: Request, res: Response, next: NextFunc
 };
 
 export const updateTeacher = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.params.id) {
+        return Responses.BadRequest(res, "id is required.");
+    }
     const { error } = TeacherValidator.update.validate(req.body);
     if (error) {
         return Responses.ValidationBadRequest(res, error);
     }
     try {
-        await TeacherService.updateTeacherById(req.body);
+        await TeacherService.updateTeacherById({ ...req.body, id: req.params.id });
         return Responses.UpdateSucess(res);
     } catch (error) {
         next(error);
@@ -121,7 +126,7 @@ export const updateTeacher = async (req: Request, res: Response, next: NextFunct
 export const deleteTeacherById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.params.id) {
-            return Responses.BadRequest(res);
+            return Responses.BadRequest(res, "id is required.");
         }
         await TeacherService.deleteTeacherById(req.params.id);
         return Responses.DeleteSuccess(res);
@@ -166,7 +171,7 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
 
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params.id) {
-        return Responses.BadRequest(res);
+        return Responses.BadRequest(res, "id is required.");
     }
     try {
         const user = await UserService.getUserById(req.params.id);
@@ -177,12 +182,15 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.params.id) {
+        return Responses.BadRequest(res, "id is required.");
+    }
     const { error } = UserValidator.update.validate(req.body);
     if (error) {
         return Responses.ValidationBadRequest(res, error);
     }
     try {
-        await UserService.updateUser(req.body);
+        await UserService.updateUserById({ ...req.body, id: req.params.id });
         return Responses.UpdateSucess(res);
     } catch (error) {
         next(error);
@@ -191,7 +199,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
 
 export const deleteUserById = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params.id) {
-        return Responses.BadRequest(res);
+        return Responses.BadRequest(res, "id is required.");
     }
     try {
         await UserService.deleteUser(req.params.id);
@@ -203,144 +211,114 @@ export const deleteUserById = async (req: Request, res: Response, next: NextFunc
 
 // groups
 
-export const createSummerGroup = async (req: Request, res: Response, next: NextFunction) => {
-    const { error } = SummerGroupValidator.creation.validate(req.body);
-    if (error) {
-        return Responses.ValidationBadRequest(res, error);
+export const createGroup = async (req: Request, res: Response, next: NextFunction) => {
+    let err: Joi.ValidationError | undefined;
+    if (req.body.courseType === "summerGroup") {
+        const { error } = SummerGroupValidator.creation.validate(req.body);
+        err = error;
+    } else {
+        const { error } = FormativeYearGroupValidator.creation.validate(req.body);
+        err = error;
+    }
+    if (err) {
+        return Responses.ValidationBadRequest(res, err);
     }
     try {
-        const admin = await SummerGroupService.createGroup(req.body);
+        const admin = await GroupService.createGroup(req.body);
         return Responses.CreateSucess(res, admin);
     } catch (error) {
         next(error);
     }
 };
 
-export const getSummerGroups = async (req: Request, res: Response, next: NextFunction) => {
+export const getGroups = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const pagedGroups = await SummerGroupService.getGroups(res.locals.paging);
+        const pagedGroups = await GroupService.getGroups(res.locals.paging);
         return Responses.FetchPagedSucess(res, pagedGroups);
     } catch (error) {
         next(error);
     }
 };
 
-export const getSummerGroupById = async (req: Request, res: Response, next: NextFunction) => {
+export const getGroupById = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params.id) {
-        return Responses.BadRequest(res);
+        return Responses.BadRequest(res, "id is required.");
     }
     try {
-        const group = await SummerGroupService.getGroupById(req.params.id);
+        const group = await GroupService.getGroupById(req.params.id);
         return Responses.FetchSucess(res, group);
     } catch (error) {
         next(error);
     }
 };
 
-export const updateSummerGroupById = async (req: Request, res: Response, next: NextFunction) => {
-    const { error } = SummerGroupValidator.update.validate(req.body);
-    if (error) {
-        return Responses.ValidationBadRequest(res, error);
+export const updateGroup = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.params.id) {
+        return Responses.BadRequest(res, "id is required.");
+    }
+    let err: Joi.ValidationError | undefined;
+    if (req.body.courseType === "summerGroup") {
+        const { error, value } = SummerGroupValidator.update.validate(req.body);
+        err = error;
+        req.body = value;
+    } else {
+        const { error } = FormativeYearGroupValidator.update.validate(req.body);
+        err = error;
+    }
+    if (err) {
+        return Responses.ValidationBadRequest(res, err);
     }
     try {
-        await SummerGroupService.updateGroupById(req.body);
+        await GroupService.updateGroupById({ ...req.body, id: req.params.id });
         return Responses.UpdateSucess(res);
     } catch (error) {
         next(error);
     }
 };
 
-export const deleteSummerGroupById = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteGroupById = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params.id) {
-        return Responses.BadRequest(res);
+        return Responses.BadRequest(res, "id is required.");
     }
     try {
-        await SummerGroupService.deleteGroupById(req.params.id);
+        await GroupService.deleteGroupById(req.params.id);
         return Responses.DeleteSuccess(res);
     } catch (error) {
         next(error);
     }
 };
 
-export const getTeacherSummerGroups = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.params.teacherId) {
-        return Responses.BadRequest(res);
+// TODO: this should be implemented as filter for getGroups (filter-by: teacherId)
+const getTeacherGroups = async (req: Request, res: Response, next: NextFunction) => {
+    if (typeof req.query.teacherId !== "string") {
+        return Responses.BadRequest(res, "teacherId is required in the query params.");
     }
     try {
-        await SummerGroupService.getTeacherGroups(req.params.teacherId, res.locals.paging);
-        return Responses.UpdateSucess(res);
+        const entities = await GroupService.getTeacherGroups(req.query.teacherId, res.locals.paging);
+        return Responses.FetchSucess(res, entities);
     } catch (error) {
         next(error);
     }
 };
 
-// formative year groups
-
-export const createFormativeYearGroup = async (req: Request, res: Response, next: NextFunction) => {
-    const { error } = FormativeYearGroupValidator.creation.validate(req.body);
-    if (error) {
-        return Responses.ValidationBadRequest(res, error);
-    }
-    try {
-        const admin = await FormativeYearGroupService.createGroup(req.body);
-        return Responses.CreateSucess(res, admin);
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const getFormativeYearGroups = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const pagedGroups = await FormativeYearGroupService.getGroups(res.locals.paging);
-        return Responses.FetchPagedSucess(res, pagedGroups);
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const getFormativeYearGroupById = async (req: Request, res: Response, next: NextFunction) => {
+export const getGroupUsers = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params.id) {
-        return Responses.BadRequest(res);
+        return Responses.BadRequest(res, "id is required.");
     }
     try {
-        const group = await FormativeYearGroupService.getGroupById(req.params.id);
-        return Responses.FetchSucess(res, group);
+        const users = await GroupService.getGroupUsers(req.params.id, res.locals.paging);
+        return Responses.FetchSucess(res, users);
     } catch (error) {
         next(error);
     }
 };
 
-export const updateFormativeYearGroupById = async (req: Request, res: Response, next: NextFunction) => {
-    const { error } = FormativeYearGroupValidator.update.validate(req.body);
-    if (error) {
-        return Responses.ValidationBadRequest(res, error);
+export const enrollUserToGroup = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.body.userId && !req.body.groupId) {
+        return Responses.BadRequest(res, "userId and groupId are required.");
     }
     try {
-        await FormativeYearGroupService.updateGroupById(req.body);
-        return Responses.UpdateSucess(res);
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const deleteFormativeYearGroupById = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.params.id) {
-        return Responses.BadRequest(res);
-    }
-    try {
-        await FormativeYearGroupService.deleteGroupById(req.params.id);
-        return Responses.DeleteSuccess(res);
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const getTeacherFormativeYearGroups = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.params.teacherId) {
-        return Responses.BadRequest(res);
-    }
-    try {
-        await FormativeYearGroupService.getTeacherGroups(req.params.teacherId, res.locals.paging);
+        await GroupService.enrollUserToGroup(req.body.userId, req.body.groupId);
         return Responses.UpdateSucess(res);
     } catch (error) {
         next(error);

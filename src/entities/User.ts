@@ -1,5 +1,17 @@
-import { Column, CreateDateColumn, Entity, Index, IsNull, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    Index,
+    IsNull,
+    ManyToMany,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from "typeorm";
 import { AbstractEntity } from "./AbstractEntity";
+import { Group } from "./Group";
+import { GroupUser } from "./GroupUser";
 
 @Entity({ name: "user" })
 export class User extends AbstractEntity {
@@ -57,4 +69,7 @@ export class User extends AbstractEntity {
 
     @Column({ default: false })
     hasPassport: boolean;
+
+    @OneToMany((type) => GroupUser, (groupUser) => groupUser.user)
+    groups: GroupUser[];
 }

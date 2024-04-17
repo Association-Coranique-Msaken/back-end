@@ -1,30 +1,25 @@
 import express from "express";
 import {
     createAdmin,
-    createFormativeYearGroup,
-    createSummerGroup,
+    createGroup,
     createTeacher,
     createUser,
     deleteAdminById,
-    deleteFormativeYearGroupById,
-    deleteSummerGroupById,
+    deleteGroupById,
     deleteTeacherById,
     deleteUserById,
+    enrollUserToGroup,
     getAdminById,
     getAdmins,
-    getFormativeYearGroupById,
-    getFormativeYearGroups,
-    getSummerGroupById,
-    getSummerGroups,
+    getGroupById,
+    getGroupUsers,
+    getGroups,
     getTeacherById,
-    getTeacherFormativeYearGroups,
-    getTeacherSummerGroups,
     getTeachers,
     getUserById,
     getUsers,
     updateAdmin,
-    updateFormativeYearGroupById,
-    updateSummerGroupById,
+    updateGroup,
     updateTeacher,
     updateUser,
 } from "../controllers/adminController";
@@ -52,57 +47,18 @@ adminRouter.get("/user/:id", adminAuthentication, readOnlyAdminAuthorization, ge
 adminRouter.patch("/user/:id", adminAuthentication, fullAccessAdminAuthorization, updateUser);
 adminRouter.delete("/user/:id", adminAuthentication, fullAccessAdminAuthorization, deleteUserById);
 
-adminRouter.post("/summer-group/", adminAuthentication, fullAccessAdminAuthorization, createSummerGroup);
+adminRouter.post("/group/", adminAuthentication, fullAccessAdminAuthorization, createGroup);
+adminRouter.get("/group/list", adminAuthentication, readOnlyAdminAuthorization, pagingMiddleware, getGroups);
+adminRouter.get("/group/:id", adminAuthentication, readOnlyAdminAuthorization, getGroupById);
+adminRouter.patch("/group/:id", adminAuthentication, fullAccessAdminAuthorization, updateGroup);
+adminRouter.delete("/group/:id", adminAuthentication, fullAccessAdminAuthorization, deleteGroupById);
 adminRouter.get(
-    "/summer-group/list",
-    adminAuthentication,
-    fullAccessAdminAuthorization,
-    pagingMiddleware,
-    getSummerGroups
-);
-adminRouter.get(
-    "/summer-group/:teacherId",
+    "/group/user/list/:id",
     adminAuthentication,
     readOnlyAdminAuthorization,
     pagingMiddleware,
-    getTeacherSummerGroups
+    getGroupUsers
 );
-adminRouter.get("/summer-group/:id", adminAuthentication, readOnlyAdminAuthorization, getSummerGroupById);
-adminRouter.patch("/summer-group/:id", adminAuthentication, fullAccessAdminAuthorization, updateSummerGroupById);
-adminRouter.delete("/summer-group/:id", adminAuthentication, fullAccessAdminAuthorization, deleteSummerGroupById);
-
-adminRouter.post("/formative-year-group/", adminAuthentication, fullAccessAdminAuthorization, createFormativeYearGroup);
-adminRouter.get(
-    "/formative-year-group/list",
-    adminAuthentication,
-    fullAccessAdminAuthorization,
-    pagingMiddleware,
-    getFormativeYearGroups
-);
-adminRouter.get(
-    "/formative-year-group/:teacherId",
-    adminAuthentication,
-    readOnlyAdminAuthorization,
-    pagingMiddleware,
-    getTeacherFormativeYearGroups
-);
-adminRouter.get(
-    "/formative-year-group/:id",
-    adminAuthentication,
-    readOnlyAdminAuthorization,
-    getFormativeYearGroupById
-);
-adminRouter.patch(
-    "/formative-year-group/:id",
-    adminAuthentication,
-    fullAccessAdminAuthorization,
-    updateFormativeYearGroupById
-);
-adminRouter.delete(
-    "/formative-year-group/:id",
-    adminAuthentication,
-    fullAccessAdminAuthorization,
-    deleteFormativeYearGroupById
-);
+adminRouter.post("/group/user/enroll/", adminAuthentication, fullAccessAdminAuthorization, enrollUserToGroup);
 
 export default adminRouter;
