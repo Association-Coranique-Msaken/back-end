@@ -9,6 +9,9 @@ import {
     Tokens,
     type UserToken,
     type TokenType,
+    TOKEN_TYPE_ADMIN,
+    TOKEN_TYPE_USER,
+    TOKEN_TYPE_TEACHER,
 } from "../helpers/TokenTypes";
 import { invalidTokensCache } from "../helpers/InvalidTokensCache";
 
@@ -21,7 +24,7 @@ export const genericAuthentication = async (req: Request, res: Response, next: N
     }
     const token: string = header.split(" ")[1];
     try {
-        const decodedToken = Tokens.verifyToken(token);
+        const decodedToken = Tokens.verifyAccessToken(token);
         await invalidTokensCache.checkValidity(token, decodedToken.id, decodedToken.expiration);
         res.locals.decodedToken = decodedToken;
         next();
@@ -42,7 +45,7 @@ const baseAuthentication =
         }
         const token: string = header.split(" ")[1];
         try {
-            const decodedToken = Tokens.DecodeAs<T>(typeName, token);
+            const decodedToken = Tokens.DecodeAccessTokenAs<T>(typeName, token);
             await invalidTokensCache.checkValidity(token, decodedToken.id, decodedToken.expiration);
             res.locals.decodedToken = decodedToken;
             res.locals.token = token;
@@ -55,6 +58,6 @@ const baseAuthentication =
         }
     };
 
-export const adminAuthentication = baseAuthentication<AdminToken>("Admin");
-export const userAuthentication = baseAuthentication<UserToken>("User");
-export const teacherAuthentication = baseAuthentication<TeacherToken>("Teacher");
+export const adminAuthentication = baseAuthentication<AdminToken>(TOKEN_TYPE_ADMIN);
+export const userAuthentication = baseAuthentication<UserToken>(TOKEN_TYPE_USER);
+export const teacherAuthentication = baseAuthentication<TeacherToken>(TOKEN_TYPE_TEACHER);

@@ -8,5 +8,6 @@ authRouter.post("/admin/signup", auth.adminSignup);
 authRouter.post("/user/login", auth.userLogin);
 authRouter.post("/teacher/login", auth.teacherLogin);
 authRouter.post("/logout", genericAuthentication, auth.logout);
+authRouter.post("/refresh-token/", auth.refreshToken);
 
 export default authRouter;
