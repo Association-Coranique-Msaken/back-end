@@ -29,29 +29,215 @@ import { pagingMiddleware } from "../middlewares/pagingMiddleware";
 
 const adminRouter = express.Router();
 
+/**
+ * @swagger
+ * /api/v1/adminapi:
+ *   post:
+ *     summary: Create an admin.
+ *     description: Requires admin access token with write access. Creates an admin.
+ *     tags: [adminapi]
+ */
 adminRouter.post("/admin/", adminAuthentication, fullAccessAdminAuthorization, createAdmin);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/list:
+ *   get:
+ *     summary: Get admins.
+ *     description: Requires admin access token. Get admins.
+ *     tags: [adminapi]
+ */
 adminRouter.get("/admin/list", adminAuthentication, readOnlyAdminAuthorization, pagingMiddleware, getAdmins);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/admin{id}:
+ *   get:
+ *     summary: Get admin by id.
+ *     description: Requires admin access token. Get admin by id.
+ *     tags: [adminapi]
+ */
 adminRouter.get("/admin/:id", adminAuthentication, readOnlyAdminAuthorization, getAdminById);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/admin{id}:
+ *   patch:
+ *     summary: Update admin.
+ *     description: Requires admin access token with write access. Update admin.
+ *     tags: [adminapi]
+ *     tags: [auth]
+ */
 adminRouter.patch("/admin/:id", adminAuthentication, fullAccessAdminAuthorization, updateAdmin);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/admin{id}:
+ *   delete:
+ *     summary: Delete admin.
+ *     description: Requires admin access token with write access. Delete admin.
+ *     tags: [adminapi]
+ */
 adminRouter.delete("/admin/:id", adminAuthentication, fullAccessAdminAuthorization, deleteAdminById);
 
+/**
+ * @swagger
+ * /api/v1/adminapi/teacher{id}:
+ *   post:
+ *     summary: Create teacher.
+ *     description: Requires admin access token with write access. Create a teacher.
+ *     tags: [adminapi]
+ */
 adminRouter.post("/teacher/", adminAuthentication, fullAccessAdminAuthorization, createTeacher);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/teacher/list:
+ *   get:
+ *     summary: Get teachers.
+ *     description: Requires admin access token with write access. Get teachers.
+ *     tags: [adminapi]
+ */
 adminRouter.get("/teacher/list", adminAuthentication, readOnlyAdminAuthorization, pagingMiddleware, getTeachers);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/teacher{id}:
+ *   get:
+ *     summary: Get teacher by id.
+ *     description: Requires admin access token with write access. Get teacher by id.
+ *     tags: [adminapi]
+ */
 adminRouter.get("/teacher/:id", adminAuthentication, readOnlyAdminAuthorization, getTeacherById);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/teacher{id}:
+ *   patch:
+ *     summary: Update teacher.
+ *     description: Requires admin access token with write access. Update teacher.
+ *     tags: [adminapi]
+ */
 adminRouter.patch("/teacher/:id", adminAuthentication, fullAccessAdminAuthorization, updateTeacher);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/teacher{id}:
+ *   delete:
+ *     summary: Delete teacher by id.
+ *     description: Requires admin access token with write access. Delete teacher by id.
+ *     tags: [adminapi]
+ */
 adminRouter.delete("/teacher/:id", adminAuthentication, fullAccessAdminAuthorization, deleteTeacherById);
 
+/**
+ * @swagger
+ * /api/v1/adminapi/user:
+ *   post:
+ *     summary: Create user.
+ *     description: Requires admin access token with write access. Create user.
+ *     tags: [adminapi]
+ */
 adminRouter.post("/user/", adminAuthentication, fullAccessAdminAuthorization, createUser);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/user/list:
+ *   get:
+ *     summary: Get users.
+ *     description: Requires admin access token with write access. Get usesr.
+ *     tags: [adminapi]
+ */
 adminRouter.get("/user/list", adminAuthentication, readOnlyAdminAuthorization, pagingMiddleware, getUsers);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/user{id}:
+ *   get:
+ *     summary: Get user by id.
+ *     description: Requires admin access token with write access. Get user by id.
+ *     tags: [adminapi]
+ */
 adminRouter.get("/user/:id", adminAuthentication, readOnlyAdminAuthorization, getUserById);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/user{id}:
+ *   gepatcht:
+ *     summary: Update user.
+ *     description: Requires admin access token with write access. Update user.
+ *     tags: [adminapi]
+ */
 adminRouter.patch("/user/:id", adminAuthentication, fullAccessAdminAuthorization, updateUser);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/user{id}:
+ *   delete:
+ *     summary: Delete user by id.
+ *     description: Requires admin access token with write access. Delete user by id.
+ *     tags: [adminapi]
+ */
 adminRouter.delete("/user/:id", adminAuthentication, fullAccessAdminAuthorization, deleteUserById);
 
+/**
+ * @swagger
+ * /api/v1/adminapi/group:
+ *   post:
+ *     summary: Update a group.
+ *     description: Requires admin access token. Updates a group.
+ *     tags: [adminapi]
+ */
 adminRouter.post("/group/", adminAuthentication, fullAccessAdminAuthorization, createGroup);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/group/list:
+ *   get:
+ *     summary: Get groups.
+ *     description: Requires admin access token. Get groups. Supports pagination.
+ *     tags: [adminapi]
+ */
 adminRouter.get("/group/list", adminAuthentication, readOnlyAdminAuthorization, pagingMiddleware, getGroups);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/group/{id}:
+ *   get:
+ *     summary: Get a group by id.
+ *     description: Requires admin access token. Gets a group by id.
+ *     tags: [adminapi]
+ */
 adminRouter.get("/group/:id", adminAuthentication, readOnlyAdminAuthorization, getGroupById);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/group/{id}:
+ *   patch:
+ *     summary: update a group.
+ *     description: Requires admin access token. Updates a group.
+ *     tags: [adminapi]
+ */
 adminRouter.patch("/group/:id", adminAuthentication, fullAccessAdminAuthorization, updateGroup);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/group/{id}:
+ *   delete:
+ *     summary: Delete a group by id.
+ *     description: Requires admin access token. Deletes a group by id.
+ *     tags: [adminapi]
+ */
 adminRouter.delete("/group/:id", adminAuthentication, fullAccessAdminAuthorization, deleteGroupById);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/group/user/list/{id}:
+ *   get:
+ *     summary: Gets a list of a user groups.
+ *     description: Requires admin access token. Gets a list of a user groups.
+ *     tags: [adminapi]
+ */
 adminRouter.get(
     "/group/user/list/:id",
     adminAuthentication,
@@ -59,6 +245,15 @@ adminRouter.get(
     pagingMiddleware,
     getGroupUsers
 );
+
+/**
+ * @swagger
+ * /api/v1/adminapi/group/user/enroll/:
+ *   post:
+ *     summary: Enrolls a user to a group.
+ *     description: Requires admin access token. Enrolls a user to a group.
+ *     tags: [adminapi]
+ */
 adminRouter.post("/group/user/enroll/", adminAuthentication, fullAccessAdminAuthorization, enrollUserToGroup);
 
 export default adminRouter;
