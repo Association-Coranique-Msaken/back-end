@@ -5,6 +5,7 @@ import { type Repository } from "typeorm";
 import * as jwt from "jsonwebtoken";
 import ms from "ms";
 import { Md5 } from "ts-md5";
+import { getEstimatedUserTokenExp } from "./helpers";
 
 const options = {
     // number of items at max is 500
@@ -42,10 +43,7 @@ export class InvalidTokensCache {
     };
 
     public readonly invalidateAllUserTokens = async (elementId: string) => {
-        const maxExpiration = new Date(Date.now() + ms(process.env.JWT_EXP_IN!));
-        // FIXME: Is there a better option than deleting all cache or identifying all
-        // elementId by forEach then deleting them ?
-        this.validCache.clear();
+        const maxExpiration = getEstimatedUserTokenExp();
         return await this.repository.save({
             token: "*",
             elementId,

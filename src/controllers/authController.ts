@@ -11,8 +11,8 @@ const userLogin = async (req: Request, res: Response, next: NextFunction) => {
         if (!identifier || !birthDate) {
             return Responses.BadRequest(res, "Identifier and password are required.");
         }
-        const { user, accessToken, refreshToken } = await AuthService.userLogin(identifier, birthDate);
-        return Responses.LoginSuccess(res, user, accessToken, refreshToken);
+        const { user, tokenResult } = await AuthService.userLogin(identifier, birthDate);
+        return Responses.LoginSuccess(res, user, tokenResult);
     } catch (error) {
         next(error);
     }
@@ -24,8 +24,8 @@ const adminLogin = async (req: Request, res: Response, next: NextFunction) => {
         if (!username || !password) {
             return Responses.BadRequest(res, "Username and password are required");
         }
-        const { admin, accessToken, refreshToken } = await AuthService.adminLogin(username, password);
-        return Responses.LoginSuccess(res, admin, accessToken, refreshToken);
+        const { admin, tokenResult } = await AuthService.adminLogin(username, password);
+        return Responses.LoginSuccess(res, admin, tokenResult);
     } catch (error) {
         next(error);
     }
@@ -38,8 +38,8 @@ const teacherLogin = async (req: Request, res: Response, next: NextFunction) => 
         return Responses.BadRequest(res, "Code and password are required.");
     }
     try {
-        const { teacher, accessToken, refreshToken } = await AuthService.teacherLogin(code, password);
-        return Responses.LoginSuccess(res, teacher, accessToken, refreshToken);
+        const { teacher, tokenResult } = await AuthService.teacherLogin(code, password);
+        return Responses.LoginSuccess(res, teacher, tokenResult);
     } catch (error) {
         next(error);
     }
@@ -78,8 +78,8 @@ const refreshToken = async (req: Request, res: Response, next: NextFunction) => 
         return Responses.Unauthorized(res, "Invalid refresh token.");
     }
     try {
-        const { entity, accessToken, refreshToken } = await AuthService.refreshToken(refresh_token);
-        return Responses.RefreshTokenSuccess(res, entity, accessToken, refreshToken);
+        const { entity, tokenResult } = await AuthService.refreshToken(refresh_token);
+        return Responses.RefreshTokenSuccess(res, entity, tokenResult);
     } catch (error) {
         next(error);
     }

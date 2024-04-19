@@ -1,6 +1,7 @@
 import { type Response } from "express";
 import type Joi from "joi";
 import { PageDto } from "../DTOs/paging/PageDto";
+import { TokenResultDto } from "../DTOs/TokenResultDto";
 
 export namespace Responses {
     export const OperationSuccess = (response: Response) => {
@@ -20,13 +21,12 @@ export namespace Responses {
         });
     };
 
-    export const LoginSuccess = (response: Response, data: any, accessToken: string, refreshToken: string) => {
+    export const LoginSuccess = (response: Response, data: any, tokenResult: TokenResultDto) => {
         return response.status(200).json({
             succss: true,
             message: "Login Successfull.",
             data,
-            accessToken,
-            refreshToken,
+            ...tokenResult,
         });
     };
 
@@ -46,13 +46,12 @@ export namespace Responses {
         return response.status(201).json({ success: true, message: "Data created.", data });
     };
 
-    export const RefreshTokenSuccess = (response: Response, data: any, accessToken: string, refreshToken: string) => {
+    export const RefreshTokenSuccess = (response: Response, data: any, tokenResult: TokenResultDto) => {
         return response.status(200).json({
             succss: true,
             message: "Token refreshed successfully.",
             data,
-            accessToken,
-            refreshToken,
+            ...tokenResult,
         });
     };
 

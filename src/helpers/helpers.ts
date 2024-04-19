@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 import { PagingOrder } from "../DTOs/paging/Order";
 import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
 import { SelectQueryBuilder } from "typeorm";
+import ms from "ms";
 
 dotenv.config();
 
@@ -28,6 +29,16 @@ export class encrypt {
         });
     }
 }
+
+export const getEstimatedUserTokenExp = () => new Date(Date.now() + ms(process.env.JWT_EXP_IN!));
+export const getEstimatedRefreshTokenExp = () => new Date(Date.now() + ms(process.env.JWT_REFRESH_EXP_IN!));
+
+export const getEstimatedTokensExp = () => {
+    return {
+        userTokenExpiration: getEstimatedUserTokenExp(),
+        refreshTokenExpiration: getEstimatedRefreshTokenExp(),
+    };
+};
 
 export function formatDate(date: Date): string {
     const day = String(date.getDate()).padStart(2, "0");
