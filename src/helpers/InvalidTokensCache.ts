@@ -16,8 +16,8 @@ const options = {
 };
 
 export class InvalidTokensCache {
-    private readonly cache = new LRUCache(options);
-    // TODO: add valid tokens cache for optimization
+    private readonly invalidCache = new LRUCache(options);
+    private readonly validCache = new LRUCache(options);
     private readonly repository: Repository<InvalidTokens>;
 
     constructor() {
@@ -26,11 +26,15 @@ export class InvalidTokensCache {
 
     public readonly invalidate = async (token: string, elementId: string, expiration: Date) => {
         try {
+            // remove from valid keys cache
+            const cacheKey = this.genCacheKey(token, elementId);
+            this.validCache.delete(cacheKey);
             await this.repository.insert({
                 token: Md5.hashStr(token),
                 elementId,
                 expiration,
             });
+            this.invalidCache.set(cacheKey, ".");
         } catch (error: any) {
             if (error.code !== "ER_DUP_ENTRY") {
                 throw error; // propagate error
@@ -45,34 +49,42 @@ export class InvalidTokensCache {
             elementId,
             expiration: maxExpiration,
         });
+        // add to invalid cache ?
     };
 
+    readonly genCacheKey = (token: string, elementId: string) => Md5.hashStr(token) + elementId;
+
     public readonly isValid = async (token: string, elementId: string, expiration: Date): Promise<boolean> => {
-        const cacheKey = Md5.hashStr(token) + elementId;
+        const cacheKey = this.genCacheKey(token, elementId);
         const wildcardKey = elementId + "**";
-        const cachedWildcardValue = this.cache.get(wildcardKey);
+        const cachedWildcardValue = this.invalidCache.get(wildcardKey);
 
         // check cache
+        if (this.validCache.get(cacheKey) === ".") {
+            return true;
+        }
+
         if (cachedWildcardValue && expiration.getTime() < (cachedWildcardValue as number)) {
             return false;
         }
-        if (this.cache.get(cacheKey) === ".") {
+        if (this.invalidCache.get(cacheKey) === ".") {
             return false;
         }
 
         // cache miss. search repository
         if (await this.isTokenInDB(token, elementId)) {
-            this.cache.set(cacheKey, ".");
+            this.invalidCache.set(cacheKey, ".");
             return false;
         }
         const wildCardInDB = await this.isWildcardInDB(elementId);
         if (wildCardInDB && expiration < wildCardInDB.expiration) {
             const wildcardDate = wildCardInDB.expiration.getTime() / 1000;
-            this.cache.set(wildcardKey, wildcardDate);
+            this.invalidCache.set(wildcardKey, wildcardDate);
             return false;
         }
 
         // token not found anywhere -> valid
+        this.validCache.set(cacheKey, ".");
         return true;
     };
 
