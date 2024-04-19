@@ -1,3 +1,4 @@
+import { TokenResultDto } from "../DTOs/TokenResultDto";
 import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
 import { Teacher } from "../entities/Teacher";
@@ -5,7 +6,7 @@ import { User } from "../entities/User";
 import { invalidTokensCache } from "../helpers/InvalidTokensCache";
 import { EntityToken, TOKEN_TYPE_ADMIN, TOKEN_TYPE_TEACHER, TOKEN_TYPE_USER, Tokens } from "../helpers/TokenTypes";
 import { AppErrors } from "../helpers/appErrors";
-import { encrypt, formatDate } from "../helpers/helpers";
+import { encrypt, formatDate, getEstimatedTokensExp } from "../helpers/helpers";
 
 const userRepository = appDataSource.getRepository(User);
 const adminRepository = appDataSource.getRepository(Admin);
@@ -27,8 +28,11 @@ export class AuthService {
         const refreshToken = Tokens.GenerateUserRefreshToken(user);
         return {
             user: user,
-            accessToken: accessToken,
-            refreshToken: refreshToken,
+            tokenResult: {
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                ...getEstimatedTokensExp(),
+            } as TokenResultDto,
         };
     };
 
@@ -49,8 +53,11 @@ export class AuthService {
         const refreshToken = Tokens.GenerateAdminRefreshToken(admin);
         return {
             admin: admin,
-            accessToken: token,
-            refreshToken: refreshToken,
+            tokenResult: {
+                accessToken: token,
+                refreshToken: refreshToken,
+                ...getEstimatedTokensExp(),
+            } as TokenResultDto,
         };
     };
 
@@ -68,8 +75,11 @@ export class AuthService {
 
         return {
             teacher: teacher,
-            accessToken: token,
-            refreshToken: refreshToken,
+            tokenResult: {
+                accessToken: token,
+                refreshToken: refreshToken,
+                ...getEstimatedTokensExp(),
+            } as TokenResultDto,
         };
     };
 
@@ -90,8 +100,11 @@ export class AuthService {
                 }
                 return {
                     entity: user,
-                    accessToken: Tokens.GenerateUserToken(user),
-                    refreshToken: Tokens.GenerateUserRefreshToken(user),
+                    tokenResult: {
+                        accessToken: Tokens.GenerateUserToken(user),
+                        refreshToken: Tokens.GenerateUserRefreshToken(user),
+                        ...getEstimatedTokensExp(),
+                    } as TokenResultDto,
                 };
             case TOKEN_TYPE_TEACHER:
                 const teacher = await teacherRepository.findOne({
@@ -103,8 +116,11 @@ export class AuthService {
                 }
                 return {
                     entity: teacher,
-                    accessToken: Tokens.GenerateTeacherToken(teacher),
-                    refreshToken: Tokens.GenerateTeacherRefreshToken(teacher),
+                    tokenResult: {
+                        accessToken: Tokens.GenerateTeacherToken(teacher),
+                        refreshToken: Tokens.GenerateTeacherRefreshToken(teacher),
+                        ...getEstimatedTokensExp(),
+                    } as TokenResultDto,
                 };
             case TOKEN_TYPE_ADMIN:
                 const admin = await adminRepository.findOne({ where: { id: decodedToken.id }, relations: ["user"] });
@@ -113,8 +129,11 @@ export class AuthService {
                 }
                 return {
                     entity: admin,
-                    accessToken: Tokens.GenerateAdminToken(admin),
-                    refreshToken: Tokens.GenerateAdminRefreshToken(admin),
+                    tokenResult: {
+                        accessToken: Tokens.GenerateAdminToken(admin),
+                        refreshToken: Tokens.GenerateAdminRefreshToken(admin),
+                        ...getEstimatedTokensExp(),
+                    } as TokenResultDto,
                 };
         }
         throw new AppErrors.NotFound("No user corresponding to token.");
