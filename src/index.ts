@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import express, { type Request, type Response, type Application } from "express";
 import dotenv from "dotenv";
 import * as bodyParser from "body-parser";

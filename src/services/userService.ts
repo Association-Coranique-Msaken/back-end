@@ -1,5 +1,4 @@
 import { DeepPartial } from "typeorm";
-import { UpdateUserDto } from "../DTOs/UserDto";
 import { appDataSource } from "../config/Database";
 import { User } from "../entities/User";
 import { AppErrors } from "../helpers/appErrors";
@@ -68,7 +67,7 @@ export class UserService {
         return user;
     };
 
-    public static updateUserById = async (updateData: UpdateUserDto) => {
+    public static updateUserById = async (updateData: any) => {
         const user = await userRepository.findOne({ where: { id: updateData.id, isDeleted: false } });
         if (!user) {
             throw new AppErrors.NotFound();

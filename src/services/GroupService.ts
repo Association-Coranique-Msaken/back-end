@@ -1,9 +1,3 @@
-import {
-    CreateFormativeYearGroupDto,
-    CreateSummerGroupDto,
-    UpdateFormativeYearGroupDto,
-    UpdateSummerGroupDto,
-} from "../DTOs/GroupDto";
 import { PageDto } from "../DTOs/paging/PageDto";
 import { PageMetaDto } from "../DTOs/paging/PageMetaDto";
 import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
@@ -31,9 +25,7 @@ export class GroupService {
         }
     };
 
-    public static createGroup = async (
-        groupData: CreateFormativeYearGroupDto | CreateSummerGroupDto
-    ): Promise<Group> => {
+    public static createGroup = async (groupData: any): Promise<Group> => {
         const teacherId: string = groupData.teacherId;
         const teacher = await GroupService.fetchTeacherWithId(teacherId);
         return groupRepository.create({ ...groupData, teacher } as DeepPartial<Group>);
@@ -60,7 +52,7 @@ export class GroupService {
         return group;
     };
 
-    public static updateGroupById = async (updateData: UpdateFormativeYearGroupDto | UpdateSummerGroupDto) => {
+    public static updateGroupById = async (updateData: any) => {
         const group = await groupRepository.findOne({
             where: { id: updateData.id, isDeleted: false },
         });

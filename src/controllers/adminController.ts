@@ -1,14 +1,25 @@
 import { NextFunction, type Request, type Response } from "express";
-import { AdminValidator } from "../validators/AdminValidator";
 import { Responses } from "../helpers/Responses";
 import { AdminService } from "../services/adminService";
-import { TeacherValidator } from "../validators/TeacherValidator";
-import { UserValidator } from "../validators/UserValidator";
 import { UserService } from "../services/userService";
 import { TeacherService } from "../services/teacherService";
 import { GroupService } from "../services/GroupService";
-import { FormativeYearGroupValidator, SummerGroupValidator } from "../validators/GroupValidator";
-import Joi from "joi";
+import { generateDtoMetaData, mapToDto } from "../DTOs/dtoEngine";
+import { Admin } from "../entities/Admin";
+import { Teacher } from "../entities/Teacher";
+import { User } from "../entities/User";
+import { Group } from "../entities/Group";
+import { GroupUser } from "../entities/GroupUser";
+
+const createAdminDtoMeta = generateDtoMetaData("CreateAdminDto", Admin.prototype);
+const updateAdminDtoMeta = generateDtoMetaData("UpdateAdminDto", Admin.prototype);
+const createTeacherDtoMeta = generateDtoMetaData("CreateTeacherDto", Teacher.prototype);
+const updateTeacherDtoMeta = generateDtoMetaData("UopdateTeacherDto", Teacher.prototype);
+const createUserDtoMeta = generateDtoMetaData("CreateUserDto", User.prototype);
+const updateUserDtoMeta = generateDtoMetaData("UpdateUserDto", User.prototype);
+const createGroupDtoMeta = generateDtoMetaData("CreateGroupDto", Group.prototype);
+const updateGroupDtoMeta = generateDtoMetaData("UpdateGroupDto", Group.prototype);
+const enrollUserToGroupMeta = generateDtoMetaData("EnrollUserToGroupDto", GroupUser.prototype);
 
 export const getAdmins = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -20,12 +31,9 @@ export const getAdmins = async (req: Request, res: Response, next: NextFunction)
 };
 
 export const createAdmin = async (req: Request, res: Response, next: NextFunction) => {
-    const { error } = AdminValidator.creation.validate(req.body);
-    if (error) {
-        return Responses.ValidationBadRequest(res, error);
-    }
     try {
-        const admin = await AdminService.createAdmin(req.body);
+        const createAdmindto = mapToDto(createAdminDtoMeta, req.body);
+        const admin = await AdminService.createAdmin(createAdmindto);
         return Responses.CreateSucess(res, admin);
     } catch (error) {
         next(error);
@@ -36,12 +44,9 @@ export const updateAdmin = async (req: Request, res: Response, next: NextFunctio
     if (!req.params.id) {
         return Responses.BadRequest(res, "id is required.");
     }
-    const { error } = AdminValidator.update.validate(req.body);
-    if (error) {
-        return Responses.ValidationBadRequest(res, error);
-    }
     try {
-        await AdminService.updateAdminById({ ...req.body, id: req.params.id });
+        const updateAdmindto = mapToDto(updateAdminDtoMeta, req.body);
+        await AdminService.updateAdminById({ ...updateAdmindto, id: req.params.id });
         return Responses.UpdateSucess(res);
     } catch (error) {
         next(error);
@@ -75,11 +80,8 @@ export const deleteAdminById = async (req: Request, res: Response, next: NextFun
 // teacher functionality
 export const createTeacher = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { error } = TeacherValidator.creation.validate(req.body);
-        if (error) {
-            return Responses.ValidationBadRequest(res, error);
-        }
-        const teacher = await TeacherService.createTeacher(req.body);
+        const createTeacherdto = mapToDto(createTeacherDtoMeta, req.body);
+        const teacher = await TeacherService.createTeacher(createTeacherdto);
         return Responses.CreateSucess(res, teacher);
     } catch (error) {
         next(error);
@@ -111,12 +113,9 @@ export const updateTeacher = async (req: Request, res: Response, next: NextFunct
     if (!req.params.id) {
         return Responses.BadRequest(res, "id is required.");
     }
-    const { error } = TeacherValidator.update.validate(req.body);
-    if (error) {
-        return Responses.ValidationBadRequest(res, error);
-    }
     try {
-        await TeacherService.updateTeacherById({ ...req.body, id: req.params.id });
+        const updateTeacherdto = mapToDto(updateTeacherDtoMeta, req.body);
+        await TeacherService.updateTeacherById({ ...updateTeacherdto, id: req.params.id });
         return Responses.UpdateSucess(res);
     } catch (error) {
         next(error);
@@ -148,12 +147,9 @@ export const getTeacherByCode = async (req: Request, res: Response, next: NextFu
 };
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
-    const { error } = UserValidator.creation.validate(req.body);
-    if (error) {
-        return Responses.ValidationBadRequest(res, error);
-    }
     try {
-        const user = await UserService.createUser(req.body);
+        const createUserdto = mapToDto(createUserDtoMeta, req.body);
+        const user = await UserService.createUser(createUserdto);
         return Responses.CreateSucess(res, user);
     } catch (error) {
         next(error);
@@ -185,12 +181,9 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
     if (!req.params.id) {
         return Responses.BadRequest(res, "id is required.");
     }
-    const { error } = UserValidator.update.validate(req.body);
-    if (error) {
-        return Responses.ValidationBadRequest(res, error);
-    }
     try {
-        await UserService.updateUserById({ ...req.body, id: req.params.id });
+        const updateUserdto = mapToDto(updateUserDtoMeta, req.body);
+        await UserService.updateUserById({ ...updateUserdto, id: req.params.id });
         return Responses.UpdateSucess(res);
     } catch (error) {
         next(error);
@@ -212,19 +205,9 @@ export const deleteUserById = async (req: Request, res: Response, next: NextFunc
 // groups
 
 export const createGroup = async (req: Request, res: Response, next: NextFunction) => {
-    let err: Joi.ValidationError | undefined;
-    if (req.body.courseType === "summerGroup") {
-        const { error } = SummerGroupValidator.creation.validate(req.body);
-        err = error;
-    } else {
-        const { error } = FormativeYearGroupValidator.creation.validate(req.body);
-        err = error;
-    }
-    if (err) {
-        return Responses.ValidationBadRequest(res, err);
-    }
     try {
-        const admin = await GroupService.createGroup(req.body);
+        const createGroupdto = mapToDto(createGroupDtoMeta, req.body);
+        const admin = await GroupService.createGroup(createGroupdto);
         return Responses.CreateSucess(res, admin);
     } catch (error) {
         next(error);
@@ -253,23 +236,9 @@ export const getGroupById = async (req: Request, res: Response, next: NextFuncti
 };
 
 export const updateGroup = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.params.id) {
-        return Responses.BadRequest(res, "id is required.");
-    }
-    let err: Joi.ValidationError | undefined;
-    if (req.body.courseType === "summerGroup") {
-        const { error, value } = SummerGroupValidator.update.validate(req.body);
-        err = error;
-        req.body = value;
-    } else {
-        const { error } = FormativeYearGroupValidator.update.validate(req.body);
-        err = error;
-    }
-    if (err) {
-        return Responses.ValidationBadRequest(res, err);
-    }
     try {
-        await GroupService.updateGroupById({ ...req.body, id: req.params.id });
+        const updateGroupdto = mapToDto(updateGroupDtoMeta, req.body);
+        await GroupService.updateGroupById({ ...updateGroupdto, id: req.params.id });
         return Responses.UpdateSucess(res);
     } catch (error) {
         next(error);
@@ -291,7 +260,7 @@ export const deleteGroupById = async (req: Request, res: Response, next: NextFun
 // TODO: this should be implemented as filter for getGroups (filter-by: teacherId)
 const getTeacherGroups = async (req: Request, res: Response, next: NextFunction) => {
     if (typeof req.query.teacherId !== "string") {
-        return Responses.BadRequest(res, "teacherId is required in the query params.");
+        return Responses.BadRequest(res, "teacherId is required.");
     }
     try {
         const entities = await GroupService.getTeacherGroups(req.query.teacherId, res.locals.paging);
@@ -314,11 +283,9 @@ export const getGroupUsers = async (req: Request, res: Response, next: NextFunct
 };
 
 export const enrollUserToGroup = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.body.userId && !req.body.groupId) {
-        return Responses.BadRequest(res, "userId and groupId are required.");
-    }
     try {
-        await GroupService.enrollUserToGroup(req.body.userId, req.body.groupId);
+        const { userId, groupId } = mapToDto(enrollUserToGroupMeta, req.body);
+        await GroupService.enrollUserToGroup(userId, groupId);
         return Responses.UpdateSucess(res);
     } catch (error) {
         next(error);
