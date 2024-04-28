@@ -7,11 +7,10 @@ import AdminRouter from "./routes/AdminRouter";
 import authRouter from "./routes/AuthRouter";
 import UserRouter from "./routes/UserRouter";
 import TeacherRouter from "./routes/TeacherRouter";
-import fs from "fs";
 import InvalidTokensRouter from "./routes/InvalidTokensRouter";
 import { ScheduleInvalidTokensWorker } from "./workers/InvalidTokensWorker";
 import { errorHandler } from "./middlewares/error.middleware";
-const swaggerUi = require("swagger-ui-express");
+import { setupSwagger } from "./swagger";
 
 // establish database connection
 appDataSource
@@ -48,27 +47,8 @@ app.get("/", (req: Request, res: Response) => {
     res.send("Welcome to Express & TypeScript Server :) nice");
 });
 
-// Dynamically generate and write Swagger JSON file
-const swaggerDocument = {
-    openapi: "3.0.0",
-    info: {
-        version: "1.0.0",
-        title: "Your API Documentation",
-        description: "API Documentation for your Express server",
-    },
-    paths: {
-        "/api/v1/admin": {
-            get: {
-                summary: "get admin",
-                description: "Create an admin",
-            },
-        },
-    },
-};
-fs.writeFileSync("./swagger.json", JSON.stringify(swaggerDocument, null, 2));
-
-// Serve Swagger UI with the dynamically generated Swagger JSON
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }));
+// setup swagger api docs
+setupSwagger(app);
 
 // Start the server
 app.listen(port, () => {
