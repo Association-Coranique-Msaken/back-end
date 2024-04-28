@@ -1,7 +1,6 @@
 import { PageDto } from "../DTOs/paging/PageDto";
 import { PageMetaDto } from "../DTOs/paging/PageMetaDto";
 import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
-import { CreateTeacherDto, UpdateTeacherDto } from "../DTOs/TeacherDto";
 import { appDataSource } from "../config/Database";
 import { Teacher } from "../entities/Teacher";
 import { User } from "../entities/User";
@@ -13,7 +12,7 @@ const userRepository = appDataSource.getRepository(User);
 const teacherRepository = appDataSource.getRepository(Teacher);
 
 export class TeacherService {
-    public static createTeacher = async (teacherData: CreateTeacherDto): Promise<Teacher> => {
+    public static createTeacher = async (teacherData: any): Promise<Teacher> => {
         const userId = teacherData.identifier;
         const user = await userRepository.findOne({ where: { identifier: userId } });
         if (user) {
@@ -56,7 +55,7 @@ export class TeacherService {
         return teacher;
     };
 
-    public static updateTeacherById = async (updateData: UpdateTeacherDto) => {
+    public static updateTeacherById = async (updateData: any) => {
         const teacher = await teacherRepository.findOne({
             where: { id: updateData.id, isDeleted: false },
         });

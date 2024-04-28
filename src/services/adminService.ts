@@ -1,4 +1,3 @@
-import { CreateAdminDto, CreateAdminWithUserDto, UpdateAdminDto } from "../DTOs/AdminDto";
 import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
 import { User } from "../entities/User";
@@ -33,23 +32,24 @@ export class AdminService {
         return new PageDto(admins, new PageMetaDto({ itemCount, pageOptionsDto }));
     };
 
-    public static createAdmin = async (adminData: CreateAdminDto): Promise<Admin> => {
+    public static createAdmin = async (adminData: any): Promise<Admin> => {
         // Check if admin exists.
         if (await adminRepository.findOne({ where: { username: adminData.username } })) {
             throw new AppErrors.AlreadyExists(`username '${adminData.username}' aleady exists`);
         }
-        const user = await userRepository.findOne({ where: { identifier: adminData.identifier } });
+
+        var user: User | null = adminData.user ?? (await userRepository.findOne({ where: { id: adminData.userId } }));
         if (user) {
             if (await AdminService.adminWithUserIdExists(user.id)) {
                 throw new AppErrors.AlreadyExists(
                     `Admin with the user identifier '${adminData.identifier}' already exists.`
                 );
             }
-            const encryptedPassword = await encrypt.encryptpass(adminData.password);
+            const encryptedPassword = await encrypt.encryptpass(adminData.password!);
             const newAdmin = new Admin();
-            newAdmin.username = adminData.username;
-            newAdmin.password = encryptedPassword;
-            newAdmin.role = adminData.role;
+            newAdmin.username = adminData.username!;
+            newAdmin.password = encryptedPassword!;
+            newAdmin.role = adminData.role!;
             newAdmin.user = user;
             const createdAdmin = await adminRepository.save(newAdmin);
             return createdAdmin;
@@ -58,7 +58,7 @@ export class AdminService {
         }
     };
 
-    public static updateAdminById = async (updateData: UpdateAdminDto) => {
+    public static updateAdminById = async (updateData: any) => {
         const admin = await adminRepository.findOne({
             where: { id: updateData.id, isDeleted: false },
         });
@@ -77,15 +77,9 @@ export class AdminService {
     private static getAdminWithUserId = async (userId: string): Promise<Admin | null> =>
         await AdminService.fetchAdminWithUserIdQuery(userId).getOne();
 
-    public static createAdminWithUser = async (adminUserData: CreateAdminWithUserDto): Promise<Admin> => {
-        const user = await UserService.createUser(adminUserData);
-        const adminData: CreateAdminDto = {
-            username: adminUserData.username,
-            password: adminUserData.password,
-            role: adminUserData.role,
-            identifier: user.identifier,
-        };
-        return await AdminService.createAdmin(adminData);
+    public static createAdminWithUser = async (adminUserData: any): Promise<Admin> => {
+        adminUserData.user = await UserService.createUser(adminUserData);
+        return await AdminService.createAdmin(adminUserData);
     };
 
     public static getAdminById = async (id: string): Promise<Admin> => {

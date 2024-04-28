@@ -6,19 +6,19 @@ import { User } from "../entities/User";
 import { invalidTokensCache } from "../helpers/InvalidTokensCache";
 import { EntityToken, TOKEN_TYPE_ADMIN, TOKEN_TYPE_TEACHER, TOKEN_TYPE_USER, Tokens } from "../helpers/TokenTypes";
 import { AppErrors } from "../helpers/appErrors";
-import { encrypt, formatDate, getEstimatedTokensExp } from "../helpers/helpers";
+import { encrypt, CompareDates, getEstimatedTokensExp } from "../helpers/helpers";
 
 const userRepository = appDataSource.getRepository(User);
 const adminRepository = appDataSource.getRepository(Admin);
 const teacherRepository = appDataSource.getRepository(Teacher);
 
 export class AuthService {
-    public static userLogin = async (identifier: string, birthDate: string) => {
+    public static userLogin = async (identifier: string, birthDate: Date) => {
         const user = await userRepository.findOne({ where: { identifier } });
         if (!user) {
             throw new AppErrors.BadCredentials();
         }
-        const isPasswordValid = formatDate(user.birthDate) === birthDate;
+        const isPasswordValid = CompareDates(user.birthDate, birthDate);
         if (!isPasswordValid) {
             throw new AppErrors.BadCredentials();
         }

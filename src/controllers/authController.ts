@@ -1,16 +1,21 @@
 import { NextFunction, type Request, type Response } from "express";
-import { AdminValidator } from "../validators/AdminValidator";
 import { Responses } from "../helpers/Responses";
 import { AdminService } from "../services/adminService";
 import { AuthService } from "../services/authService";
+import { mapToDto, generateDtoMetaData } from "../DTOs/dtoEngine";
+import { Admin } from "../entities/Admin";
+import { User } from "../entities/User";
+import { Teacher } from "../entities/Teacher";
+
+const createAdminWithUserDtoMeta = generateDtoMetaData("CreateUserAdminDto", User.prototype, Admin.prototype);
+const UserLoginDtoMeta = generateDtoMetaData("UserLoginDto", User.prototype);
+const AdminLoginDtoMeta = generateDtoMetaData("AdminLoginDto", Admin.prototype);
+const TeacherLoginDtoMeta = generateDtoMetaData("TeacherLoginDto", Teacher.prototype);
 
 // User Login
 const userLogin = async (req: Request, res: Response, next: NextFunction) => {
-    const { identifier, birthDate } = req.body;
     try {
-        if (!identifier || !birthDate) {
-            return Responses.BadRequest(res, "Identifier and password are required.");
-        }
+        const { identifier, birthDate } = mapToDto(UserLoginDtoMeta, req.body);
         const { user, tokenResult } = await AuthService.userLogin(identifier, birthDate);
         return Responses.LoginSuccess(res, user, tokenResult);
     } catch (error) {
@@ -19,11 +24,8 @@ const userLogin = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const adminLogin = async (req: Request, res: Response, next: NextFunction) => {
-    const { username, password } = req.body;
     try {
-        if (!username || !password) {
-            return Responses.BadRequest(res, "Username and password are required");
-        }
+        const { username, password } = mapToDto(AdminLoginDtoMeta, req.body);
         const { admin, tokenResult } = await AuthService.adminLogin(username, password);
         return Responses.LoginSuccess(res, admin, tokenResult);
     } catch (error) {
@@ -33,11 +35,8 @@ const adminLogin = async (req: Request, res: Response, next: NextFunction) => {
 
 // Teacher Login
 const teacherLogin = async (req: Request, res: Response, next: NextFunction) => {
-    const { code, password } = req.body;
-    if (!code || !password) {
-        return Responses.BadRequest(res, "Code and password are required.");
-    }
     try {
+        const { code, password } = mapToDto(TeacherLoginDtoMeta, req.body);
         const { teacher, tokenResult } = await AuthService.teacherLogin(code, password);
         return Responses.LoginSuccess(res, teacher, tokenResult);
     } catch (error) {
@@ -47,12 +46,9 @@ const teacherLogin = async (req: Request, res: Response, next: NextFunction) => 
 
 // Admin signup - only for testing.
 const adminSignup = async (req: Request, res: Response, next: NextFunction) => {
-    const { error } = AdminValidator.creationWithUser.validate(req.body);
-    if (error) {
-        return Responses.ValidationBadRequest(res, error);
-    }
     try {
-        const admin = await AdminService.createAdminWithUser(req.body);
+        const createAdmindto = mapToDto(createAdminWithUserDtoMeta, req.body);
+        const admin = await AdminService.createAdminWithUser(createAdmindto);
         return Responses.CreateSucess(res, admin);
     } catch (error) {
         next(error);
