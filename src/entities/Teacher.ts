@@ -6,7 +6,8 @@ import { Validators } from "../DTOs/validators";
 
 @Entity({ name: "teacher" })
 export class Teacher extends AbstractEntity {
-    @DtoField({ dtoNames: ["TeacherLoginDto", "CreateTeacherDto"], validator: Validators.REQ_CODE })
+    @DtoField({ dtoNames: ["TeacherLoginDto"], validator: Validators.REQ_CODE })
+    @DtoField({ dtoNames: ["CreateTeacherDto"], validator: Validators.REQ_CODE_TYPE, attributeName: "codeType" })
     @Column()
     code: string;
 
@@ -27,7 +28,7 @@ export class Teacher extends AbstractEntity {
     @Column({ nullable: true, default: null })
     teacherType: string; // TODO: change to enum
 
-    @DtoField({ dtoNames: ["CreateTeacherDto", "UpdateTeacherDto"], validator: Validators.BOOL })
+    @DtoField({ dtoNames: ["UpdateTeacherDto"], validator: Validators.BOOL })
     @Column({ default: true })
     isActive: boolean;
 

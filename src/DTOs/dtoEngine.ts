@@ -10,7 +10,7 @@ export interface DtoFieldConfig {
 }
 
 export function DtoField({ dtoNames, validator, attributeName }: DtoFieldConfig) {
-    return function (target: any, propertyKey: string, attributeName?: string) {
+    return function (target: any, propertyKey: string) {
         for (const dtoName of dtoNames) {
             const dtoFieldsMetadataKey = DTO_FIELD_NAME + dtoName;
             const existingDtoFields = Reflect.getMetadata(dtoFieldsMetadataKey, target) || {};

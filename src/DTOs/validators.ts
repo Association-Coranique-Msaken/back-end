@@ -29,7 +29,7 @@ export class Validators {
     public static readonly ONE_OF = (...strs: String[]) => Joi.string().valid(...strs);
     public static readonly REQ_ONE_OF = (...strs: String[]) => this.ONE_OF(...strs).required();
 
-    public static readonly NUM = Joi.number();
+    public static readonly NUM = Joi.number().integer();
     public static readonly REQ_NUM = this.NUM.required();
 
     public static readonly BOOL = Joi.bool();
@@ -56,7 +56,7 @@ export class Validators {
         .message("{{#label}} must be a valid GUID");
     public static readonly REQ_GUID = this.GUID.required();
 
-    public static readonly EMAIL = Joi.string().email().lowercase().required();
+    public static readonly EMAIL = Joi.string().trim().email().lowercase().required();
     public static readonly REQ_EMAIL = this.EMAIL.required();
 
     public static readonly IDENTIFIER = Joi.string()
@@ -76,4 +76,13 @@ export class Validators {
         .regex(/^(\d{2,3})$/)
         .message("{{#label}} must be a code of 2 or 3 digits");
     public static readonly REQ_GRP_CODE = this.GRP_CODE.required();
+
+    // for teacher codes
+    public static readonly CODE_TYPE = Joi.string()
+        .trim()
+        .length(1)
+        .regex(/^[1-9]$/)
+        .min(1)
+        .max(9);
+    public static readonly REQ_CODE_TYPE = this.CODE_TYPE.required();
 }
