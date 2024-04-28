@@ -13,17 +13,42 @@ const teacherRepository = appDataSource.getRepository(Teacher);
 
 export class TeacherService {
     public static createTeacher = async (teacherData: any): Promise<Teacher> => {
-        const userId = teacherData.identifier;
-        const user = await userRepository.findOne({ where: { identifier: userId } });
+        const userId = teacherData.userId;
+        const user = await userRepository.findOne({ where: { id: userId } });
         if (user) {
-            console.log("successs");
-            const teacher: Teacher = teacherRepository.create({ ...teacherData, user: user } as DeepPartial<Teacher>);
+            const code = await TeacherService.generateTeacherCode(teacherData.codeType);
+            console.log({ ...teacherData, user: user, code: code });
+            const teacher: Teacher = teacherRepository.create({
+                ...teacherData,
+                user: user,
+                code: code,
+            } as DeepPartial<Teacher>);
             await teacherRepository.save(teacher);
             return teacher;
         } else {
-            throw new AppErrors.NotFound(
-                `Unable to find corresponding user with identifier: ${teacherData.identifier}`
-            );
+            throw new AppErrors.NotFound(`Unable to find corresponding user with id: ${userId}`);
+        }
+    };
+
+    private static generateTeacherCode = async (codeType: string) => {
+        const queryResult = await appDataSource
+            .createQueryBuilder()
+            .select("MAX(`code`)", "code")
+            .from(Teacher, "teacher")
+            .where('code LIKE "":codeType"%" ', { codeType: codeType })
+            .execute();
+        const perviouscode = queryResult?.[0]?.code;
+        return TeacherService.computeNextCode(codeType, perviouscode);
+    };
+
+    private static computeNextCode = (codeType: string, previousCode: string | undefined): string => {
+        if (previousCode) {
+            var nextCode = 0;
+            const code = parseInt(previousCode.substring(1));
+            nextCode = code + 1;
+            return `${codeType.at(0)}${nextCode.toString().padStart(2, "0")}`;
+        } else {
+            return `${codeType.at(0)}00`;
         }
     };
 

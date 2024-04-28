@@ -32,8 +32,6 @@ const swaggerDefinition = {
     ],
 };
 
-console.log(swaggerDefinition);
-
 const options = {
     swaggerDefinition,
     // Paths to files containing OpenAPI definitions
