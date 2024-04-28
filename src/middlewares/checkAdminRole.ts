@@ -12,7 +12,6 @@ export const adminAuthorization = (roles: string[]) => async (req: Request, res:
         }
         next();
     } catch (error: any) {
-        console.log(error);
         return Responses.InternalServerError(res);
     }
 };
