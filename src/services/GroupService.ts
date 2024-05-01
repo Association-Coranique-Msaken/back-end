@@ -7,7 +7,7 @@ import { GroupUser } from "../entities/GroupUser";
 import { Teacher } from "../entities/Teacher";
 import { User } from "../entities/User";
 import { AppErrors } from "../helpers/appErrors";
-import { DeepPartial } from "typeorm";
+import { DeepPartial, SelectQueryBuilder } from "typeorm";
 import { transformQueryOutput } from "../helpers/helpers";
 
 const userRepository = appDataSource.getRepository(User);
@@ -31,21 +31,28 @@ export class GroupService {
         return groupRepository.create({ ...groupData, teacher } as DeepPartial<Group>);
     };
 
-    public static getGroups = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<Group>> => {
-        const query = appDataSource
+    private static buildGroupQuery = (): SelectQueryBuilder<Group> => {
+        return appDataSource
             .createQueryBuilder()
-            .select()
+            .select("`group`.*")
+            .addSelect("COUNT(groupUser.id)", "numStudents")
+            .addSelect("SUM(groupUser.isActive)", "activeStudents")
             .from(Group, "group")
-            .where({ isDeleted: false })
-            .addPaging(pageOptionsDto, "group");
+            .leftJoin("group.users", "groupUser")
+            .where("group.isDeleted = :isDeleted", { isDeleted: false })
+            .where("groupUser.isDeleted = :isDeleted", { isDeleted: false })
+            .groupBy("group.id");
+    };
+
+    public static getGroups = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<Group>> => {
+        const query = GroupService.buildGroupQuery().addPaging(pageOptionsDto, "group");
         const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
         return new PageDto(entities, new PageMetaDto({ itemCount, pageOptionsDto }));
     };
 
     public static getGroupById = async (id: string): Promise<Group> => {
-        const group = await groupRepository.findOne({
-            where: { id: id, isDeleted: false },
-        });
+        const query = GroupService.buildGroupQuery().where("group.id = :id", { id });
+        const [itemCount, group] = await Promise.all([query.getCount(), query.execute()]);
         if (!group) {
             throw new AppErrors.NotFound();
         }
@@ -81,12 +88,7 @@ export class GroupService {
         teacherId: string,
         pageOptionsDto: PageOptionsDto
     ): Promise<PageDto<Group>> => {
-        const query = appDataSource
-            .createQueryBuilder()
-            .select()
-            .from(Group, "group")
-            .where({ isDeleted: false, teacher: teacherId })
-            .addPaging(pageOptionsDto, "group");
+        const query = GroupService.buildGroupQuery().where({ teacher: teacherId }).addPaging(pageOptionsDto, "group");
         const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
         return new PageDto(entities, new PageMetaDto({ itemCount, pageOptionsDto }));
     };
