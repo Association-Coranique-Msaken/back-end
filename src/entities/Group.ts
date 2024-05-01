@@ -49,15 +49,9 @@ export class Group extends AbstractEntity {
     })
     courseType: CourseType;
 
-    @Column()
-    numStudents: number; // TODO: make this a calculated field.
-
     @DtoField({ dtoNames: ["CreateGroupDto", "UpdateGroupDto"], validator: Validators.NUM })
     @Column({ nullable: true, default: null })
     maxStudents?: number;
-
-    @Column({ nullable: true, default: null })
-    inactiveStudents?: number; // TODO: make this a calculated field.
 
     @DtoField({ dtoNames: ["CreateGroupDto"], validator: Validators.REQ_GUID, attributeName: "teacherId" })
     @DtoField({ dtoNames: ["UpdateGroupDto"], validator: Validators.GUID, attributeName: "teacherId" })
@@ -67,4 +61,8 @@ export class Group extends AbstractEntity {
 
     @OneToMany((type) => GroupUser, (groupUsers) => groupUsers.group)
     users: GroupUser[];
+
+    // calculated fields.
+    numStudents: number;
+    inactiveStudents?: number;
 }
