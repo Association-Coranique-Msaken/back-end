@@ -111,6 +111,14 @@ export function parseAsOrder(
     return defaultValue;
 }
 
+export function parseDate(dateStr: string): Date {
+    const timestamp = Date.parse(dateStr);
+    if (isNaN(timestamp)) {
+        throw new Error("Invalid date string");
+    }
+    return new Date(timestamp);
+}
+
 // Declare the Extension
 declare module "typeorm" {
     interface SelectQueryBuilder<Entity> {

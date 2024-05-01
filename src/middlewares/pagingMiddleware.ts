@@ -3,7 +3,7 @@ import { Responses } from "../helpers/Responses";
 import { parseAsNumber, parseAsOrder, parseAsString } from "../helpers/helpers";
 import { PagingOrder } from "../DTOs/paging/Order";
 import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
-import { PagingValidator } from "../validators/PagingValidator";
+import { PagingValidator } from "../DTOs/paging/PagingValidator";
 
 export const pagingMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {

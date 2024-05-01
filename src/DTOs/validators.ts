@@ -1,4 +1,6 @@
+import { error } from "console";
 import Joi from "joi";
+import { parseDate } from "../helpers/helpers";
 
 export class Validators {
     public static readonly TEXT = Joi.string().max(50).trim();
@@ -6,20 +8,15 @@ export class Validators {
 
     public static readonly PASS = Joi.string().min(6).max(50).required();
 
-    private static readonly DATE_REGEX = /^(0?[1-9]|[1-2][0-9]|3[0-1])([\/])(0?[1-9]|1[0-2])\2(\d{4})$/;
+    private static readonly DATE_REGEX = /^(0?[1-9]|1[0-2])([\/\-\.])(0?[1-9]|[1-2][0-9]|3[0-1])\2(\d{4})$/;
     public static readonly DATE = Joi.string()
         .trim()
         .regex(Validators.DATE_REGEX)
-        .message("{{#label}} must be a valid date of the form DD/MM/YYYY");
+        .message("{{#label}} must be a valid date of the form MM/DD/YYYY");
     public static readonly REQ_DATE = Validators.DATE.required();
     public static readonly DATE_TRANSFORM = Validators.DATE.custom((value, helpers) => {
         try {
-            var parts = value.split("/");
-            var day = parseInt(parts[0], 10);
-            // JavaScript months are 0-based, so we need to subtract 1 from the month
-            var month = parseInt(parts[1], 10) - 1;
-            var year = parseInt(parts[2], 10);
-            return new Date(year, month, day);
+            return parseDate(value);
         } catch (e) {
             return helpers.error("any.invalid");
         }
