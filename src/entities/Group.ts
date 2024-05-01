@@ -5,56 +5,57 @@ import { User } from "./User";
 import { GroupUser } from "./GroupUser";
 import { DtoField } from "../DTOs/dtoEngine";
 import { Validators } from "../DTOs/validators";
+import { Filterable } from "../filters/annotations";
+import { QueryItemType, QueryRelation } from "../filters/types";
 
 export type CourseType = "practical" | "theoretical" | "summerGroup";
+const courseTypeValues: CourseType[] = ["practical", "theoretical", "summerGroup"];
 
 @Entity({ name: "group" })
 export class Group extends AbstractEntity {
-    @DtoField({ dtoNames: ["CreateGroupDto"], validator: Validators.REQ_GRP_CODE })
-    @DtoField({ dtoNames: ["UpdateGroupDto"], validator: Validators.GRP_CODE })
+    @Filterable()
+    @DtoField({ dto: ["CreateGroupDto"], validator: Validators.REQ_GRP_CODE })
+    @DtoField({ dto: ["UpdateGroupDto"], validator: Validators.GRP_CODE })
     @Column({ type: "varchar", length: 5 })
     code: string;
 
-    @DtoField({ dtoNames: ["CreateGroupDto"], validator: Validators.REQ_TEXT })
-    @DtoField({ dtoNames: ["UpdateGroupDto"], validator: Validators.TEXT })
+    @Filterable()
+    @DtoField({ dto: ["CreateGroupDto"], validator: Validators.REQ_TEXT })
+    @DtoField({ dto: ["UpdateGroupDto"], validator: Validators.TEXT })
     @Column()
     days: string;
 
-    @DtoField({ dtoNames: ["CreateGroupDto"], validator: Validators.REQ_TEXT })
-    @DtoField({ dtoNames: ["UpdateGroupDto"], validator: Validators.TEXT })
+    @Filterable()
+    @DtoField({ dto: ["CreateGroupDto"], validator: Validators.REQ_TEXT })
+    @DtoField({ dto: ["UpdateGroupDto"], validator: Validators.TEXT })
     @Column({ type: "varchar", length: 20 })
     timeRange: string;
 
-    @DtoField({ dtoNames: ["CreateGroupDto"], validator: Validators.REQ_NUM })
-    @DtoField({ dtoNames: ["UpdateGroupDto"], validator: Validators.NUM })
+    @Filterable({ type: QueryItemType.NUMBER })
+    @DtoField({ dto: ["CreateGroupDto"], validator: Validators.REQ_NUM })
+    @DtoField({ dto: ["UpdateGroupDto"], validator: Validators.NUM })
     @Column()
     roomNumber: number;
 
-    @DtoField({ dtoNames: ["CreateGroupDto"], validator: Validators.REQ_TEXT })
-    @DtoField({ dtoNames: ["UpdateGroupDto"], validator: Validators.TEXT })
+    @Filterable({ relation: QueryRelation.EQ })
+    @DtoField({ dto: ["CreateGroupDto"], validator: Validators.REQ_TEXT })
+    @DtoField({ dto: ["UpdateGroupDto"], validator: Validators.TEXT })
     @Column()
     levelOrNumHizbs: string;
 
-    @DtoField({
-        dtoNames: ["CreateGroupDto"],
-        validator: Validators.REQ_ONE_OF("practical", "theorethical", "summerGroup"),
-    })
-    @DtoField({
-        dtoNames: ["UpdateGroupDto"],
-        validator: Validators.ONE_OF("practical", "theorethical", "summerGroup"),
-    })
-    @Column({
-        type: "enum",
-        enum: ["practical", "theorethical", "summerGroup"],
-    })
+    @Filterable({ relation: QueryRelation.EQ })
+    @DtoField({ dto: ["CreateGroupDto"], validator: Validators.REQ_ONE_OF(...courseTypeValues) })
+    @DtoField({ dto: ["UpdateGroupDto"], validator: Validators.ONE_OF(...courseTypeValues) })
+    @Column({ type: "enum", enum: courseTypeValues })
     courseType: CourseType;
 
-    @DtoField({ dtoNames: ["CreateGroupDto", "UpdateGroupDto"], validator: Validators.NUM })
+    @DtoField({ dto: ["CreateGroupDto", "UpdateGroupDto"], validator: Validators.NUM })
     @Column({ nullable: true, default: null })
     maxStudents?: number;
 
-    @DtoField({ dtoNames: ["CreateGroupDto"], validator: Validators.REQ_GUID, attributeName: "teacherId" })
-    @DtoField({ dtoNames: ["UpdateGroupDto"], validator: Validators.GUID, attributeName: "teacherId" })
+    @Filterable({ type: QueryItemType.GUID, fieldName: "teacherId" })
+    @DtoField({ dto: ["CreateGroupDto"], validator: Validators.REQ_GUID, attributeName: "teacherId" })
+    @DtoField({ dto: ["UpdateGroupDto"], validator: Validators.GUID, attributeName: "teacherId" })
     @OneToOne(() => Teacher)
     @JoinColumn()
     teacher: Teacher;

@@ -4,22 +4,8 @@ import { AdminService } from "../services/adminService";
 import { UserService } from "../services/userService";
 import { TeacherService } from "../services/teacherService";
 import { GroupService } from "../services/GroupService";
-import { generateDtoMetaData, mapToDto } from "../DTOs/dtoEngine";
-import { Admin } from "../entities/Admin";
-import { Teacher } from "../entities/Teacher";
-import { User } from "../entities/User";
-import { Group } from "../entities/Group";
-import { GroupUser } from "../entities/GroupUser";
-
-const createAdminDtoMeta = generateDtoMetaData("CreateAdminDto", Admin.prototype);
-const updateAdminDtoMeta = generateDtoMetaData("UpdateAdminDto", Admin.prototype);
-const createTeacherDtoMeta = generateDtoMetaData("CreateTeacherDto", Teacher.prototype);
-const updateTeacherDtoMeta = generateDtoMetaData("UopdateTeacherDto", Teacher.prototype);
-const createUserDtoMeta = generateDtoMetaData("CreateUserDto", User.prototype);
-const updateUserDtoMeta = generateDtoMetaData("UpdateUserDto", User.prototype);
-const createGroupDtoMeta = generateDtoMetaData("CreateGroupDto", Group.prototype);
-const updateGroupDtoMeta = generateDtoMetaData("UpdateGroupDto", Group.prototype);
-const enrollUserToGroupMeta = generateDtoMetaData("EnrollUserToGroupDto", GroupUser.prototype);
+import { mapToDto } from "../DTOs/dtoEngine";
+import { Dto } from "../DTOs/dtoMetadata";
 
 export const getAdmins = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -32,7 +18,7 @@ export const getAdmins = async (req: Request, res: Response, next: NextFunction)
 
 export const createAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const createAdmindto = mapToDto(createAdminDtoMeta, req.body);
+        const createAdmindto = mapToDto(Dto.createAdmin.meta, req.body);
         const admin = await AdminService.createAdmin(createAdmindto);
         return Responses.CreateSucess(res, admin);
     } catch (error) {
@@ -45,7 +31,7 @@ export const updateAdmin = async (req: Request, res: Response, next: NextFunctio
         return Responses.BadRequest(res, "id is required.");
     }
     try {
-        const updateAdmindto = mapToDto(updateAdminDtoMeta, req.body);
+        const updateAdmindto = mapToDto(Dto.updateAdmin.meta, req.body);
         await AdminService.updateAdminById({ ...updateAdmindto, id: req.params.id });
         return Responses.UpdateSucess(res);
     } catch (error) {
@@ -80,7 +66,7 @@ export const deleteAdminById = async (req: Request, res: Response, next: NextFun
 // teacher functionality
 export const createTeacher = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const createTeacherdto = mapToDto(createTeacherDtoMeta, req.body);
+        const createTeacherdto = mapToDto(Dto.createTeacher.meta, req.body);
         const teacher = await TeacherService.createTeacher(createTeacherdto);
         return Responses.CreateSucess(res, teacher);
     } catch (error) {
@@ -114,7 +100,7 @@ export const updateTeacher = async (req: Request, res: Response, next: NextFunct
         return Responses.BadRequest(res, "id is required.");
     }
     try {
-        const updateTeacherdto = mapToDto(updateTeacherDtoMeta, req.body);
+        const updateTeacherdto = mapToDto(Dto.updateTeacher.meta, req.body);
         await TeacherService.updateTeacherById({ ...updateTeacherdto, id: req.params.id });
         return Responses.UpdateSucess(res);
     } catch (error) {
@@ -148,7 +134,7 @@ export const getTeacherByCode = async (req: Request, res: Response, next: NextFu
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const createUserdto = mapToDto(createUserDtoMeta, req.body);
+        const createUserdto = mapToDto(Dto.createUser.meta, req.body);
         const user = await UserService.createUser(createUserdto);
         return Responses.CreateSucess(res, user);
     } catch (error) {
@@ -182,7 +168,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
         return Responses.BadRequest(res, "id is required.");
     }
     try {
-        const updateUserdto = mapToDto(updateUserDtoMeta, req.body);
+        const updateUserdto = mapToDto(Dto.updateUser.meta, req.body);
         await UserService.updateUserById({ ...updateUserdto, id: req.params.id });
         return Responses.UpdateSucess(res);
     } catch (error) {
@@ -206,7 +192,7 @@ export const deleteUserById = async (req: Request, res: Response, next: NextFunc
 
 export const createGroup = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const createGroupdto = mapToDto(createGroupDtoMeta, req.body);
+        const createGroupdto = mapToDto(Dto.createGroup.meta, req.body);
         const admin = await GroupService.createGroup(createGroupdto);
         return Responses.CreateSucess(res, admin);
     } catch (error) {
@@ -237,7 +223,7 @@ export const getGroupById = async (req: Request, res: Response, next: NextFuncti
 
 export const updateGroup = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const updateGroupdto = mapToDto(updateGroupDtoMeta, req.body);
+        const updateGroupdto = mapToDto(Dto.updateGroup.meta, req.body);
         await GroupService.updateGroupById({ ...updateGroupdto, id: req.params.id });
         return Responses.UpdateSucess(res);
     } catch (error) {
@@ -284,7 +270,7 @@ export const getGroupUsers = async (req: Request, res: Response, next: NextFunct
 
 export const enrollUserToGroup = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { userId, groupId } = mapToDto(enrollUserToGroupMeta, req.body);
+        const { userId, groupId } = mapToDto(Dto.enrollUserToGroup.meta, req.body);
         await GroupService.enrollUserToGroup(userId, groupId);
         return Responses.UpdateSucess(res);
     } catch (error) {

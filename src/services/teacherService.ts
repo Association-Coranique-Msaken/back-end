@@ -4,10 +4,10 @@ import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
 import { appDataSource } from "../config/Database";
 import { Teacher } from "../entities/Teacher";
 import { User } from "../entities/User";
+import { FilterQuery } from "../filters/types";
 import { AppErrors } from "../helpers/appErrors";
 import { transformQueryOutput } from "../helpers/helpers";
 import { DeepPartial } from "typeorm";
-import { FilterQuery } from "../middlewares/filteringMiddleware";
 
 const userRepository = appDataSource.getRepository(User);
 const teacherRepository = appDataSource.getRepository(Teacher);
@@ -18,7 +18,6 @@ export class TeacherService {
         const user = await userRepository.findOne({ where: { id: userId } });
         if (user) {
             const code = await TeacherService.generateTeacherCode(teacherData.codeType);
-            console.log({ ...teacherData, user: user, code: code });
             const teacher: Teacher = teacherRepository.create({
                 ...teacherData,
                 user: user,
@@ -64,7 +63,7 @@ export class TeacherService {
             .where({ isDeleted: false })
             .leftJoinAndSelect("teacher.user", "user")
             .addPaging(pageOptionsDto, "teacher")
-            .where(filters.queryString, { ...filters.placeholders });
+            .addFilters(filters);
 
         const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
         const [teachers, users] = await transformQueryOutput(entities, ["teacher_", "user_"]);

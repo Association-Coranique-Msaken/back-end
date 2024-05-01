@@ -3,39 +3,44 @@ import { User } from "./User";
 import { AbstractEntity } from "./AbstractEntity";
 import { DtoField } from "../DTOs/dtoEngine";
 import { Validators } from "../DTOs/validators";
+import { Filterable } from "../filters/annotations";
+import { QueryItemType, QueryRelation } from "../filters/types";
 
 export type AdminRole = "fullAccessAdmin" | "limitedAccess" | "readOnly";
+const adminRroleValues: AdminRole[] = ["fullAccessAdmin", "limitedAccess", "readOnly"];
 
 @Entity({ name: "admin" })
 export class Admin extends AbstractEntity {
-    @DtoField({ dtoNames: ["UpdateAdminDto"], validator: Validators.TEXT })
-    @DtoField({ dtoNames: ["CreateAdminDto", "CreateUserAdminDto", "AdminLoginDto"], validator: Validators.REQ_TEXT })
+    @Filterable()
+    @DtoField({ dto: ["UpdateAdminDto"], validator: Validators.TEXT })
+    @DtoField({ dto: ["CreateAdminDto", "CreateUserAdminDto", "AdminLoginDto"], validator: Validators.REQ_TEXT })
     @Column({ unique: true })
     username: string;
 
-    @DtoField({ dtoNames: ["CreateAdminDto", "CreateUserAdminDto", "AdminLoginDto"], validator: Validators.REQ_TEXT })
+    @DtoField({ dto: ["CreateAdminDto", "CreateUserAdminDto", "AdminLoginDto"], validator: Validators.REQ_TEXT })
     @Column()
     password: string;
 
     @Column({ default: false })
     isDeleted: boolean;
 
+    @Filterable({ relation: QueryRelation.EQ })
     @DtoField({
-        dtoNames: ["UpdateAdminDto"],
-        validator: Validators.ONE_OF("fullAccessAdmin", "limitedAccess", "readOnly"),
+        dto: ["UpdateAdminDto"],
+        validator: Validators.ONE_OF(...adminRroleValues),
     })
     @DtoField({
-        dtoNames: ["CreateUserAdminDto", "CreateAdminDto"],
-        validator: Validators.REQ_ONE_OF("fullAccessAdmin", "limitedAccess", "readOnly"),
+        dto: ["CreateUserAdminDto", "CreateAdminDto"],
+        validator: Validators.REQ_ONE_OF(...adminRroleValues),
     })
     @Column({
         type: "enum",
-        enum: ["fullAccessAdmin", "limitedAccess", "readOnly"],
+        enum: adminRroleValues,
         default: "fullAccessAdmin",
     })
     role: AdminRole;
 
-    @DtoField({ dtoNames: ["CreateAdminDto"], validator: Validators.REQ_GUID, attributeName: "userId" })
+    @DtoField({ dto: ["CreateAdminDto"], validator: Validators.REQ_GUID, attributeName: "userId" })
     @OneToOne(() => User)
     @JoinColumn()
     user: User;

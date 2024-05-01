@@ -2,14 +2,12 @@ import { NextFunction, type Request, type Response } from "express";
 import { Responses } from "../helpers/Responses";
 import { UserService } from "../services/userService";
 import { GroupService } from "../services/GroupService";
-import { generateDtoMetaData, mapToDto } from "../DTOs/dtoEngine";
-import { User } from "../entities/User";
-
-const updateUserDtoMeta = generateDtoMetaData("UpdateUserDto", User.prototype);
+import { mapToDto } from "../DTOs/dtoEngine";
+import { Dto } from "../DTOs/dtoMetadata";
 
 export const updateData = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const updateUserdto = mapToDto(updateUserDtoMeta, req.body);
+        const updateUserdto = mapToDto(Dto.updateUser.meta, req.body);
         const id = res.locals.decodedToken.userId;
         // update the user corresponding to the teacher
         await UserService.updateUserById({ ...updateUserdto, id });

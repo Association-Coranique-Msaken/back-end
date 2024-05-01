@@ -3,36 +3,43 @@ import { User } from "./User";
 import { AbstractEntity } from "./AbstractEntity";
 import { DtoField } from "../DTOs/dtoEngine";
 import { Validators } from "../DTOs/validators";
+import { Filterable } from "../filters/annotations";
+import { QueryItemType, QueryRelation } from "../filters/types";
 
 @Entity({ name: "teacher" })
 export class Teacher extends AbstractEntity {
-    @DtoField({ dtoNames: ["TeacherLoginDto"], validator: Validators.REQ_CODE })
-    @DtoField({ dtoNames: ["CreateTeacherDto"], validator: Validators.REQ_CODE_TYPE, attributeName: "codeType" })
+    @Filterable({ relation: QueryRelation.STARTS_WITH })
+    @DtoField({ dto: ["TeacherLoginDto"], validator: Validators.REQ_CODE })
+    @DtoField({ dto: ["CreateTeacherDto"], validator: Validators.REQ_CODE_TYPE, attributeName: "codeType" })
     @Column()
     code: string;
 
-    @DtoField({ dtoNames: ["TeacherLoginDto", "CreateTeacherDto"], validator: Validators.REQ_TEXT })
-    @DtoField({ dtoNames: ["UpdateTeacherDto"], validator: Validators.TEXT })
+    @DtoField({ dto: ["TeacherLoginDto", "CreateTeacherDto"], validator: Validators.REQ_TEXT })
+    @DtoField({ dto: ["UpdateTeacherDto"], validator: Validators.TEXT })
     @Column()
     password: string;
 
-    @DtoField({ dtoNames: ["CreateTeacherDto", "UpdateTeacherDto"], validator: Validators.TEXT })
+    @Filterable()
+    @DtoField({ dto: ["CreateTeacherDto", "UpdateTeacherDto"], validator: Validators.TEXT })
     @Column({ nullable: true, default: null })
     kotebName: string;
 
-    @DtoField({ dtoNames: ["CreateTeacherDto", "UpdateTeacherDto"], validator: Validators.TEXT })
+    @Filterable()
+    @DtoField({ dto: ["CreateTeacherDto", "UpdateTeacherDto"], validator: Validators.TEXT })
     @Column({ nullable: true, default: null })
     bonus: string;
 
-    @DtoField({ dtoNames: ["CreateTeacherDto", "UpdateTeacherDto"], validator: Validators.TEXT })
+    @Filterable()
+    @DtoField({ dto: ["CreateTeacherDto", "UpdateTeacherDto"], validator: Validators.TEXT })
     @Column({ nullable: true, default: null })
     teacherType: string; // TODO: change to enum
 
-    @DtoField({ dtoNames: ["UpdateTeacherDto"], validator: Validators.BOOL })
+    @Filterable({ type: QueryItemType.NUMBER })
+    @DtoField({ dto: ["UpdateTeacherDto"], validator: Validators.BOOL })
     @Column({ default: true })
     isActive: boolean;
 
-    @DtoField({ dtoNames: ["CreateTeacherDto"], validator: Validators.REQ_GUID, attributeName: "userId" })
+    @DtoField({ dto: ["CreateTeacherDto"], validator: Validators.REQ_GUID, attributeName: "userId" })
     @OneToOne(() => User)
     @JoinColumn()
     user: User;

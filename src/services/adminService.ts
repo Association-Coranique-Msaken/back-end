@@ -9,7 +9,8 @@ import { PageDto } from "../DTOs/paging/PageDto";
 import { UserService } from "./userService";
 import { SelectQueryBuilder } from "typeorm";
 import { Group } from "../entities/Group";
-import { FilterQuery } from "../middlewares/filteringMiddleware";
+import { FilterQuery } from "../filters/types";
+import "../filters/extensions";
 
 const userRepository = appDataSource.getRepository(User);
 const adminRepository = appDataSource.getRepository(Admin);
@@ -27,7 +28,7 @@ export class AdminService {
             .where({ isDeleted: false })
             .leftJoinAndSelect("admin.user", "user")
             .addPaging(pageOptionsDto, "admin")
-            .where(filters.queryString, { ...filters.placeholders });
+            .addFilters(filters);
 
         const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
         const [admins, users] = await transformQueryOutput(entities, ["admin_", "user_"]);
