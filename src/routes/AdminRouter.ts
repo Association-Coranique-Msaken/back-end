@@ -26,6 +26,12 @@ import {
 import { adminAuthentication } from "../middlewares/authMiddleware";
 import { readOnlyAdminAuthorization, fullAccessAdminAuthorization } from "../middlewares/checkAdminRole";
 import { pagingMiddleware } from "../middlewares/pagingMiddleware";
+import {
+    adminListFilterMiddleware,
+    groupListFilterMiddleware,
+    teacherListFilterMiddleware,
+    userListFilterMiddleware,
+} from "../middlewares/filteringMiddleware";
 
 const adminRouter = express.Router();
 
@@ -47,7 +53,14 @@ adminRouter.post("/admin/", adminAuthentication, fullAccessAdminAuthorization, c
  *     description: Requires admin access token. Get admins.
  *     tags: [adminapi]
  */
-adminRouter.get("/admin/list", adminAuthentication, readOnlyAdminAuthorization, pagingMiddleware, getAdmins);
+adminRouter.get(
+    "/admin/list",
+    adminAuthentication,
+    readOnlyAdminAuthorization,
+    pagingMiddleware,
+    adminListFilterMiddleware,
+    getAdmins
+);
 
 /**
  * @swagger
@@ -97,7 +110,14 @@ adminRouter.post("/teacher/", adminAuthentication, fullAccessAdminAuthorization,
  *     description: Requires admin access token with write access. Get teachers.
  *     tags: [adminapi]
  */
-adminRouter.get("/teacher/list", adminAuthentication, readOnlyAdminAuthorization, pagingMiddleware, getTeachers);
+adminRouter.get(
+    "/teacher/list",
+    adminAuthentication,
+    readOnlyAdminAuthorization,
+    pagingMiddleware,
+    teacherListFilterMiddleware,
+    getTeachers
+);
 
 /**
  * @swagger
@@ -147,7 +167,14 @@ adminRouter.post("/user/", adminAuthentication, fullAccessAdminAuthorization, cr
  *     description: Requires admin access token with write access. Get usesr.
  *     tags: [adminapi]
  */
-adminRouter.get("/user/list", adminAuthentication, readOnlyAdminAuthorization, pagingMiddleware, getUsers);
+adminRouter.get(
+    "/user/list",
+    adminAuthentication,
+    readOnlyAdminAuthorization,
+    pagingMiddleware,
+    adminListFilterMiddleware,
+    getUsers
+);
 
 /**
  * @swagger
@@ -197,7 +224,14 @@ adminRouter.post("/group/", adminAuthentication, fullAccessAdminAuthorization, c
  *     description: Requires admin access token. Get groups. Supports pagination.
  *     tags: [adminapi]
  */
-adminRouter.get("/group/list", adminAuthentication, readOnlyAdminAuthorization, pagingMiddleware, getGroups);
+adminRouter.get(
+    "/group/list",
+    adminAuthentication,
+    readOnlyAdminAuthorization,
+    pagingMiddleware,
+    groupListFilterMiddleware,
+    getGroups
+);
 
 /**
  * @swagger

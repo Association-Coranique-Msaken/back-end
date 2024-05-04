@@ -9,6 +9,7 @@ import { User } from "../entities/User";
 import { AppErrors } from "../helpers/appErrors";
 import { DeepPartial, SelectQueryBuilder } from "typeorm";
 import { transformQueryOutput } from "../helpers/helpers";
+import { FilterQuery } from "../filters/types";
 
 const userRepository = appDataSource.getRepository(User);
 const teacherRepository = appDataSource.getRepository(Teacher);
@@ -44,8 +45,8 @@ export class GroupService {
             .groupBy("group.id");
     };
 
-    public static getGroups = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<Group>> => {
-        const query = GroupService.buildGroupQuery().addPaging(pageOptionsDto, "group");
+    public static getGroups = async (pageOptionsDto: PageOptionsDto, filters: FilterQuery): Promise<PageDto<Group>> => {
+        const query = GroupService.buildGroupQuery().addPaging(pageOptionsDto, "group").addFilters(filters);
         const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
         return new PageDto(entities, new PageMetaDto({ itemCount, pageOptionsDto }));
     };

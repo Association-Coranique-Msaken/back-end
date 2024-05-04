@@ -4,18 +4,19 @@ import * as Joi from "joi";
 const DTO_FIELD_NAME = "dtoFields";
 
 export interface DtoFieldConfig {
-    dtoNames: string[];
+    dto: string[];
     validator: Joi.Schema;
     attributeName?: string;
 }
 
-export function DtoField({ dtoNames, validator, attributeName }: DtoFieldConfig) {
-    return function (target: any, propertyKey: string) {
+export function DtoField({ dto: dtoNames, validator, attributeName }: DtoFieldConfig): PropertyDecorator {
+    return function (target: Object, propertyKey: string | symbol) {
+        const className = target.constructor.name;
         for (const dtoName of dtoNames) {
             const dtoFieldsMetadataKey = DTO_FIELD_NAME + dtoName;
             const existingDtoFields = Reflect.getMetadata(dtoFieldsMetadataKey, target) || {};
-            attributeName = attributeName ?? propertyKey;
-            existingDtoFields[propertyKey] = { dtoName, validator, attributeName };
+            attributeName = attributeName ?? propertyKey.toString();
+            existingDtoFields[propertyKey] = { dtoName, validator, attributeName, className };
             Reflect.defineMetadata(dtoFieldsMetadataKey, existingDtoFields, target);
         }
     };
@@ -27,6 +28,7 @@ type MetaField = Record<
         dtoName: string;
         validator?: Joi.Schema<any> | undefined;
         attributeName: string;
+        className: string;
     }
 >;
 

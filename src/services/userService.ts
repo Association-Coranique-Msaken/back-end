@@ -5,6 +5,7 @@ import { AppErrors } from "../helpers/appErrors";
 import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
 import { PageDto } from "../DTOs/paging/PageDto";
 import { PageMetaDto } from "../DTOs/paging/PageMetaDto";
+import { FilterQuery } from "../filters/types";
 
 const userRepository = appDataSource.getRepository(User);
 
@@ -48,13 +49,15 @@ export class UserService {
         }
     };
 
-    public static getUsers = async (pageOptionsDto: PageOptionsDto): Promise<PageDto<User>> => {
+    public static getUsers = async (pageOptionsDto: PageOptionsDto, filters: FilterQuery): Promise<PageDto<User>> => {
         const query = appDataSource
             .createQueryBuilder()
             .select()
             .from(User, "user")
             .where({ isDeleted: false })
-            .addPaging(pageOptionsDto, "user");
+            .addPaging(pageOptionsDto, "user")
+            .addFilters(filters);
+
         const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
         return new PageDto(entities, new PageMetaDto({ itemCount, pageOptionsDto }));
     };
