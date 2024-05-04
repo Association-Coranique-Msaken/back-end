@@ -127,23 +127,31 @@ export class GroupService {
             throw new AppErrors.NotFound(`Unable to find user with id: ${groupId}`);
         }
 
-        const groupUser = await groupUserRepository.findOne({
-            where: { user: user, group: group },
-        });
+        const groupUser = await GroupService.findUserGroup(userId, groupId);
 
         if (groupUser) {
-            if (!groupUser.isDeleted) {
-                throw new AppErrors.AlreadyExists(`User already enrolled to group.`);
-            } else {
-                groupUser.isDeleted = true;
-                await groupUserRepository.update(groupUser.id, groupUser);
-                return;
-            }
+            throw new AppErrors.AlreadyExists(`User already enrolled to group.`);
         }
 
         const newGroupUser = new GroupUser();
         newGroupUser.user = user;
         newGroupUser.group = group;
         await groupUserRepository.insert(newGroupUser);
+    };
+
+    private static findUserGroup = async (userId: string, groupId: string): Promise<GroupUser | null> => {
+        const query = appDataSource
+            .createQueryBuilder()
+            .select()
+            .from(GroupUser, "groupUser")
+            .where("userId = :userId", { userId: userId })
+            .where("groupId = :groupId", { groupId: groupId })
+            .where("isDeleted = :isDeleted", { isDeleted: false })
+            .limit(1);
+        const [itemCount, entities] = await Promise.all([query.getCount(), query.execute()]);
+        if (itemCount == 0) {
+            return null;
+        }
+        return entities[0] as GroupUser;
     };
 }
