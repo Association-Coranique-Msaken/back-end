@@ -6,8 +6,8 @@ import { Teacher } from "../entities/Teacher";
 import { User } from "../entities/User";
 import { FilterQuery } from "../filters/types";
 import { AppErrors } from "../helpers/appErrors";
-import { transformQueryOutput } from "../helpers/helpers";
 import { DeepPartial } from "typeorm";
+import { transformQueryOutput } from "../helpers/queryHelpers";
 
 const userRepository = appDataSource.getRepository(User);
 const teacherRepository = appDataSource.getRepository(Teacher);

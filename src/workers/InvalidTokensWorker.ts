@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import { clearExpiredTokensFromDB } from "../controllers/invalidTokensController";
+import { clearExpiredTokensFromDB } from "../controllers/tokensController";
 
 // Schedule the route to run every day at midnight.
 export const ScheduleInvalidTokensWorker = () => {

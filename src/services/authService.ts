@@ -3,10 +3,18 @@ import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
 import { Teacher } from "../entities/Teacher";
 import { User } from "../entities/User";
-import { invalidTokensCache } from "../helpers/InvalidTokensCache";
-import { EntityToken, TOKEN_TYPE_ADMIN, TOKEN_TYPE_TEACHER, TOKEN_TYPE_USER, Tokens } from "../helpers/TokenTypes";
+import { AccessTokenRepo, RefreshTokenRepo } from "../helpers/tokens/tokensRepository";
+import {
+    EntityToken,
+    TOKEN_TYPE_ADMIN,
+    TOKEN_TYPE_TEACHER,
+    TOKEN_TYPE_USER,
+    Tokens,
+} from "../helpers/tokens/tokenTypes";
 import { AppErrors } from "../helpers/appErrors";
-import { encrypt, CompareDates, getEstimatedTokensExp } from "../helpers/helpers";
+import { encrypt } from "../helpers/encrypt";
+import { CompareDates } from "../helpers/helpers";
+import { getEstimatedTokensExp } from "../helpers/tokens/tokensHelpers";
 
 const userRepository = appDataSource.getRepository(User);
 const adminRepository = appDataSource.getRepository(Admin);
@@ -84,13 +92,13 @@ export class AuthService {
     };
 
     public static logout = async (userToken: string, decodedToken: EntityToken) => {
-        await invalidTokensCache.invalidate(userToken, decodedToken.id, decodedToken.expiration);
+        await AccessTokenRepo.blacklist(decodedToken.id, userToken, decodedToken.expiration);
     };
 
     public static refreshToken = async (refreshToken: string) => {
         const decodedToken = Tokens.verifyRefreshToken(refreshToken);
-        await invalidTokensCache.checkValidity(refreshToken, decodedToken.id, decodedToken.expiration);
-        invalidTokensCache.invalidate(refreshToken, decodedToken.id, decodedToken.expiration);
+        await RefreshTokenRepo.checkValidity(refreshToken, decodedToken.id, decodedToken.expiration);
+        RefreshTokenRepo.blacklist(decodedToken.id, refreshToken, decodedToken.expiration);
 
         switch (decodedToken.tokenType) {
             case TOKEN_TYPE_USER:

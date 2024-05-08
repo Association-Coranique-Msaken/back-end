@@ -1,7 +1,7 @@
-import { type Admin } from "../entities/Admin";
-import { type Teacher } from "../entities/Teacher";
-import { type User } from "../entities/User";
-import { encrypt } from "./helpers";
+import { type Admin } from "../../entities/Admin";
+import { type Teacher } from "../../entities/Teacher";
+import { type User } from "../../entities/User";
+import { encrypt } from "../encrypt";
 import * as jwt from "jsonwebtoken";
 
 export const TOKEN_TYPE_USER = "User";

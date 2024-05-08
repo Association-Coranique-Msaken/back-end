@@ -1,7 +1,7 @@
 import { Entity, Column, Index, PrimaryColumn } from "typeorm";
 
-@Entity({ name: "invalidTokens" })
-export class InvalidTokens {
+@Entity({ name: "Tokens" })
+export class Tokens {
     @PrimaryColumn()
     token: string;
 

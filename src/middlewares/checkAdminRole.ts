@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from "express";
-import { Responses } from "../helpers/Responses";
+import { Responses } from "../helpers/responses";
 
 export const adminAuthorization = (roles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
     try {

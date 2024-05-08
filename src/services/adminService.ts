@@ -2,7 +2,7 @@ import { appDataSource } from "../config/Database";
 import { Admin } from "../entities/Admin";
 import { User } from "../entities/User";
 import { AppErrors } from "../helpers/appErrors";
-import { encrypt, transformQueryOutput } from "../helpers/helpers";
+import { generateResetPasswordLink } from "../helpers/helpers";
 import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
 import { PageMetaDto } from "../DTOs/paging/PageMetaDto";
 import { PageDto } from "../DTOs/paging/PageDto";
@@ -11,6 +11,10 @@ import { SelectQueryBuilder } from "typeorm";
 import { Group } from "../entities/Group";
 import { FilterQuery } from "../filters/types";
 import "../filters/extensions";
+import { encrypt } from "../helpers/encrypt";
+import { AccessTokenRepo, RefreshTokenRepo, ResetPswdTokenRepo } from "../helpers/tokens/tokensRepository";
+import { transformQueryOutput } from "../helpers/queryHelpers";
+import { decodeAndCheckResetPasswordToken } from "../helpers/tokens/tokensHelpers";
 
 const userRepository = appDataSource.getRepository(User);
 const adminRepository = appDataSource.getRepository(Admin);
@@ -39,7 +43,7 @@ export class AdminService {
     };
 
     public static createAdmin = async (adminData: any): Promise<Admin> => {
-        // Check if admin exists.
+        // FIXME should we check also for deleted ?
         if (await adminRepository.findOne({ where: { username: adminData.username } })) {
             throw new AppErrors.AlreadyExists(`username '${adminData.username}' aleady exists`);
         }
@@ -65,12 +69,7 @@ export class AdminService {
     };
 
     public static updateAdminById = async (updateData: any) => {
-        const admin = await adminRepository.findOne({
-            where: { id: updateData.id, isDeleted: false },
-        });
-        if (!admin) {
-            throw new AppErrors.NotFound(`Unable to find admin with id: ${updateData.id}`);
-        }
+        const admin = await AdminService.getAdminOrThrow(updateData.id);
         await adminRepository.update(admin.id, updateData);
     };
 
@@ -110,14 +109,30 @@ export class AdminService {
         await adminRepository.update(id, { isDeleted: true });
     };
 
-    public static enrollUserToSummerGroup = async (userId: string, grouId: string) => {
-        const user = await userRepository.findOne({ where: { id: userId, isDeleted: false } });
-        if (!user) {
-            throw new AppErrors.NotFound(`Unable to find user with id : '${userId}'.`);
+    public static generateAdminResetPasswordLink = async (adminId: string) => {
+        const admin = await AdminService.getAdminOrThrow(adminId);
+        return generateResetPasswordLink(adminId);
+    };
+
+    public static resetAdminPassword = async (token: string, newPassword: string) => {
+        const { id, expiration } = await decodeAndCheckResetPasswordToken(token);
+        const admin = await AdminService.getAdminOrThrow(id);
+        admin.password = await encrypt.encryptpass(newPassword);
+        const res = await adminRepository.update(admin.id, admin);
+        if (!res.affected) {
+            throw new AppErrors.InternalError();
         }
-        const group = await groupRepository.findOne({ where: { id: grouId, isDeleted: false } });
-        if (!group) {
-            throw new AppErrors.NotFound(`Unable to find group with id : '${userId}'.`);
+        await AccessTokenRepo.blacklistAll(admin.id);
+        await RefreshTokenRepo.blacklistAll(admin.id);
+        await ResetPswdTokenRepo.blacklist(admin.id, token, expiration);
+        return admin;
+    };
+
+    private static getAdminOrThrow = async (adminId: string): Promise<Admin> => {
+        const admin = await adminRepository.findOne({ where: { id: adminId, isDeleted: false } });
+        if (!admin) {
+            throw new AppErrors.NotFound(`Unable to find admin with id : '${adminId}'.`);
         }
+        return admin;
     };
 }

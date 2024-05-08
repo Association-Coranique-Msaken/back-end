@@ -1,5 +1,5 @@
 import { NextFunction, type Request, type Response } from "express";
-import { Responses } from "../helpers/Responses";
+import { Responses } from "../helpers/responses";
 import { UserService } from "../services/userService";
 import { GroupService } from "../services/GroupService";
 import { mapToDto } from "../DTOs/dtoEngine";

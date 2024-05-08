@@ -8,8 +8,8 @@ import { Teacher } from "../entities/Teacher";
 import { User } from "../entities/User";
 import { AppErrors } from "../helpers/appErrors";
 import { DeepPartial, SelectQueryBuilder } from "typeorm";
-import { transformQueryOutput } from "../helpers/helpers";
 import { FilterQuery } from "../filters/types";
+import { transformQueryOutput } from "../helpers/queryHelpers";
 
 const userRepository = appDataSource.getRepository(User);
 const teacherRepository = appDataSource.getRepository(Teacher);

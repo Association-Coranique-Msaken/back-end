@@ -1,6 +1,6 @@
 import { FilterQuery, QueryItem, QueryItemType, QueryRelation } from "./types";
 import { FiltrableMetaData } from "./annotations";
-import { parseDate } from "../helpers/helpers";
+import { parseDate } from "../helpers/parsers";
 
 const parseQuery = (query: qs.ParsedQs, filterableMetaData: FiltrableMetaData): QueryItem[] => {
     const queryItems: QueryItem[] = [];
