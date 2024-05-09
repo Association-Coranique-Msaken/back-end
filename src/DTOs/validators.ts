@@ -1,6 +1,6 @@
 import { error } from "console";
 import Joi from "joi";
-import { parseDate } from "../helpers/helpers";
+import { parseDate } from "../helpers/parsers";
 
 export class Validators {
     public static readonly TEXT = Joi.string().max(50).trim();

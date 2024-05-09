@@ -1,5 +1,6 @@
 import express from "express";
 import {
+    generateAdminResetPasswordLink,
     createAdmin,
     createGroup,
     createTeacher,
@@ -94,6 +95,21 @@ adminRouter.delete("/admin/:id", adminAuthentication, fullAccessAdminAuthorizati
 
 /**
  * @swagger
+ * /api/v1/adminapi/admin/password-reset-link/{id}:
+ *   post:
+ *     summary: Generates password reset link for an admin user with id {id}.
+ *     description: Requires admin access token. generates reset password link.
+ *     tags: [adminapi]
+ */
+adminRouter.get(
+    "/admin/password-reset-link/:id",
+    adminAuthentication,
+    fullAccessAdminAuthorization,
+    generateAdminResetPasswordLink
+);
+
+/**
+ * @swagger
  * /api/v1/adminapi/teacher{id}:
  *   post:
  *     summary: Create teacher.
@@ -172,13 +188,13 @@ adminRouter.get(
     adminAuthentication,
     readOnlyAdminAuthorization,
     pagingMiddleware,
-    adminListFilterMiddleware,
+    userListFilterMiddleware,
     getUsers
 );
 
 /**
  * @swagger
- * /api/v1/adminapi/user{id}:
+ * /api/v1/adminapi/user/{id}:
  *   get:
  *     summary: Get user by id.
  *     description: Requires admin access token with write access. Get user by id.

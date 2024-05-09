@@ -1,10 +1,10 @@
 import { type Request, type Response } from "express";
 import { appDataSource } from "../config/Database";
-import { InvalidTokens } from "../entities/InvalidTokens";
-import { Responses } from "../helpers/Responses";
-import { invalidTokensCache } from "../helpers/InvalidTokensCache";
+import { Tokens } from "../entities/Tokens";
+import { Responses } from "../helpers/responses";
+import { AccessTokenRepo } from "../helpers/tokens/tokensRepository";
 
-export const clearExpiredTokensRequest = async (req: Request, res: Response) => {
+export const clearExpiredTokens = async (req: Request, res: Response) => {
     try {
         await clearExpiredTokensFromDB();
         return Responses.DeleteSuccess(res);
@@ -13,13 +13,13 @@ export const clearExpiredTokensRequest = async (req: Request, res: Response) => 
     }
 };
 
-export const unvalidateUserTokensRequest = async (req: Request, res: Response) => {
-    if (!req.body?.identifier) {
+export const unvalidateUserTokens = async (req: Request, res: Response) => {
+    if (!req.body?.id) {
         return Responses.BadRequest(res);
     }
     // TODO: check if user exists in db maybe ?
     try {
-        await invalidTokensCache.invalidateAllUserTokens(req.body.identifier);
+        await AccessTokenRepo.blacklistAll(req.body.id);
         return Responses.OperationSuccess(res);
     } catch (error) {
         return Responses.InternalServerError(res);
@@ -30,7 +30,7 @@ export const clearExpiredTokensFromDB = async () => {
     return await appDataSource
         .createQueryBuilder()
         .delete()
-        .from(InvalidTokens)
+        .from(Tokens)
         .where("expiration > CURRENT_TIMESTAMP")
         .execute();
 };

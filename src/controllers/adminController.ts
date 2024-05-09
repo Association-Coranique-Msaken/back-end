@@ -1,5 +1,5 @@
 import { NextFunction, type Request, type Response } from "express";
-import { Responses } from "../helpers/Responses";
+import { Responses } from "../helpers/responses";
 import { AdminService } from "../services/adminService";
 import { UserService } from "../services/userService";
 import { TeacherService } from "../services/teacherService";
@@ -273,6 +273,18 @@ export const enrollUserToGroup = async (req: Request, res: Response, next: NextF
         const { userId, groupId } = mapToDto(Dto.enrollUserToGroup.meta, req.body);
         await GroupService.enrollUserToGroup(userId, groupId);
         return Responses.UpdateSucess(res);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const generateAdminResetPasswordLink = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.params.id) {
+        return Responses.BadRequest(res, "id is required.");
+    }
+    try {
+        const updateLink = await AdminService.generateAdminResetPasswordLink(req.params.id);
+        return Responses.OperationSuccess(res, updateLink);
     } catch (error) {
         next(error);
     }

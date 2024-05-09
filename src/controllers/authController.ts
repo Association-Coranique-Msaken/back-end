@@ -1,5 +1,5 @@
 import { NextFunction, type Request, type Response } from "express";
-import { Responses } from "../helpers/Responses";
+import { Responses } from "../helpers/responses";
 import { AdminService } from "../services/adminService";
 import { AuthService } from "../services/authService";
 import { mapToDto } from "../DTOs/dtoEngine";
@@ -74,4 +74,20 @@ const refreshToken = async (req: Request, res: Response, next: NextFunction) => 
     }
 };
 
-export default { adminLogin, adminSignup, userLogin, teacherLogin, logout, refreshToken };
+const resetAdminPassword = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.query.token) {
+        return Responses.BadRequest(res, "Invalid reset password token.");
+    }
+    if (!req.body.newPassword) {
+        return Responses.BadRequest(res, "newPassword is required in body.");
+    }
+    try {
+        const updatedAdmin = await AdminService.resetAdminPassword(req.query.token as string, req.body.newPassword);
+        const { admin, tokenResult } = await AuthService.adminLogin(updatedAdmin.username, req.body.newPassword);
+        return Responses.LoginSuccess(res, admin, tokenResult);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export default { adminLogin, adminSignup, userLogin, teacherLogin, logout, refreshToken, resetAdminPassword };

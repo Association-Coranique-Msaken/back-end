@@ -8,7 +8,7 @@ import AdminRouter from "./routes/AdminRouter";
 import authRouter from "./routes/AuthRouter";
 import UserRouter from "./routes/UserRouter";
 import TeacherRouter from "./routes/TeacherRouter";
-import InvalidTokensRouter from "./routes/InvalidTokensRouter";
+import InvalidTokensRouter from "./routes/tokensRouter";
 import { ScheduleInvalidTokensWorker } from "./workers/InvalidTokensWorker";
 import { errorHandler } from "./middlewares/error.middleware";
 import { setupSwagger } from "./swagger";

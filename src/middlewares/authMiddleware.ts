@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
-import { Responses } from "../helpers/Responses";
+import { Responses } from "../helpers/responses";
 import {
     type AdminToken,
     type EntityToken,
@@ -12,8 +12,8 @@ import {
     TOKEN_TYPE_ADMIN,
     TOKEN_TYPE_USER,
     TOKEN_TYPE_TEACHER,
-} from "../helpers/TokenTypes";
-import { invalidTokensCache } from "../helpers/InvalidTokensCache";
+} from "../helpers/tokens/tokenTypes";
+import { AccessTokenRepo } from "../helpers/tokens/tokensRepository";
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ export const genericAuthentication = async (req: Request, res: Response, next: N
     const token: string = header.split(" ")[1];
     try {
         const decodedToken = Tokens.verifyAccessToken(token);
-        await invalidTokensCache.checkValidity(token, decodedToken.id, decodedToken.expiration);
+        await AccessTokenRepo.checkValidity(token, decodedToken.id, decodedToken.expiration);
         res.locals.decodedToken = decodedToken;
         next();
     } catch (error) {
@@ -46,7 +46,7 @@ const baseAuthentication =
         const token: string = header.split(" ")[1];
         try {
             const decodedToken = Tokens.DecodeAccessTokenAs<T>(typeName, token);
-            await invalidTokensCache.checkValidity(token, decodedToken.id, decodedToken.expiration);
+            await AccessTokenRepo.checkValidity(token, decodedToken.id, decodedToken.expiration);
             res.locals.decodedToken = decodedToken;
             res.locals.token = token;
             next();

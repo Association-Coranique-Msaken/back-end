@@ -4,8 +4,8 @@ import { PageDto } from "../DTOs/paging/PageDto";
 import { TokenResultDto } from "../DTOs/TokenResultDto";
 
 export namespace Responses {
-    export const OperationSuccess = (response: Response) => {
-        return response.status(200).json({ succss: true, message: "Operation completed successfully." });
+    export const OperationSuccess = (response: Response, data?: any) => {
+        return response.status(200).json({ succss: true, message: "Operation completed successfully.", data });
     };
 
     export const FetchSucess = (response: Response, data: any) => {

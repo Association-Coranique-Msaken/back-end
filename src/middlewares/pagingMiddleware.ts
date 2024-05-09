@@ -1,6 +1,6 @@
 import { type Request, type Response, type NextFunction } from "express";
-import { Responses } from "../helpers/Responses";
-import { parseAsNumber, parseAsOrder, parseAsString } from "../helpers/helpers";
+import { Responses } from "../helpers/responses";
+import { parseAsNumber, parseAsOrder, parseAsString } from "../helpers/parsers";
 import { PagingOrder } from "../DTOs/paging/Order";
 import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
 import { PagingValidator } from "../DTOs/paging/PagingValidator";

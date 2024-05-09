@@ -1,0 +1,44 @@
+import { PagingOrder } from "../DTOs/paging/Order";
+
+export function parseAsNumber(
+    queryParam: undefined | string | string[] | qs.ParsedQs | qs.ParsedQs[],
+    defaultValue: number
+): number {
+    if (typeof queryParam === "string") {
+        const parsedNumber = parseFloat(queryParam);
+        return isNaN(parsedNumber) ? defaultValue : parsedNumber;
+    }
+    return defaultValue;
+}
+
+export function parseAsString(
+    queryParam: undefined | string | string[] | qs.ParsedQs | qs.ParsedQs[],
+    defaultValue: string
+): string {
+    if (typeof queryParam === "string") {
+        return queryParam;
+    }
+    return defaultValue;
+}
+
+export function parseAsOrder(
+    queryParam: undefined | string | string[] | qs.ParsedQs | qs.ParsedQs[],
+    defaultValue: PagingOrder
+): PagingOrder {
+    if (typeof queryParam === "string") {
+        if (Object.values(PagingOrder).includes(queryParam as PagingOrder)) {
+            return queryParam as unknown as PagingOrder; // Type assertion is safe here as we've already checked if it's part of the enum
+        } else {
+            return defaultValue;
+        }
+    }
+    return defaultValue;
+}
+
+export function parseDate(dateStr: string): Date {
+    const timestamp = Date.parse(dateStr);
+    if (isNaN(timestamp)) {
+        throw new Error("Invalid date string");
+    }
+    return new Date(timestamp);
+}

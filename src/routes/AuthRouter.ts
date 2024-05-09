@@ -56,4 +56,14 @@ authRouter.post("/logout", genericAuthentication, auth.logout);
  */
 authRouter.post("/refresh-token/", auth.refreshToken);
 
+/**
+ * @swagger
+ * /api/v1/auth/admin/reset-password/:
+ *   post:
+ *     summary: reset admin password.
+ *     description: reset admin password with a reset token.
+ *     tags: [auth]
+ */
+authRouter.post("/admin/reset-password/", auth.resetAdminPassword);
+
 export default authRouter;

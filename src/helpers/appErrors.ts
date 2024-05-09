@@ -1,5 +1,5 @@
 import { QueryFailedError } from "typeorm";
-import { Responses } from "./Responses";
+import { Responses } from "./responses";
 import { type Response } from "express";
 
 export namespace AppErrors {
