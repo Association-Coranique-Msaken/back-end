@@ -14,7 +14,7 @@ import {
 import { AppErrors } from "../helpers/appErrors";
 import { encrypt } from "../helpers/encrypt";
 import { CompareDates } from "../helpers/helpers";
-import { getEstimatedTokensExp } from "../helpers/tokens/tokensHelpers";
+import { getEstimatedRefreshTokenExp, getEstimatedTokensExp } from "../helpers/tokens/tokensHelpers";
 
 const userRepository = appDataSource.getRepository(User);
 const adminRepository = appDataSource.getRepository(Admin);
@@ -33,7 +33,7 @@ export class AuthService {
 
         // Generate JWT token
         const accessToken = Tokens.GenerateUserToken(user);
-        const refreshToken = Tokens.GenerateUserRefreshToken(user);
+        const refreshToken = Tokens.GenerateUserRefreshToken(user, accessToken);
         return {
             user: user,
             tokenResult: {
@@ -58,7 +58,7 @@ export class AuthService {
         }
         // Generate JWT token
         const token = Tokens.GenerateAdminToken(admin);
-        const refreshToken = Tokens.GenerateAdminRefreshToken(admin);
+        const refreshToken = Tokens.GenerateAdminRefreshToken(admin, token);
         return {
             admin: admin,
             tokenResult: {
@@ -79,7 +79,7 @@ export class AuthService {
 
         // Generate JWT token
         const token = Tokens.GenerateTeacherToken(teacher);
-        const refreshToken = Tokens.GenerateTeacherRefreshToken(teacher);
+        const refreshToken = Tokens.GenerateTeacherRefreshToken(teacher, token);
 
         return {
             teacher: teacher,
@@ -93,12 +93,17 @@ export class AuthService {
 
     public static logout = async (userToken: string, decodedToken: EntityToken) => {
         await AccessTokenRepo.blacklist(decodedToken.id, userToken, decodedToken.expiration);
+        // this means the corresponding refresh token will be no longer valid.
+        await RefreshTokenRepo.blacklist(decodedToken.id, userToken, getEstimatedRefreshTokenExp());
     };
 
     public static refreshToken = async (refreshToken: string) => {
         const decodedToken = Tokens.verifyRefreshToken(refreshToken);
+        const correspondingAccessToken = decodedToken.accessToken ?? "";
         await RefreshTokenRepo.checkValidity(refreshToken, decodedToken.id, decodedToken.expiration);
         RefreshTokenRepo.blacklist(decodedToken.id, refreshToken, decodedToken.expiration);
+        // if the access token got unvalidated in a way requiring refresh token to be invalid too.
+        await RefreshTokenRepo.checkValidity(correspondingAccessToken, decodedToken.id, decodedToken.expiration);
 
         switch (decodedToken.tokenType) {
             case TOKEN_TYPE_USER:
@@ -106,11 +111,12 @@ export class AuthService {
                 if (!user) {
                     throw new AppErrors.NotFound("No user corresponding to token.");
                 }
+                const userAccessToken = Tokens.GenerateUserToken(user);
                 return {
                     entity: user,
                     tokenResult: {
-                        accessToken: Tokens.GenerateUserToken(user),
-                        refreshToken: Tokens.GenerateUserRefreshToken(user),
+                        accessToken: userAccessToken,
+                        refreshToken: Tokens.GenerateUserRefreshToken(user, userAccessToken),
                         ...getEstimatedTokensExp(),
                     } as TokenResultDto,
                 };
@@ -122,11 +128,12 @@ export class AuthService {
                 if (!teacher) {
                     throw new AppErrors.NotFound("No user corresponding to token.");
                 }
+                const teacherAccessToken = Tokens.GenerateTeacherToken(teacher);
                 return {
                     entity: teacher,
                     tokenResult: {
-                        accessToken: Tokens.GenerateTeacherToken(teacher),
-                        refreshToken: Tokens.GenerateTeacherRefreshToken(teacher),
+                        accessToken: teacherAccessToken,
+                        refreshToken: Tokens.GenerateTeacherRefreshToken(teacher, teacherAccessToken),
                         ...getEstimatedTokensExp(),
                     } as TokenResultDto,
                 };
@@ -135,11 +142,12 @@ export class AuthService {
                 if (!admin) {
                     throw new AppErrors.NotFound("No user corresponding to token.");
                 }
+                const adminAccessToken = Tokens.GenerateAdminToken(admin);
                 return {
                     entity: admin,
                     tokenResult: {
-                        accessToken: Tokens.GenerateAdminToken(admin),
-                        refreshToken: Tokens.GenerateAdminRefreshToken(admin),
+                        accessToken: adminAccessToken,
+                        refreshToken: Tokens.GenerateAdminRefreshToken(admin, adminAccessToken),
                         ...getEstimatedTokensExp(),
                     } as TokenResultDto,
                 };
