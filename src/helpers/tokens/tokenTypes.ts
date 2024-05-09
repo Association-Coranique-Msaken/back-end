@@ -16,6 +16,10 @@ export interface EntityToken {
     id: string;
 }
 
+export interface WithAccessToken {
+    accessToken: string;
+}
+
 export class UserToken implements EntityToken {
     public constructor(user: User) {
         this.tokenType = "User";
@@ -57,15 +61,41 @@ export class TeacherToken implements EntityToken {
     userId: string;
 }
 
+export class UserRefreshToken extends UserToken implements WithAccessToken {
+    public constructor(user: User, accessToken: string) {
+        super(user);
+        this.accessToken = accessToken;
+    }
+    accessToken: string;
+}
+
+export class AdminRefreshToken extends AdminToken implements WithAccessToken {
+    public constructor(admin: Admin, accessToken: string) {
+        super(admin);
+        this.accessToken = accessToken;
+    }
+    accessToken: string;
+}
+
+export class TeacherRefreshToken extends TeacherToken implements WithAccessToken {
+    public constructor(teacher: Teacher, accessToken: string) {
+        super(teacher);
+        this.accessToken = accessToken;
+    }
+    accessToken: string;
+}
+
 export namespace Tokens {
     export const GenerateUserToken = (user: User) => encrypt.generateToken(new UserToken(user));
     export const GenerateAdminToken = (admin: Admin) => encrypt.generateToken(new AdminToken(admin));
     export const GenerateTeacherToken = (teacher: Teacher) => encrypt.generateToken(new TeacherToken(teacher));
 
-    export const GenerateUserRefreshToken = (user: User) => encrypt.generateRefreshToken(new UserToken(user));
-    export const GenerateAdminRefreshToken = (admin: Admin) => encrypt.generateRefreshToken(new AdminToken(admin));
-    export const GenerateTeacherRefreshToken = (teacher: Teacher) =>
-        encrypt.generateRefreshToken(new TeacherToken(teacher));
+    export const GenerateUserRefreshToken = (user: User, accessToken: string) =>
+        encrypt.generateRefreshToken(new UserRefreshToken(user, accessToken));
+    export const GenerateAdminRefreshToken = (admin: Admin, accessToken: string) =>
+        encrypt.generateRefreshToken(new AdminRefreshToken(admin, accessToken));
+    export const GenerateTeacherRefreshToken = (teacher: Teacher, accessToken: string) =>
+        encrypt.generateRefreshToken(new TeacherRefreshToken(teacher, accessToken));
 
     export const DecodeAccessTokenAs = <T extends EntityToken>(typeName: string, token?: string) =>
         DecodeAs<T>(process.env.JWT_TOKEN_SECRET!, typeName, token);
