@@ -1,13 +1,13 @@
-import { PageDto } from "../DTOs/paging/PageDto";
-import { PageMetaDto } from "../DTOs/paging/PageMetaDto";
-import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
-import { appDataSource } from "../config/Database";
-import { Teacher } from "../entities/Teacher";
-import { User } from "../entities/User";
-import { FilterQuery } from "../filters/types";
+import { PageDto } from "../DTOs/paging/pageDto";
+import { PageMetaDto } from "../DTOs/paging/pageMetaDto";
+import { PageOptionsDto } from "../DTOs/paging/pageOptionsDto";
+import { appDataSource } from "../config/database";
+import { Teacher } from "../entities/teacher";
+import { User } from "../entities/user";
 import { AppErrors } from "../helpers/appErrors";
 import { DeepPartial } from "typeorm";
 import { transformQueryOutput } from "../helpers/queryHelpers";
+import { FilterQuery } from "../filters/types";
 
 const userRepository = appDataSource.getRepository(User);
 const teacherRepository = appDataSource.getRepository(Teacher);

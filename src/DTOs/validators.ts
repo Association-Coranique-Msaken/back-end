@@ -1,4 +1,3 @@
-import { error } from "console";
 import Joi from "joi";
 import { parseDate } from "../helpers/parsers";
 

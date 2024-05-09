@@ -1,4 +1,4 @@
-import { PageMetaDto } from "./PageMetaDto";
+import { PageMetaDto } from "./pageMetaDto";
 
 export class PageDto<T> {
     readonly data: T[];

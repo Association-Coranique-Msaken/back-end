@@ -1,7 +1,7 @@
 import { type Response } from "express";
 import type Joi from "joi";
-import { PageDto } from "../DTOs/paging/PageDto";
-import { TokenResultDto } from "../DTOs/TokenResultDto";
+import { PageDto } from "../DTOs/paging/pageDto";
+import { TokenResultDto } from "../DTOs/tokenResultDto";
 
 export namespace Responses {
     export const OperationSuccess = (response: Response, data?: any) => {

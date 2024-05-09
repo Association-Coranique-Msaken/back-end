@@ -1,4 +1,4 @@
-import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
+import { PageOptionsDto } from "../DTOs/paging/pageOptionsDto";
 import { SelectQueryBuilder } from "typeorm";
 
 export async function transformQueryOutput(entities: any[], aliases: string[]): Promise<Record<string, any>[][]> {

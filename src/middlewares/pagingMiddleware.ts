@@ -1,9 +1,9 @@
 import { type Request, type Response, type NextFunction } from "express";
 import { Responses } from "../helpers/responses";
 import { parseAsNumber, parseAsOrder, parseAsString } from "../helpers/parsers";
-import { PagingOrder } from "../DTOs/paging/Order";
-import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
-import { PagingValidator } from "../DTOs/paging/PagingValidator";
+import { PagingOrder } from "../DTOs/paging/order";
+import { PageOptionsDto } from "../DTOs/paging/pageOptionsDto";
+import { PagingValidator } from "../DTOs/paging/pagingValidator";
 
 export const pagingMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
-import { appDataSource } from "../config/Database";
-import { Tokens } from "../entities/Tokens";
+import { appDataSource } from "../config/database";
+import { Tokens } from "../entities/tokens";
 import { Responses } from "../helpers/responses";
 import { AccessTokenRepo, RefreshTokenRepo } from "../helpers/tokens/tokensRepository";
 

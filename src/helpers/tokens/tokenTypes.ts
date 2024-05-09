@@ -1,6 +1,6 @@
-import { type Admin } from "../../entities/Admin";
-import { type Teacher } from "../../entities/Teacher";
-import { type User } from "../../entities/User";
+import { type Admin } from "../../entities/admin";
+import { type Teacher } from "../../entities/teacher";
+import { type User } from "../../entities/user";
 import { encrypt } from "../encrypt";
 import * as jwt from "jsonwebtoken";
 

@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
-import { User } from "./User";
-import { AbstractEntity } from "./AbstractEntity";
+import { User } from "./user";
+import { AbstractEntity } from "./abstractEntity";
 import { DtoField } from "../DTOs/dtoEngine";
 import { Validators } from "../DTOs/validators";
 import { Filterable } from "../filters/annotations";

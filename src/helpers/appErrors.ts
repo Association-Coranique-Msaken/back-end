@@ -1,4 +1,3 @@
-import { QueryFailedError } from "typeorm";
 import { Responses } from "./responses";
 import { type Response } from "express";
 

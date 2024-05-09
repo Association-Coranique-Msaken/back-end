@@ -1,6 +1,6 @@
 import { Column, Entity, Index, OneToMany } from "typeorm";
-import { AbstractEntity } from "./AbstractEntity";
-import { GroupUser } from "./GroupUser";
+import { AbstractEntity } from "./abstractEntity";
+import { GroupUser } from "./groupUser";
 import { DtoField } from "../DTOs/dtoEngine";
 import { Validators } from "../DTOs/validators";
 import { Filterable } from "../filters/annotations";

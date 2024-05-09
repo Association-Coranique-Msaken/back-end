@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne } from "typeorm";
-import { AbstractEntity } from "./AbstractEntity";
-import { User } from "./User";
-import { Group } from "./Group";
+import { AbstractEntity } from "./abstractEntity";
+import { User } from "./user";
+import { Group } from "./group";
 import { DtoField } from "../DTOs/dtoEngine";
 import { Validators } from "../DTOs/validators";
 

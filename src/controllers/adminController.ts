@@ -3,7 +3,7 @@ import { Responses } from "../helpers/responses";
 import { AdminService } from "../services/adminService";
 import { UserService } from "../services/userService";
 import { TeacherService } from "../services/teacherService";
-import { GroupService } from "../services/GroupService";
+import { GroupService } from "../services/groupService";
 import { mapToDto } from "../DTOs/dtoEngine";
 import { Dto } from "../DTOs/dtoMetadata";
 
