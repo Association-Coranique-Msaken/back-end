@@ -1,23 +1,28 @@
-import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
-import { AbstractEntity } from "./abstractEntity";
+import { Entity, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm";
 import { User } from "./user";
-import { OneToOne } from "typeorm/browser";
+import { AbstractEntity } from "./abstractEntity";
+import { DtoField } from "../DTOs/dtoEngine";
+import { Validators } from "../DTOs/validators";
 import { Filterable } from "../filters/annotations";
-import { QueryRelation } from "../filters/types";
+import { QueryItemType } from "../filters/types";
 
 @Entity({ name: "card" })
 export class Card extends AbstractEntity {
-    @Filterable({ relation: QueryRelation.EQ })
-    @OneToOne(() => User)
-    @JoinColumn()
-    user: User;
-
+    @Filterable({ type: QueryItemType.NUMBER })
     @Column()
-    number: number;
+    countId: number;
 
+    @DtoField({ dto: ["CreateCardDto"], validator: Validators.BOOL })
+    @Filterable({ type: QueryItemType.BOOL })
     @Column({ default: true })
     isDelivered: boolean;
 
     @Column({ type: "timestamp" })
     expiration: Date;
+
+    @Filterable({ type: QueryItemType.GUID, fieldName: "userId" })
+    @DtoField({ dto: ["CreateCardDto"], validator: Validators.REQ_GUID, attributeName: "userId" })
+    @ManyToOne(() => User)
+    @JoinColumn()
+    user: User;
 }

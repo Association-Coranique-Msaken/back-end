@@ -14,7 +14,7 @@ export class UserService {
         // TODO: Add lock here to prevent race condition in case of parallel requests.
         const identifier = await UserService.getNewUserIdentifier();
         const data: DeepPartial<User> = { ...user, identifier };
-        const newUser = await userRepository.create(data);
+        const newUser = userRepository.create(data);
         await userRepository.save(newUser);
         return newUser;
     };

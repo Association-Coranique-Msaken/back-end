@@ -6,6 +6,9 @@ import { Validators } from "../DTOs/validators";
 import { Filterable } from "../filters/annotations";
 import { QueryItemType, QueryRelation } from "../filters/types";
 
+export type SocialCondition = "donator" | "poor" | "teacherSon" | "unknown";
+const socialConditionValues: SocialCondition[] = ["donator", "poor", "teacherSon", "unknown"];
+
 @Entity({ name: "user" })
 export class User extends AbstractEntity {
     @Filterable({ names: ["user", "admin", "teacher"] })
@@ -100,6 +103,11 @@ export class User extends AbstractEntity {
     @DtoField({ dto: ["CreateUserDto", "CreateUserAdminDto", "UpdateUserDto"], validator: Validators.BOOL })
     @Column({ default: false })
     hasPassport: boolean;
+
+    @Filterable({ names: socialConditionValues, relation: QueryRelation.EQ })
+    @DtoField({ dto: ["CreateUserDto", "UpdateUserDto"], validator: Validators.ONE_OF(...socialConditionValues) })
+    @Column({ nullable: true, default: null })
+    socialCondition: SocialCondition;
 
     @OneToMany((type) => GroupUser, (groupUser) => groupUser.user)
     groups: GroupUser[];

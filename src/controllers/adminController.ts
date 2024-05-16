@@ -6,6 +6,7 @@ import { TeacherService } from "../services/teacherService";
 import { GroupService } from "../services/groupService";
 import { mapToDto } from "../DTOs/dtoEngine";
 import { Dto } from "../DTOs/dtoMetadata";
+import { CardService } from "../services/cardService";
 
 export const getAdmins = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -127,6 +128,18 @@ export const getTeacherByCode = async (req: Request, res: Response, next: NextFu
         }
         const teacher = await TeacherService.getTeacherByCode(req.params.code);
         return Responses.FetchSucess(res, teacher);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const regenerateTeacherPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (!req.params.teacherId) {
+            return Responses.BadRequest(res);
+        }
+        const teacher = await TeacherService.regenerateTeacherPassword(req.params.teacherId);
+        return Responses.UpdateSucess(res, teacher);
     } catch (error) {
         next(error);
     }
@@ -285,6 +298,28 @@ export const generateAdminResetPasswordLink = async (req: Request, res: Response
     try {
         const updateLink = await AdminService.generateAdminResetPasswordLink(req.params.id);
         return Responses.OperationSuccess(res, updateLink);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const createCardForUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const createUserCardDto = mapToDto(Dto.createCard.meta, req.body);
+        const result = await CardService.createUserCard({ ...createUserCardDto, id: req.params.id });
+        return Responses.CreateSucess(res, result);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getUserLastCard = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.params.userId) {
+        return Responses.BadRequest(res, "id is required.");
+    }
+    try {
+        const card = await CardService.getUserLastCard(req.params.userId);
+        return Responses.FetchSucess(res, card);
     } catch (error) {
         next(error);
     }

@@ -48,7 +48,8 @@ export class AdminService {
             throw new AppErrors.AlreadyExists(`username '${adminData.username}' aleady exists`);
         }
 
-        var user: User | null = adminData.user ?? (await userRepository.findOne({ where: { id: adminData.userId } }));
+        let user: User | null =
+            adminData.user ?? (await userRepository.findOne({ where: { id: adminData.userId, isDeleted: false } }));
         if (user) {
             if (await AdminService.adminWithUserIdExists(user.id)) {
                 throw new AppErrors.AlreadyExists(
@@ -70,7 +71,10 @@ export class AdminService {
 
     public static updateAdminById = async (updateData: any) => {
         const admin = await AdminService.getAdminOrThrow(updateData.id);
-        await adminRepository.update(admin.id, updateData);
+        Promise.all([
+            AdminService.unvalidateAccessTokenIfNeeded(updateData, admin),
+            await adminRepository.update(admin.id, updateData),
+        ]);
     };
 
     private static fetchAdminWithUserIdQuery = (userId: string): SelectQueryBuilder<Admin> =>
@@ -134,5 +138,18 @@ export class AdminService {
             throw new AppErrors.NotFound(`Unable to find admin with id : '${adminId}'.`);
         }
         return admin;
+    };
+
+    private static unvalidateAccessTokenIfNeeded = async (updateData: any, currentData: Admin): Promise<void> => {
+        if (AdminService.shouldUnvalidateAccessToken(updateData, currentData)) {
+            return await AccessTokenRepo.blacklistAll(currentData.id);
+        }
+    };
+
+    private static shouldUnvalidateAccessToken = (updateData: any, currentData: Admin): boolean => {
+        if (updateData.role != undefined) {
+            return updateData.role != currentData.role;
+        }
+        return true;
     };
 }

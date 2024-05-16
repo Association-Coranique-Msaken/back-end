@@ -72,6 +72,11 @@ export function mapToDto<T, Q = {}>(dtoMetaData: DtoMetaData, entity: any): any 
             } else {
                 dto[attributeName] = propertyValue;
             }
+        } else {
+            const { error } = validator?.label(attributeName).validate(undefined) ?? { error: undefined };
+            if (error) {
+                validationErrors.push(error);
+            }
         }
     }
 

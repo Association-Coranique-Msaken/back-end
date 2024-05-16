@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
+import { Entity, Column, OneToOne, JoinColumn } from "typeorm";
 import { User } from "./user";
 import { AbstractEntity } from "./abstractEntity";
 import { DtoField } from "../DTOs/dtoEngine";
@@ -14,8 +14,7 @@ export class Teacher extends AbstractEntity {
     @Column()
     code: string;
 
-    @DtoField({ dto: ["TeacherLoginDto", "CreateTeacherDto"], validator: Validators.REQ_TEXT })
-    @DtoField({ dto: ["UpdateTeacherDto"], validator: Validators.TEXT })
+    @DtoField({ dto: ["TeacherLoginDto"], validator: Validators.REQ_TEXT })
     @Column()
     password: string;
 

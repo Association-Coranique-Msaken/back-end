@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
+import { Entity, Column, OneToOne, JoinColumn } from "typeorm";
 import { User } from "./user";
 import { AbstractEntity } from "./abstractEntity";
 import { DtoField } from "../DTOs/dtoEngine";
 import { Validators } from "../DTOs/validators";
 import { Filterable } from "../filters/annotations";
-import { QueryItemType, QueryRelation } from "../filters/types";
+import { QueryRelation } from "../filters/types";
 
 export type AdminRole = "fullAccessAdmin" | "limitedAccess" | "readOnly";
 const adminRroleValues: AdminRole[] = ["fullAccessAdmin", "limitedAccess", "readOnly"];

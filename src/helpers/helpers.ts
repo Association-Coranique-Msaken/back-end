@@ -1,3 +1,4 @@
+import { assert } from "console";
 import { encrypt } from "./encrypt";
 
 export const generateResetPasswordLink = (userId: string): string => {
@@ -15,4 +16,14 @@ export function CompareDates(date1: Date, date2: Date): boolean {
     const month2 = date2.getMonth();
     const day2 = date2.getDate();
     return year1 === year2 && month1 === month2 && day1 === day2;
+}
+
+export function generatePassword(length: number): string {
+    assert(length > 0);
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let retVal = "";
+    for (let i = 0, n = charset.length; i < length; ++i) {
+        retVal += charset.charAt(Math.floor(Math.random() * n));
+    }
+    return retVal;
 }
