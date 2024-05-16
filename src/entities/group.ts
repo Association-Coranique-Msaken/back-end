@@ -1,8 +1,8 @@
 import { Entity, Column, OneToOne, JoinColumn, OneToMany } from "typeorm";
-import { Teacher } from "./Teacher";
-import { AbstractEntity } from "./AbstractEntity";
-import { User } from "./User";
-import { GroupUser } from "./GroupUser";
+import { Teacher } from "./teacher";
+import { AbstractEntity } from "./abstractEntity";
+import { User } from "./user";
+import { GroupUser } from "./groupUser";
 import { DtoField } from "../DTOs/dtoEngine";
 import { Validators } from "../DTOs/validators";
 import { Filterable } from "../filters/annotations";

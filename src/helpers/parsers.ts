@@ -1,4 +1,4 @@
-import { PagingOrder } from "../DTOs/paging/Order";
+import { PagingOrder } from "../DTOs/paging/order";
 
 export function parseAsNumber(
     queryParam: undefined | string | string[] | qs.ParsedQs | qs.ParsedQs[],

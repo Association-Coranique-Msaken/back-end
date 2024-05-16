@@ -1,7 +1,7 @@
-import { Admin } from "../entities/Admin";
-import { Group } from "../entities/Group";
-import { Teacher } from "../entities/Teacher";
-import { User } from "../entities/User";
+import { Admin } from "../entities/admin";
+import { Group } from "../entities/group";
+import { Teacher } from "../entities/teacher";
+import { User } from "../entities/user";
 import { generateFilterMetaData } from "./annotations";
 
 export const UserListFilterMeta = generateFilterMetaData("user", User.prototype);

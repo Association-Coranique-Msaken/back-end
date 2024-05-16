@@ -1,4 +1,4 @@
-import { PagingOrder } from "./Order";
+import { PagingOrder } from "./order";
 
 export class PageOptionsDto {
     readonly order: PagingOrder = PagingOrder.ASC;

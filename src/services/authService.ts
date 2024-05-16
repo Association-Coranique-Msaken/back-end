@@ -1,8 +1,8 @@
-import { TokenResultDto } from "../DTOs/TokenResultDto";
-import { appDataSource } from "../config/Database";
-import { Admin } from "../entities/Admin";
-import { Teacher } from "../entities/Teacher";
-import { User } from "../entities/User";
+import { TokenResultDto } from "../DTOs/tokenResultDto";
+import { appDataSource } from "../config/database";
+import { Admin } from "../entities/admin";
+import { Teacher } from "../entities/teacher";
+import { User } from "../entities/user";
 import { AccessTokenRepo, RefreshTokenRepo } from "../helpers/tokens/tokensRepository";
 import {
     EntityToken,

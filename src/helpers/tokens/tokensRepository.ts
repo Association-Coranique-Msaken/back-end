@@ -1,6 +1,6 @@
 import { LRUCache } from "lru-cache";
-import { Tokens } from "../../entities/Tokens";
-import { appDataSource } from "../../config/Database";
+import { Tokens } from "../../entities/tokens";
+import { appDataSource } from "../../config/database";
 import { type Repository } from "typeorm";
 import * as jwt from "jsonwebtoken";
 import { Md5 } from "ts-md5";

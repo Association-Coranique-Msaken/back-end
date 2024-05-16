@@ -1,10 +1,10 @@
 import { DeepPartial } from "typeorm";
-import { appDataSource } from "../config/Database";
-import { User } from "../entities/User";
+import { appDataSource } from "../config/database";
+import { User } from "../entities/user";
 import { AppErrors } from "../helpers/appErrors";
-import { PageOptionsDto } from "../DTOs/paging/PageOptionsDto";
-import { PageDto } from "../DTOs/paging/PageDto";
-import { PageMetaDto } from "../DTOs/paging/PageMetaDto";
+import { PageOptionsDto } from "../DTOs/paging/pageOptionsDto";
+import { PageDto } from "../DTOs/paging/pageDto";
+import { PageMetaDto } from "../DTOs/paging/pageMetaDto";
 import { FilterQuery } from "../filters/types";
 
 const userRepository = appDataSource.getRepository(User);

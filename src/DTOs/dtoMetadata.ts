@@ -1,9 +1,9 @@
 import { object } from "joi";
-import { Admin } from "../entities/Admin";
-import { Group } from "../entities/Group";
-import { GroupUser } from "../entities/GroupUser";
-import { Teacher } from "../entities/Teacher";
-import { User } from "../entities/User";
+import { Admin } from "../entities/admin";
+import { Group } from "../entities/group";
+import { GroupUser } from "../entities/groupUser";
+import { Teacher } from "../entities/teacher";
+import { User } from "../entities/user";
 import { generateDtoMetaData } from "./dtoEngine";
 
 export class Dto {

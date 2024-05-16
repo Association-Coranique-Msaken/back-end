@@ -1,5 +1,4 @@
-import { SelectQueryBuilder } from "typeorm";
-import { FilterQuery, QueryItemType, QueryRelation } from "./types";
+import { QueryItemType, QueryRelation } from "./types";
 
 const FITRABLE_NAME = "Filtrable";
 

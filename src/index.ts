@@ -3,13 +3,13 @@ import express, { type Request, type Response, type Application } from "express"
 import dotenv from "dotenv";
 import * as bodyParser from "body-parser";
 import cors from "cors";
-import { appDataSource } from "./config/Database";
-import AdminRouter from "./routes/AdminRouter";
-import authRouter from "./routes/AuthRouter";
-import UserRouter from "./routes/UserRouter";
-import TeacherRouter from "./routes/TeacherRouter";
+import { appDataSource } from "./config/database";
+import AdminRouter from "./routes/adminRouter";
+import authRouter from "./routes/authRouter";
+import UserRouter from "./routes/userRouter";
+import TeacherRouter from "./routes/teacherRouter";
 import InvalidTokensRouter from "./routes/tokensRouter";
-import { ScheduleInvalidTokensWorker } from "./workers/InvalidTokensWorker";
+import { ScheduleInvalidTokensWorker } from "./workers/invalidTokensWorker";
 import { errorHandler } from "./middlewares/error.middleware";
 import { setupSwagger } from "./swagger";
 
