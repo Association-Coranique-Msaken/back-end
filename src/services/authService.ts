@@ -71,8 +71,7 @@ export class AuthService {
 
     public static teacherLogin = async (code: string, password: string) => {
         const teacher = await teacherRepository.findOne({ where: { code }, relations: ["user"] });
-        const isPasswordValid = teacher?.password === password;
-
+        const isPasswordValid = encrypt.comparepassword(teacher?.password ?? "", password);
         if (!teacher || !isPasswordValid) {
             throw new AppErrors.BadCredentials();
         }

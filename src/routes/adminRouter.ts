@@ -23,6 +23,9 @@ import {
     updateGroup,
     updateTeacher,
     updateUser,
+    createCardForUser,
+    getUserLastCard,
+    regenerateTeacherPassword,
 } from "../controllers/adminController";
 import { adminAuthentication } from "../middlewares/authMiddleware";
 import { readOnlyAdminAuthorization, fullAccessAdminAuthorization } from "../middlewares/checkAdminRole";
@@ -157,13 +160,28 @@ adminRouter.patch("/teacher/:id", adminAuthentication, fullAccessAdminAuthorizat
 
 /**
  * @swagger
- * /api/v1/adminapi/teacher{id}:
+ * /api/v1/adminapi/teacher/{id}:
  *   delete:
  *     summary: Delete teacher by id.
  *     description: Requires admin access token with write access. Delete teacher by id.
  *     tags: [adminapi]
  */
 adminRouter.delete("/teacher/:id", adminAuthentication, fullAccessAdminAuthorization, deleteTeacherById);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/teacher/password/{teacherId}:
+ *   post:
+ *     summary: resets teacher password.
+ *     description: Requires admin access token with write access.
+ *     tags: [adminapi]
+ */
+adminRouter.post(
+    "/teacher/password/:teacherId",
+    adminAuthentication,
+    fullAccessAdminAuthorization,
+    regenerateTeacherPassword
+);
 
 /**
  * @swagger
@@ -304,5 +322,25 @@ adminRouter.get(
  *     tags: [adminapi]
  */
 adminRouter.post("/group/user/enroll/", adminAuthentication, fullAccessAdminAuthorization, enrollUserToGroup);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/card/user/:
+ *   post:
+ *     summary: Create card for user.
+ *     description: Creates card for user.
+ *     tags: [adminapi]
+ */
+adminRouter.post("/card/user/", adminAuthentication, fullAccessAdminAuthorization, createCardForUser);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/card/user/{userId}:
+ *   get:
+ *     summary: Get user last card by userId.
+ *     description: Get user last card by userId. null is returned if there is no card.
+ *     tags: [adminapi]
+ */
+adminRouter.get("/card/user/:userId", adminAuthentication, readOnlyAdminAuthorization, getUserLastCard);
 
 export default adminRouter;

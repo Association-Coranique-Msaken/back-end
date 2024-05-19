@@ -19,4 +19,7 @@ export class GroupUser extends AbstractEntity {
 
     @Column({ default: true })
     isActive: boolean;
+
+    @Column({ nullable: true, default: null })
+    passed: boolean;
 }

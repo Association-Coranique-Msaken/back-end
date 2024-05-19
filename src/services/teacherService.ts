@@ -8,23 +8,30 @@ import { AppErrors } from "../helpers/appErrors";
 import { DeepPartial } from "typeorm";
 import { transformQueryOutput } from "../helpers/queryHelpers";
 import { FilterQuery } from "../filters/types";
+import { generatePassword } from "../helpers/helpers";
+import { encrypt } from "../helpers/encrypt";
+import { AccessTokenRepo, RefreshTokenRepo } from "../helpers/tokens/tokensRepository";
 
 const userRepository = appDataSource.getRepository(User);
 const teacherRepository = appDataSource.getRepository(Teacher);
 
+const TEACHER_PASSWORD_LENGTH = 6;
+
 export class TeacherService {
     public static createTeacher = async (teacherData: any): Promise<Teacher> => {
         const userId = teacherData.userId;
-        const user = await userRepository.findOne({ where: { id: userId } });
+        const user = await userRepository.findOne({ where: { id: userId, isDeleted: false } });
         if (user) {
             const code = await TeacherService.generateTeacherCode(teacherData.codeType);
+            const password = generatePassword(TEACHER_PASSWORD_LENGTH);
             const teacher: Teacher = teacherRepository.create({
                 ...teacherData,
                 user: user,
                 code: code,
+                password: await encrypt.encryptpass(password),
             } as DeepPartial<Teacher>);
             await teacherRepository.save(teacher);
-            return teacher;
+            return { ...teacher, password: password };
         } else {
             throw new AppErrors.NotFound(`Unable to find corresponding user with id: ${userId}`);
         }
@@ -43,7 +50,7 @@ export class TeacherService {
 
     private static computeNextCode = (codeType: string, previousCode: string | undefined): string => {
         if (previousCode) {
-            var nextCode = 0;
+            let nextCode = 0;
             const code = parseInt(previousCode.substring(1));
             nextCode = code + 1;
             return `${codeType.at(0)}${nextCode.toString().padStart(2, "0")}`;
@@ -91,8 +98,10 @@ export class TeacherService {
         if (!teacher) {
             throw new AppErrors.NotFound(`Unable to find teacher with id: ${updateData.id}`);
         }
-        // Update teacher fields
-        await teacherRepository.update(teacher.id, updateData);
+        Promise.all([
+            TeacherService.unvalidateAccessTokenIfNeeded(updateData, teacher),
+            teacherRepository.update(teacher.id, updateData),
+        ]);
     };
 
     public static deleteTeacherById = async (id: string) => {
@@ -115,5 +124,37 @@ export class TeacherService {
             throw new AppErrors.NotFound();
         }
         return teacher;
+    };
+
+    public static regenerateTeacherPassword = async (teacherId: string) => {
+        const teacher = await teacherRepository.findOne({
+            where: { id: teacherId, isDeleted: false },
+        });
+        if (!teacher) {
+            throw new AppErrors.NotFound();
+        }
+        const newPassword = generatePassword(TEACHER_PASSWORD_LENGTH);
+        const hashedPassword = await encrypt.encryptpass(newPassword);
+        await teacherRepository.update(teacherId, { password: hashedPassword });
+        // FIXME: this should not be blocking call for the response to return.
+        Promise.all([AccessTokenRepo.blacklistAll(teacherId), RefreshTokenRepo.blacklistAll(teacherId)]);
+        const newTeacher: Teacher = teacherRepository.create({
+            ...teacher,
+            password: newPassword,
+        } as DeepPartial<Teacher>);
+        return newTeacher;
+    };
+
+    private static unvalidateAccessTokenIfNeeded = async (updateData: any, currentData: Teacher): Promise<void> => {
+        if (TeacherService.shouldUnvalidateAccessToken(updateData, currentData)) {
+            return await AccessTokenRepo.blacklistAll(currentData.id);
+        }
+    };
+
+    private static shouldUnvalidateAccessToken = (updateData: any, currentData: Teacher): boolean => {
+        if (updateData.isActive != undefined) {
+            return updateData.isActive != currentData.isActive;
+        }
+        return true;
     };
 }

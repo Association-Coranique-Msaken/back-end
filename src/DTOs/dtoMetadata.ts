@@ -5,6 +5,7 @@ import { GroupUser } from "../entities/groupUser";
 import { Teacher } from "../entities/teacher";
 import { User } from "../entities/user";
 import { generateDtoMetaData } from "./dtoEngine";
+import { Card } from "../entities/card";
 
 export class Dto {
     static createAdmin = {
@@ -58,5 +59,9 @@ export class Dto {
     static teacherLogin = {
         name: "TeacherLoginDto",
         meta: generateDtoMetaData("TeacherLoginDto", Teacher.prototype),
+    };
+    static createCard = {
+        name: "CreateCardDto",
+        meta: generateDtoMetaData("CreateCardDto", Card.prototype),
     };
 }
