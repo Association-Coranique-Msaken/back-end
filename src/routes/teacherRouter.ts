@@ -2,6 +2,7 @@ import express from "express";
 import { teacherAuthentication } from "../middlewares/authMiddleware";
 import { getGroups, updateData } from "../controllers/teacherController";
 import { pagingMiddleware } from "../middlewares/pagingMiddleware";
+import { teacherWriteAuthorization } from "../middlewares/teacherWriteAuthorization";
 
 const teacherRouter = express.Router();
 
@@ -13,7 +14,7 @@ const teacherRouter = express.Router();
  *     description: Requires teacher access token. Updates the teacher.
  *     tags: [teacherapi]
  */
-teacherRouter.patch("/teacher", teacherAuthentication, updateData);
+teacherRouter.patch("/teacher", teacherAuthentication, teacherWriteAuthorization, updateData);
 
 /**
  * @swagger
