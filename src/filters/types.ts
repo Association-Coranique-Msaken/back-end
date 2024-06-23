@@ -5,9 +5,9 @@ export class FilterItem {
 
 export enum QueryRelation {
     EQ = " = ?",
-    CONTAINS = ' LIKE "%?%"',
-    STARTS_WITH = ' LIKE "?%"',
-    ENDS_WITH = ' LIKE "%?"',
+    CONTAINS = ' LIKE "%"?"%"',
+    STARTS_WITH = ' LIKE ?"%"',
+    ENDS_WITH = ' LIKE "%"?',
     IN = " IN [?]",
 }
 
