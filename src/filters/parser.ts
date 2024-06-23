@@ -28,6 +28,8 @@ const processValue = (value: string, type: QueryItemType): any => {
         case QueryItemType.STRING:
         case QueryItemType.EMAIL:
             return value.toLocaleLowerCase();
+        case QueryItemType.BOOL:
+            return JSON.parse(value.toLowerCase()) == true;
         default:
             return value.trim();
     }
