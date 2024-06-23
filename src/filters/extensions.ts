@@ -9,5 +9,8 @@ declare module "typeorm" {
 }
 
 SelectQueryBuilder.prototype.addFilters = function (filters: FilterQuery) {
-    return this.where(filters.queryString, { ...filters.placeholders });
+    if (filters.queryString.length == 0) {
+        return this;
+    }
+    return this.andWhere(filters.queryString, { ...filters.placeholders });
 };
