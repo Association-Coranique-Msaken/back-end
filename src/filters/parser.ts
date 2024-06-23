@@ -39,7 +39,6 @@ const itemTypeToQueryPlaceolder = (type: QueryItemType): string => {
         case QueryItemType.STRING:
         case QueryItemType.UNKOWN:
         case QueryItemType.EMAIL:
-            return '"?"';
         case QueryItemType.NUMBER:
         case QueryItemType.BOOL:
         case QueryItemType.DATE:
