@@ -13,7 +13,7 @@ import { FilterQuery } from "../filters/types";
 import "../filters/extensions";
 import { encrypt } from "../helpers/encrypt";
 import { AccessTokenRepo, RefreshTokenRepo, ResetPswdTokenRepo } from "../helpers/tokens/tokensRepository";
-import { transformQueryOutput } from "../helpers/queryHelpers";
+import { getOrThrow, transformQueryOutput } from "../helpers/queryHelpers";
 import { decodeAndCheckResetPasswordToken } from "../helpers/tokens/tokensHelpers";
 
 const userRepository = appDataSource.getRepository(User);
@@ -71,7 +71,7 @@ export class AdminService {
 
     public static updateAdminById = async (updateData: any) => {
         const admin = await AdminService.getAdminOrThrow(updateData.id);
-        Promise.all([
+        await Promise.all([
             AdminService.unvalidateAccessTokenIfNeeded(updateData, admin),
             await adminRepository.update(admin.id, updateData),
         ]);
@@ -132,14 +132,6 @@ export class AdminService {
         return admin;
     };
 
-    private static getAdminOrThrow = async (adminId: string): Promise<Admin> => {
-        const admin = await adminRepository.findOne({ where: { id: adminId, isDeleted: false } });
-        if (!admin) {
-            throw new AppErrors.NotFound(`Unable to find admin with id : '${adminId}'.`);
-        }
-        return admin;
-    };
-
     private static unvalidateAccessTokenIfNeeded = async (updateData: any, currentData: Admin): Promise<void> => {
         if (AdminService.shouldUnvalidateAccessToken(updateData, currentData)) {
             return await AccessTokenRepo.blacklistAll(currentData.id);
@@ -152,4 +144,7 @@ export class AdminService {
         }
         return true;
     };
+
+    public static getAdminOrThrow = async (id: string, bringDeleted: boolean = false) =>
+        getOrThrow<Admin>(id, adminRepository, "admin", bringDeleted);
 }

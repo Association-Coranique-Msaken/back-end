@@ -7,6 +7,8 @@ import { GroupService } from "../services/groupService";
 import { mapToDto } from "../DTOs/dtoEngine";
 import { Dto } from "../DTOs/dtoMetadata";
 import { CardService } from "../services/cardService";
+import { CompetitionService } from "../services/competitionService";
+import { CompetitionRegistrationService } from "../services/competitionRegistrationService";
 
 export const getAdmins = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -320,6 +322,121 @@ export const getUserLastCard = async (req: Request, res: Response, next: NextFun
     try {
         const card = await CardService.getUserLastCard(req.params.userId);
         return Responses.FetchSucess(res, card);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getCompetitions = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const pagedCompetitions = await CompetitionService.getCompetitions(res.locals.paging, res.locals.filter);
+        return Responses.FetchPagedSucess(res, pagedCompetitions);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const createCompetition = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const createCompetitionDto = mapToDto(Dto.createCompetition.meta, req.body);
+        const admin = await CompetitionService.createCompetition(createCompetitionDto);
+        return Responses.CreateSucess(res, admin);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updateCompetition = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.params.id) {
+        return Responses.BadRequest(res, "id is required.");
+    }
+    try {
+        const updateComeptitionDto = mapToDto(Dto.updateCompetition.meta, req.body);
+        await CompetitionService.updateCompetitionById({ ...updateComeptitionDto, id: req.params.id });
+        return Responses.UpdateSucess(res);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getCompetitionById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (!req.params.id) {
+            return Responses.BadRequest(res, "id is required.");
+        }
+        const teacher = await CompetitionService.getCompetitionById(req.params.id);
+        return Responses.FetchSucess(res, teacher);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteCompetitionById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (!req.params.id) {
+            return Responses.BadRequest(res, "id is required.");
+        }
+        await CompetitionService.deleteCompetitionById(req.params.id);
+        return Responses.DeleteSuccess(res);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getCompetitionRegistrations = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const pagedCompetitions = await CompetitionRegistrationService.getRegistrations(
+            res.locals.paging,
+            res.locals.filter
+        );
+        return Responses.FetchPagedSucess(res, pagedCompetitions);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const createCompetitionRegistration = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const createCompetitionDto = mapToDto(Dto.createCompetitionRegistration.meta, req.body);
+        const admin = await CompetitionRegistrationService.createRegistration(createCompetitionDto);
+        return Responses.CreateSucess(res, admin);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updateCompetitionRegistrationById = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.params.id) {
+        return Responses.BadRequest(res, "id is required.");
+    }
+    try {
+        const updateComeptitionDto = mapToDto(Dto.updateCompetitionRegistration.meta, req.body);
+        await CompetitionRegistrationService.updateRegistration({ ...updateComeptitionDto, id: req.params.id });
+        return Responses.UpdateSucess(res);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getCompetitionRegistrationById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (!req.params.id) {
+            return Responses.BadRequest(res, "id is required.");
+        }
+        const teacher = await CompetitionRegistrationService.getRegistrationById(req.params.id);
+        return Responses.FetchSucess(res, teacher);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteCompetitionRegistrationById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (!req.params.id) {
+            return Responses.BadRequest(res, "id is required.");
+        }
+        await CompetitionRegistrationService.deleteRegistrationById(req.params.id);
+        return Responses.DeleteSuccess(res);
     } catch (error) {
         next(error);
     }

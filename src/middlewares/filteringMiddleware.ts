@@ -4,7 +4,9 @@ import { generateFilterQuery } from "../filters/parser";
 import { FiltrableMetaData } from "../filters/annotations";
 import {
     AdminListFilterMeta,
+    CompetitionListFilterMeta,
     GroupListFilterMeta,
+    RegistrationListFilterMeta,
     TeacherListFilterMeta,
     UserListFilterMeta,
 } from "../filters/metaData";
@@ -26,3 +28,5 @@ export const adminListFilterMiddleware = filterMiddlewareFactory(AdminListFilter
 export const groupListFilterMiddleware = filterMiddlewareFactory(GroupListFilterMeta);
 export const userListFilterMiddleware = filterMiddlewareFactory(UserListFilterMeta);
 export const teacherListFilterMiddleware = filterMiddlewareFactory(TeacherListFilterMeta);
+export const competitionListFilterMiddleware = filterMiddlewareFactory(CompetitionListFilterMeta);
+export const competitionRegistrationListFilterMiddleware = filterMiddlewareFactory(RegistrationListFilterMeta);

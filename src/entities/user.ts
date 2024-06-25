@@ -11,19 +11,19 @@ const socialConditionValues: SocialCondition[] = ["donator", "poor", "teacherSon
 
 @Entity({ name: "user" })
 export class User extends AbstractEntity {
-    @Filterable({ names: ["user", "admin", "teacher"] })
+    @Filterable({ names: ["user", "admin", "teacher", "competitionRegistration"] })
     @DtoField({ dto: ["UserLoginDto"], validator: Validators.REQ_IDENTIFIER })
     @Index()
     @Column({ unique: true })
     identifier: string;
 
-    @Filterable({ names: ["user", "admin", "teacher"] })
+    @Filterable({ names: ["user", "admin", "teacher", "competitionRegistration"] })
     @DtoField({ dto: ["UpdateUserDto"], validator: Validators.TEXT })
     @DtoField({ dto: ["CreateUserDto", "CreateUserAdminDto"], validator: Validators.REQ_TEXT })
     @Column()
     firstName: string;
 
-    @Filterable({ names: ["user", "admin", "teacher"] })
+    @Filterable({ names: ["user", "admin", "teacher", "competitionRegistration"] })
     @DtoField({ dto: ["UpdateUserDto"], validator: Validators.TEXT })
     @DtoField({ dto: ["CreateUserDto", "CreateUserAdminDto"], validator: Validators.REQ_TEXT })
     @Column()
