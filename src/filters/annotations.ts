@@ -51,7 +51,6 @@ export interface FiltrableMetaData {
 }
 
 export function generateFilterMetaData(name: string, prototype: any, prototype2?: any): FiltrableMetaData {
-    name = name.toLowerCase();
     const fields1 = Reflect.getMetadata(FITRABLE_NAME + name, prototype) as MetaField;
     let fields2: MetaField | undefined = undefined;
 

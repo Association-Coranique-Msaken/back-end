@@ -31,6 +31,9 @@ export class Validators {
     public static readonly BOOL = Joi.bool();
     public static readonly REQ_BOOL = this.BOOL.required();
 
+    public static readonly NUM_HIZB = Joi.number().integer().min(1).max(60);
+    public static readonly REQ_NUM_HIZB = this.NUM_HIZB.required();
+
     // Domain specific
     public static readonly CIN = Joi.string()
         .length(8)

@@ -6,7 +6,7 @@ import { Teacher } from "../entities/teacher";
 import { User } from "../entities/user";
 import { AppErrors } from "../helpers/appErrors";
 import { DeepPartial } from "typeorm";
-import { transformQueryOutput } from "../helpers/queryHelpers";
+import { getOrThrow, transformQueryOutput } from "../helpers/queryHelpers";
 import { FilterQuery } from "../filters/types";
 import { generatePassword } from "../helpers/helpers";
 import { encrypt } from "../helpers/encrypt";
@@ -157,4 +157,7 @@ export class TeacherService {
         }
         return true;
     };
+
+    public static getTeacherOrThrow = async (id: string, bringDeleted: boolean = false) =>
+        getOrThrow<Teacher>(id, teacherRepository, "teacher", bringDeleted);
 }

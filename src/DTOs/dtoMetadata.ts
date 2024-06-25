@@ -6,6 +6,8 @@ import { Teacher } from "../entities/teacher";
 import { User } from "../entities/user";
 import { generateDtoMetaData } from "./dtoEngine";
 import { Card } from "../entities/card";
+import { Competition } from "../entities/competition";
+import { CompetitionRegistration } from "../entities/competitionRegistration";
 
 export class Dto {
     static createAdmin = {
@@ -63,5 +65,21 @@ export class Dto {
     static createCard = {
         name: "CreateCardDto",
         meta: generateDtoMetaData("CreateCardDto", Card.prototype),
+    };
+    static createCompetition = {
+        name: "CreateCompetitionDto",
+        meta: generateDtoMetaData("CreateCompetitionDto", Competition.prototype),
+    };
+    static updateCompetition = {
+        name: "UpdateCompetitionDto",
+        meta: generateDtoMetaData("UpdateCompetitionDto", Competition.prototype),
+    };
+    static createCompetitionRegistration = {
+        name: "CreateCompetitionRegistrationDto",
+        meta: generateDtoMetaData("CreateCompetitionRegistrationDto", CompetitionRegistration.prototype),
+    };
+    static updateCompetitionRegistration = {
+        name: "UpdateCompetitionRegistrationDto",
+        meta: generateDtoMetaData("UpdateCompetitionRegistrationDto", CompetitionRegistration.prototype),
     };
 }

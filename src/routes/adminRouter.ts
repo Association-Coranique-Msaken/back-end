@@ -26,12 +26,24 @@ import {
     createCardForUser,
     getUserLastCard,
     regenerateTeacherPassword,
+    createCompetition,
+    getCompetitions,
+    getCompetitionById,
+    updateCompetition,
+    deleteCompetitionById,
+    deleteCompetitionRegistrationById,
+    updateCompetitionRegistrationById,
+    getCompetitionRegistrationById,
+    getCompetitionRegistrations,
+    createCompetitionRegistration,
 } from "../controllers/adminController";
 import { adminAuthentication } from "../middlewares/authMiddleware";
 import { readOnlyAdminAuthorization, fullAccessAdminAuthorization } from "../middlewares/checkAdminRole";
 import { pagingMiddleware } from "../middlewares/pagingMiddleware";
 import {
     adminListFilterMiddleware,
+    competitionListFilterMiddleware,
+    competitionRegistrationListFilterMiddleware,
     groupListFilterMiddleware,
     teacherListFilterMiddleware,
     userListFilterMiddleware,
@@ -342,5 +354,139 @@ adminRouter.post("/card/user/", adminAuthentication, fullAccessAdminAuthorizatio
  *     tags: [adminapi]
  */
 adminRouter.get("/card/user/:userId", adminAuthentication, readOnlyAdminAuthorization, getUserLastCard);
+
+/**
+ * @swagger
+ * /api/v1/adminapi:
+ *   post:
+ *     summary: Create a competition.
+ *     description: Requires admin access token with write access. Creates a new competition.
+ *     tags: [adminapi]
+ */
+adminRouter.post("/competition/", adminAuthentication, fullAccessAdminAuthorization, createCompetition);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/competition/list:
+ *   get:
+ *     summary: Get competitions.
+ *     description: Requires admin access token. Get competitions.
+ *     tags: [adminapi]
+ */
+adminRouter.get(
+    "/competition/list",
+    adminAuthentication,
+    readOnlyAdminAuthorization,
+    pagingMiddleware,
+    competitionListFilterMiddleware,
+    getCompetitions
+);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/competition{id}:
+ *   get:
+ *     summary: Get competition by id.
+ *     description: Requires admin access token. Get competition by id.
+ *     tags: [adminapi]
+ */
+adminRouter.get("/competition/:id", adminAuthentication, readOnlyAdminAuthorization, getCompetitionById);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/competition{id}:
+ *   patch:
+ *     summary: Update competition.
+ *     description: Requires admin access token with write access. Update competition.
+ *     tags: [adminapi]
+ */
+adminRouter.patch("/competition/:id", adminAuthentication, fullAccessAdminAuthorization, updateCompetition);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/admin{id}:
+ *   delete:
+ *     summary: Delete competition.
+ *     description: Requires admin access token with write access. Delete competition.
+ *     tags: [adminapi]
+ */
+adminRouter.delete("/competition/:id", adminAuthentication, fullAccessAdminAuthorization, deleteCompetitionById);
+
+/**
+ * @swagger
+ * /api/v1/adminapi:
+ *   post:
+ *     summary: Create a competition registration.
+ *     description: Requires admin access token with write access. Creates a new competition registration.
+ *     tags: [adminapi]
+ */
+adminRouter.post(
+    "/competition/registration/",
+    adminAuthentication,
+    fullAccessAdminAuthorization,
+    createCompetitionRegistration
+);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/competition/list:
+ *   get:
+ *     summary: Get competition registrations.
+ *     description: Requires admin access token. Get competition registrations.
+ *     tags: [adminapi]
+ */
+adminRouter.get(
+    "/competition/registration/list",
+    adminAuthentication,
+    readOnlyAdminAuthorization,
+    pagingMiddleware,
+    competitionRegistrationListFilterMiddleware,
+    getCompetitionRegistrations
+);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/competition{id}:
+ *   get:
+ *     summary: Get competition registration by id.
+ *     description: Requires admin access token. Get competition registration by id.
+ *     tags: [adminapi]
+ */
+adminRouter.get(
+    "/competition/registration/:id",
+    adminAuthentication,
+    readOnlyAdminAuthorization,
+    getCompetitionRegistrationById
+);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/competition{id}:
+ *   patch:
+ *     summary: Update competition registration.
+ *     description: Requires admin access token with write access. Update competition registration.
+ *     tags: [adminapi]
+ */
+adminRouter.patch(
+    "/competition/registration/:id",
+    adminAuthentication,
+    fullAccessAdminAuthorization,
+    updateCompetitionRegistrationById
+);
+
+/**
+ * @swagger
+ * /api/v1/adminapi/admin{id}:
+ *   delete:
+ *     summary: Delete competition registration.
+ *     description: Requires admin access token with write access. Delete competition registration.
+ *     tags: [adminapi]
+ */
+adminRouter.delete(
+    "/competition/registration/:id",
+    adminAuthentication,
+    fullAccessAdminAuthorization,
+    deleteCompetitionRegistrationById
+);
 
 export default adminRouter;

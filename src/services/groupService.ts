@@ -82,7 +82,12 @@ export class GroupService {
         if (group.isDeleted) {
             throw new AppErrors.AlreadyDeleted();
         }
-        await groupRepository.update(id, { isDeleted: true });
+        await appDataSource.manager.transaction("READ COMMITTED", async (transactionalEntityManager) => {
+            await transactionalEntityManager
+                .getRepository(GroupUser)
+                .update({ group: { id: group.id } }, { isDeleted: true });
+            await transactionalEntityManager.getRepository(Group).update(id, { isDeleted: true });
+        });
     };
 
     public static getTeacherGroups = async (

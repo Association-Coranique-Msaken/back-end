@@ -1,5 +1,7 @@
 import { PageOptionsDto } from "../DTOs/paging/pageOptionsDto";
-import { SelectQueryBuilder } from "typeorm";
+import { FindOptionsWhere, Repository, SelectQueryBuilder } from "typeorm";
+import { AbstractEntity } from "../entities/abstractEntity";
+import { AppErrors } from "./appErrors";
 
 export async function transformQueryOutput(entities: any[], aliases: string[]): Promise<Record<string, any>[][]> {
     const editedEntities: Record<string, any>[][] = await Promise.all(
@@ -30,6 +32,7 @@ export async function transformQueryOutput(entities: any[], aliases: string[]): 
 declare module "typeorm" {
     interface SelectQueryBuilder<Entity> {
         addPaging(pageOptionsDto: PageOptionsDto, alias?: string): this;
+        leftJoinAndSelectIfNeeded(relation: string, alias: string, shouldJoin: boolean): this;
     }
 }
 
@@ -39,3 +42,33 @@ SelectQueryBuilder.prototype.addPaging = function (pageOptionsDto: PageOptionsDt
         .offset((pageOptionsDto.pageNumber - 1) * pageOptionsDto.pageSize)
         .limit(pageOptionsDto.pageSize);
 };
+
+SelectQueryBuilder.prototype.leftJoinAndSelectIfNeeded = function (
+    relation: string,
+    alias: string,
+    shouldJoin: boolean
+) {
+    if (shouldJoin) {
+        return this.leftJoinAndSelect(relation, alias);
+    }
+    return this;
+};
+
+export async function getOrThrow<Entity extends AbstractEntity>(
+    id: string,
+    repository: Repository<Entity>,
+    alias: string | null = null,
+    bringDeleted: boolean = false,
+    relations: string[] = []
+): Promise<Entity> {
+    const whereClause = {
+        id: id,
+        isDeleted: bringDeleted ? undefined : false,
+    } as FindOptionsWhere<Entity>;
+
+    const elem = await repository.findOne({ where: whereClause, relations: relations });
+    if (!elem) {
+        throw new AppErrors.NotFound(`Unable to find ${alias ?? "element"} with id : '${id}'.`);
+    }
+    return elem;
+}

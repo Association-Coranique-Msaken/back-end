@@ -6,8 +6,16 @@ import { PageOptionsDto } from "../DTOs/paging/pageOptionsDto";
 import { PageDto } from "../DTOs/paging/pageDto";
 import { PageMetaDto } from "../DTOs/paging/pageMetaDto";
 import { FilterQuery } from "../filters/types";
+import { AccessTokenRepo, RefreshTokenRepo, ResetPswdTokenRepo } from "../helpers/tokens/tokensRepository";
+import { Teacher } from "../entities/teacher";
+import { Admin } from "../entities/admin";
+import { AdminService } from "./adminService";
+import { TeacherService } from "./teacherService";
+import { getOrThrow } from "../helpers/queryHelpers";
 
 const userRepository = appDataSource.getRepository(User);
+const adminRepository = appDataSource.getRepository(Admin);
+const teacherRepository = appDataSource.getRepository(Teacher);
 
 export class UserService {
     public static createUser = async (user: any): Promise<User> => {
@@ -49,7 +57,10 @@ export class UserService {
         }
     };
 
-    public static getUsers = async (pageOptionsDto: PageOptionsDto, filters: FilterQuery): Promise<PageDto<User>> => {
+    public static getUsers = async (
+        pageOptionsDto: PageOptionsDto,
+        filters: FilterQuery
+    ): Promise<PageDto<Partial<User>>> => {
         const query = appDataSource
             .createQueryBuilder()
             .select()
@@ -87,5 +98,28 @@ export class UserService {
             return new AppErrors.AlreadyDeleted();
         }
         await userRepository.update(id, { isDeleted: true });
+
+        const admin = await adminRepository.findOne({ where: { user: { id: id } } });
+        if (admin) {
+            await AdminService.deleteAdminById(admin.id);
+            AccessTokenRepo.blacklistAll(admin.id);
+            RefreshTokenRepo.blacklistAll(admin.id);
+            ResetPswdTokenRepo.blacklistAll(admin.id);
+        }
+
+        const teacher = await teacherRepository.findOne({ where: { user: { id: id } } });
+        if (teacher) {
+            await TeacherService.deleteTeacherById(teacher.id);
+            AccessTokenRepo.blacklistAll(teacher.id);
+            RefreshTokenRepo.blacklistAll(teacher.id);
+            ResetPswdTokenRepo.blacklistAll(teacher.id);
+        }
+
+        AccessTokenRepo.blacklistAll(id);
+        RefreshTokenRepo.blacklistAll(id);
+        ResetPswdTokenRepo.blacklistAll(id);
     };
+
+    public static getUserOrThrow = async (id: string, bringDeleted: boolean = false) =>
+        getOrThrow<User>(id, userRepository, "user", bringDeleted);
 }

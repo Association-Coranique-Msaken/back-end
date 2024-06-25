@@ -8,7 +8,7 @@ import { QueryItemType, QueryRelation } from "../filters/types";
 
 @Entity({ name: "teacher" })
 export class Teacher extends AbstractEntity {
-    @Filterable({ relation: QueryRelation.STARTS_WITH })
+    @Filterable({ names: ["competitionRegistration", "teacher"], relation: QueryRelation.STARTS_WITH })
     @DtoField({ dto: ["TeacherLoginDto"], validator: Validators.REQ_CODE })
     @DtoField({ dto: ["CreateTeacherDto"], validator: Validators.REQ_CODE_TYPE, attributeName: "codeType" })
     @Column()
