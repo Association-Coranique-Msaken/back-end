@@ -1,7 +1,7 @@
 import { Admin } from "../entities/admin";
-import { Competition } from "../entities/competition";
+import { Competition } from "../entities/competition/competition";
 import { Group } from "../entities/group";
-import { CompetitionRegistration } from "../entities/competitionRegistration";
+import { CompetitionRegistration } from "../entities/competition/competitionRegistration";
 import { Teacher } from "../entities/teacher";
 import { User } from "../entities/user";
 import { generateFilterMetaData } from "./annotations";

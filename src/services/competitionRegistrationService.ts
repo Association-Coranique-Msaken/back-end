@@ -5,7 +5,7 @@ import { PageMetaDto } from "../DTOs/paging/pageMetaDto";
 import { PageDto } from "../DTOs/paging/pageDto";
 import { FilterQuery } from "../filters/types";
 import "../filters/extensions";
-import { CompetitionRegistration } from "../entities/competitionRegistration";
+import { CompetitionRegistration } from "../entities/competition/competitionRegistration";
 import { UserService } from "./userService";
 import { SelectQueryBuilder } from "typeorm";
 import { getOrThrow, transformQueryOutput } from "../helpers/queryHelpers";

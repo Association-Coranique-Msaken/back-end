@@ -1,0 +1,23 @@
+export class Dto {
+    static createAdmin = "CreateAdminDto";
+    static updateAdmin = "UpdateAdminDto";
+    static createTeacher = "createTeacherDto";
+    static updateTeacher = "UpdateTeacherDto";
+    static createUser = "CreateUserDto";
+    static updateUser = "UpdateUserDto";
+    static createGroup = "CreateGroupDto";
+    static updateGroup = "UpdateGroupDto";
+    static enrollUserToGroup = "EnrollUserToGroupDto";
+    static createUserAdmin = "CreateUserAdminDto";
+    static userLogin = "UserLoginDto";
+    static adminLogin = "AdminLoginDto";
+    static teacherLogin = "TeacherLoginDto";
+    static createCard = "CreateCardDto";
+    static createCompetition = "CreateCompetitionDto";
+    static updateCompetition = "UpdateCompetitionDto";
+    static createCompetitionRegistration = "CreateCompetitionRegistrationDto";
+    static updateCompetitionRegistration = "UpdateCompetitionRegistrationDto";
+    static createUserResult = "CreateUserResultDto";
+    static createUserExam = "CreateUserExamDto";
+    static createExamBound = "CreateExamBoundDto";
+}

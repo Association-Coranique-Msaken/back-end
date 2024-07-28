@@ -50,15 +50,14 @@ export interface FiltrableMetaData {
     fields: MetaField;
 }
 
-export function generateFilterMetaData(name: string, prototype: any, prototype2?: any): FiltrableMetaData {
-    const fields1 = Reflect.getMetadata(FITRABLE_NAME + name, prototype) as MetaField;
-    let fields2: MetaField | undefined = undefined;
+export function generateFilterMetaData(name: string, ...prototypes: any[]): FiltrableMetaData {
+    const fieldsList = prototypes.map(
+        (prototype) => (Reflect.getMetadata(FITRABLE_NAME + name, prototype) as MetaField) || {}
+    );
 
-    if (prototype2 != undefined) {
-        fields2 = Reflect.getMetadata(FITRABLE_NAME + name, prototype2) as MetaField;
-    }
-    // TODO: remame fields case of collision ?
-    const fields: MetaField = { ...fields1, ...fields2 };
+    // Merge all fields
+    const fields = Object.assign({}, ...fieldsList);
+
     return {
         name,
         fields,
