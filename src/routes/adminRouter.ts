@@ -429,7 +429,7 @@ adminRouter.post(
 
 /**
  * @swagger
- * /api/v1/adminapi/competition/list:
+ * /api/v1/adminapi/competition/registration/list:
  *   get:
  *     summary: Get competition registrations.
  *     description: Requires admin access token. Get competition registrations.

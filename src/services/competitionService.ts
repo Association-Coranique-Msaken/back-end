@@ -5,7 +5,7 @@ import { PageMetaDto } from "../DTOs/paging/pageMetaDto";
 import { PageDto } from "../DTOs/paging/pageDto";
 import { FilterQuery } from "../filters/types";
 import "../filters/extensions";
-import { Competition } from "../entities/competition";
+import { Competition } from "../entities/competition/competition";
 import { getOrThrow } from "../helpers/queryHelpers";
 
 const competitionRepository = appDataSource.getRepository(Competition);

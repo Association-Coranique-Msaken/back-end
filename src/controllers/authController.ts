@@ -3,12 +3,12 @@ import { Responses } from "../helpers/responses";
 import { AdminService } from "../services/adminService";
 import { AuthService } from "../services/authService";
 import { mapToDto } from "../DTOs/dtoEngine";
-import { Dto } from "../DTOs/dtoMetadata";
+import { DtoMeta } from "../DTOs/dtoMeta";
 
 // User Login
 const userLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { identifier, birthDate } = mapToDto(Dto.userLogin.meta, req.body);
+        const { identifier, birthDate } = mapToDto(DtoMeta.userLogin.meta, req.body);
         const { user, tokenResult } = await AuthService.userLogin(identifier, birthDate);
         return Responses.LoginSuccess(res, user, tokenResult);
     } catch (error) {
@@ -18,7 +18,7 @@ const userLogin = async (req: Request, res: Response, next: NextFunction) => {
 
 const adminLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { username, password } = mapToDto(Dto.adminLogin.meta, req.body);
+        const { username, password } = mapToDto(DtoMeta.adminLogin.meta, req.body);
         const { admin, tokenResult } = await AuthService.adminLogin(username, password);
         return Responses.LoginSuccess(res, admin, tokenResult);
     } catch (error) {
@@ -29,7 +29,7 @@ const adminLogin = async (req: Request, res: Response, next: NextFunction) => {
 // Teacher Login
 const teacherLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { code, password } = mapToDto(Dto.teacherLogin.meta, req.body);
+        const { code, password } = mapToDto(DtoMeta.teacherLogin.meta, req.body);
         const { teacher, tokenResult } = await AuthService.teacherLogin(code, password);
         return Responses.LoginSuccess(res, teacher, tokenResult);
     } catch (error) {
@@ -40,7 +40,7 @@ const teacherLogin = async (req: Request, res: Response, next: NextFunction) => 
 // Admin signup - only for testing.
 const adminSignup = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const createAdmindto = mapToDto(Dto.createUserAdmin.meta, req.body);
+        const createAdmindto = mapToDto(DtoMeta.createUserAdmin.meta, req.body);
         const admin = await AdminService.createAdminWithUser(createAdmindto);
         return Responses.CreateSucess(res, admin);
     } catch (error) {

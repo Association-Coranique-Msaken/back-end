@@ -3,11 +3,11 @@ import { Responses } from "../helpers/responses";
 import { UserService } from "../services/userService";
 import { GroupService } from "../services/groupService";
 import { mapToDto } from "../DTOs/dtoEngine";
-import { Dto } from "../DTOs/dtoMetadata";
+import { DtoMeta } from "../DTOs/dtoMeta";
 
 export const updateData = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const updateUserdto = mapToDto(Dto.updateUser.meta, req.body);
+        const updateUserdto = mapToDto(DtoMeta.updateUser.meta, req.body);
         const id = res.locals.decodedToken.userId;
         // update the user corresponding to the teacher
         await UserService.updateUserById({ ...updateUserdto, id });

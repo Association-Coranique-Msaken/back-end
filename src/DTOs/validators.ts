@@ -25,13 +25,22 @@ export class Validators {
     public static readonly ONE_OF = (...strs: String[]) => Joi.string().valid(...strs);
     public static readonly REQ_ONE_OF = (...strs: String[]) => this.ONE_OF(...strs).required();
 
+    public static readonly DECIMAL = Joi.number();
+    public static readonly REQ_DECIMAL = this.DECIMAL.required();
+
+    public static readonly DECIMAL_RANGE = (min: number, max: number) => this.DECIMAL.min(min).max(max);
+    public static readonly REQ_DECIMAL_RANGE = (min: number, max: number) => this.DECIMAL_RANGE(min, max).required();
+
     public static readonly NUM = Joi.number().integer();
     public static readonly REQ_NUM = this.NUM.required();
+
+    public static readonly RANGE = (min: number, max: number) => this.NUM.min(min).max(max);
+    public static readonly REQ_RANGE = (min: number, max: number) => this.RANGE(min, max).required();
 
     public static readonly BOOL = Joi.bool();
     public static readonly REQ_BOOL = this.BOOL.required();
 
-    public static readonly NUM_HIZB = Joi.number().integer().min(1).max(60);
+    public static readonly NUM_HIZB = this.RANGE(1, 60);
     public static readonly REQ_NUM_HIZB = this.NUM_HIZB.required();
 
     // Domain specific

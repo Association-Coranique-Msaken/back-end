@@ -4,15 +4,16 @@ import { User } from "./user";
 import { Group } from "./group";
 import { DtoField } from "../DTOs/dtoEngine";
 import { Validators } from "../DTOs/validators";
+import { Dto } from "../DTOs/dto";
 
 @Entity({ name: "groupUser" })
 export class GroupUser extends AbstractEntity {
-    @DtoField({ dto: ["EnrollUserToGroupDto"], validator: Validators.REQ_GUID, attributeName: "groupId" })
+    @DtoField({ dto: [Dto.enrollUserToGroup], validator: Validators.REQ_GUID, attributeName: "groupId" })
     @ManyToOne((type) => Group, (group) => group.users)
     //@JoinColumn()
     group: Group;
 
-    @DtoField({ dto: ["EnrollUserToGroupDto"], validator: Validators.REQ_GUID, attributeName: "userId" })
+    @DtoField({ dto: [Dto.enrollUserToGroup], validator: Validators.REQ_GUID, attributeName: "userId" })
     @ManyToOne((type) => User, (user) => user.groups)
     // @JoinColumn()
     user: User;

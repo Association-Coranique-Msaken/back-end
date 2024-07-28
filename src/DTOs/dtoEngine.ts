@@ -37,15 +37,14 @@ export interface DtoMetaData {
     fields: MetaField;
 }
 
-export function generateDtoMetaData(dtoName: string, prototype: any, prototype2?: any): DtoMetaData {
-    const fields1 = Reflect.getMetadata(DTO_FIELD_NAME + dtoName, prototype) as MetaField;
-    let fields2: MetaField | undefined = undefined;
+export function generateDtoMetaData(dtoName: string, ...prototypes: any[]): DtoMetaData {
+    const fieldsList = prototypes.map(
+        (prototype) => (Reflect.getMetadata(DTO_FIELD_NAME + dtoName, prototype) as MetaField) || {}
+    );
 
-    if (prototype2 != undefined) {
-        fields2 = Reflect.getMetadata(DTO_FIELD_NAME + dtoName, prototype2) as MetaField;
-    }
-    // TODO: remame fields case of collision ?
-    const fields: MetaField = { ...fields1, ...fields2 };
+    // Merge all fields
+    const fields = Object.assign({}, ...fieldsList);
+
     return {
         name: dtoName,
         fields,

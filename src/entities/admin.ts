@@ -5,6 +5,7 @@ import { DtoField } from "../DTOs/dtoEngine";
 import { Validators } from "../DTOs/validators";
 import { Filterable } from "../filters/annotations";
 import { QueryRelation } from "../filters/types";
+import { Dto } from "../DTOs/dto";
 
 export type AdminRole = "fullAccessAdmin" | "limitedAccess" | "readOnly";
 const adminRroleValues: AdminRole[] = ["fullAccessAdmin", "limitedAccess", "readOnly"];
@@ -12,12 +13,12 @@ const adminRroleValues: AdminRole[] = ["fullAccessAdmin", "limitedAccess", "read
 @Entity({ name: "admin" })
 export class Admin extends AbstractEntity {
     @Filterable()
-    @DtoField({ dto: ["UpdateAdminDto"], validator: Validators.TEXT })
-    @DtoField({ dto: ["CreateAdminDto", "CreateUserAdminDto", "AdminLoginDto"], validator: Validators.REQ_TEXT })
+    @DtoField({ dto: [Dto.updateAdmin], validator: Validators.TEXT })
+    @DtoField({ dto: [Dto.createAdmin, Dto.createUserAdmin, Dto.adminLogin], validator: Validators.REQ_TEXT })
     @Column({ unique: true })
     username: string;
 
-    @DtoField({ dto: ["CreateAdminDto", "CreateUserAdminDto", "AdminLoginDto"], validator: Validators.REQ_TEXT })
+    @DtoField({ dto: [Dto.createAdmin, Dto.createUserAdmin, Dto.adminLogin], validator: Validators.REQ_TEXT })
     @Column()
     password: string;
 
@@ -26,11 +27,11 @@ export class Admin extends AbstractEntity {
 
     @Filterable({ relation: QueryRelation.EQ })
     @DtoField({
-        dto: ["UpdateAdminDto"],
+        dto: [Dto.updateAdmin],
         validator: Validators.ONE_OF(...adminRroleValues),
     })
     @DtoField({
-        dto: ["CreateUserAdminDto", "CreateAdminDto"],
+        dto: [Dto.createUserAdmin, Dto.createAdmin],
         validator: Validators.REQ_ONE_OF(...adminRroleValues),
     })
     @Column({
@@ -40,7 +41,7 @@ export class Admin extends AbstractEntity {
     })
     role: AdminRole;
 
-    @DtoField({ dto: ["CreateAdminDto"], validator: Validators.REQ_GUID, attributeName: "userId" })
+    @DtoField({ dto: [Dto.createAdmin], validator: Validators.REQ_GUID, attributeName: "userId" })
     @OneToOne(() => User)
     @JoinColumn()
     user: User;
