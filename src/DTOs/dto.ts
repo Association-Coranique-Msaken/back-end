@@ -20,6 +20,4 @@ export class Dto {
     static createUserResult = "CreateUserResultDto";
     static createUserExam = "CreateUserExamDto";
     static createExamBound = "CreateExamBoundDto";
-    static createRenseignement = "CreateRenseignementDto";
-    static updateRenseignement = "UpdateRenseignementDto";
 }
