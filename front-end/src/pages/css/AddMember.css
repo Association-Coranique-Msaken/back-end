@@ -1,0 +1,18 @@
+.input-style {
+    border-radius: 0;
+}
+.etloile {
+    color: red;
+}
+
+.gender,
+.typeDoc {
+    display: block;
+}
+.btn_form {
+    float: inline-end;
+}
+.addMemberForm_btn {
+    width: 150px;
+    border-radius: 0;
+}

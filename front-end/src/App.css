@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Amiri&display=swap");
+.rtl {
+    direction: rtl;
+}
+*,
+::after,
+::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* box-shadow: 0 0 0 3px red inset; */
+    font-family: "Amiri", serif;
+}
+.main {
+    max-width: 100%;
+    width: 100%;
+    max-height: 100vh;
+    padding: 70px 30px;
+}
