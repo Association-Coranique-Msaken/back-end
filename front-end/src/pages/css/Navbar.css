@@ -1,0 +1,140 @@
+/* nav bar */
+.shared-navbar {
+    height: 70px;
+    width: 100%;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    background-color: beige;
+    padding: 0 15px;
+}
+.shared-navbar-logo,
+.shared-navbar-dropdown,
+.shared-navbar-btn {
+    height: 100%;
+}
+/* navbar logo */
+.shared-navbar-logo {
+    width: 65%;
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+}
+.shared-navbar-logo h4 {
+    line-height: 70px;
+}
+
+.shared-navbar-logo img {
+    width: 70px;
+}
+/* navbar dropdown */
+.shared-navbar-dropdown {
+    width: 25%;
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+}
+ul li {
+    list-style: none;
+}
+ul#dropdown {
+    line-height: 50px;
+}
+ul#liste li a {
+    text-align: right;
+    padding-right: 10px;
+    line-height: 30px;
+}
+/* navbar btn d'apparition du sidebar */
+.shared-navbar-btn {
+    width: 10%;
+    line-height: 70px;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+}
+.shared-navbar-btn button {
+    background-color: transparent;
+    border: none;
+}
+.shared-navbar-btn i {
+    font-size: 30px;
+}
+/* side bar */
+.offcanvas {
+    /* box-shadow: 0 0 0 3px red inset; */
+    padding: 40px 30px;
+}
+.offcanvas-header h4 {
+    font-size: 30px;
+}
+.offcanvas-body {
+    margin-top: 40px;
+}
+.offcanvas-body ul li {
+    line-height: 50px;
+}
+.offcanvas-body ul li a {
+    text-decoration: none;
+    color: black;
+    font-size: 20px;
+    margin-right: 20px;
+}
+.offcanvas-body ul li a:hover {
+    color: rgb(34, 34, 87);
+    font-size: larger;
+    font-weight: bold;
+}
+.offcanvas-body ul li a i {
+    margin-left: 10px;
+    font-size: 20px;
+}
+/* responsive */
+@media (max-width: 992px) {
+}
+@media (max-width: 576px) {
+    .shared-navbar-logo h4 {
+        line-height: 35px;
+    }
+    .shared-navbar-logo h4 span {
+        display: block;
+    }
+    .shared-navbar-logo h4 #tild {
+        display: none;
+    }
+    #dropdown {
+        width: 50px;
+    }
+}
+@media (max-width: 450px) {
+    * {
+        font-size: small;
+    }
+    .shared-navbar {
+        padding: 0 5px;
+    }
+    .shared-navbar-logo {
+        width: 60%;
+    }
+    .shared-navbar-dropdown {
+        width: 23%;
+    }
+}
+@media (max-width: 300px) {
+    .shared-navbar {
+        padding: 0 0;
+    }
+    .shared-navbar-logo img {
+        width: 50px;
+        height: 50px;
+        margin-top: 10px;
+    }
+    .shared-navbar-logo {
+        width: 53%;
+    }
+    .shared-navbar-dropdown {
+        width: 30%;
+    }
+    .shared-navbar-btn i {
+        font-size: 20px;
+    }
+}
