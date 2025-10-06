@@ -8,21 +8,21 @@ const teacherRouter = express.Router();
 
 /**
  * @swagger
- * /api/v1/teacherapi:
+ * /api/v1/teacher-api:
  *   patch:
  *     summary: Update teacher.
  *     description: Requires teacher access token. Updates the teacher.
- *     tags: [teacherapi]
+ *     tags: [teacher-api]
  */
 teacherRouter.patch("/teacher", teacherAuthentication, teacherWriteAuthorization, updateData);
 
 /**
  * @swagger
- * /api/v1/teacherapi/group/list:
+ * /api/v1/teacher-api/group/list:
  *   get:
  *     summary: Get teacher groups
  *     description: Requires teacher access token. Returns a list of teacher groups. Supports pagination parameters.
- *     tags: [teacherapi]
+ *     tags: [teacher-api]
  */
 teacherRouter.get("/group/list", teacherAuthentication, pagingMiddleware, getGroups);
 

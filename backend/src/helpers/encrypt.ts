@@ -2,11 +2,11 @@ import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 
 export class encrypt {
-    static async encryptpass(password: string) {
+    static async encryptPass(password: string) {
         return bcrypt.hashSync(password, 12);
     }
 
-    static comparepassword = (hashPassword: string, password: string) => bcrypt.compareSync(password, hashPassword);
+    static comparePassword = (hashPassword: string, password: string) => bcrypt.compareSync(password, hashPassword);
 
     static generateToken(object: any): string {
         if (!process.env.JWT_TOKEN_SECRET) throw new Error("JWT_TOKEN_SECRET is undefined");

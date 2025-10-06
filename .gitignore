@@ -5,6 +5,7 @@ data/
 .vscode/
 .env
 package-lock.json
+.DS_Store
 
 # Package lock 
 pnpm-lock.yaml

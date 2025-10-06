@@ -13,7 +13,7 @@ import { CompetitionRegistrationService } from "../services/competitionRegistrat
 export const getAdmins = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const pagedAdmins = await AdminService.getAdmins(res.locals.paging, res.locals.filter);
-        return Responses.FetchPagedSucess(res, pagedAdmins);
+        return Responses.FetchPagedSuccess(res, pagedAdmins);
     } catch (error) {
         next(error);
     }
@@ -21,9 +21,9 @@ export const getAdmins = async (req: Request, res: Response, next: NextFunction)
 
 export const createAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const createAdmindto = mapToDto(DtoMeta.createAdmin.meta, req.body);
-        const admin = await AdminService.createAdmin(createAdmindto);
-        return Responses.CreateSucess(res, admin);
+        const createAdminDto = mapToDto(DtoMeta.createAdmin.meta, req.body);
+        const admin = await AdminService.createAdmin(createAdminDto);
+        return Responses.CreateSuccess(res, admin);
     } catch (error) {
         next(error);
     }
@@ -34,9 +34,9 @@ export const updateAdmin = async (req: Request, res: Response, next: NextFunctio
         return Responses.BadRequest(res, "id is required.");
     }
     try {
-        const updateAdmindto = mapToDto(DtoMeta.updateAdmin.meta, req.body);
-        await AdminService.updateAdminById({ ...updateAdmindto, id: req.params.id });
-        return Responses.UpdateSucess(res);
+        const updateAdminDto = mapToDto(DtoMeta.updateAdmin.meta, req.body);
+        await AdminService.updateAdminById({ ...updateAdminDto, id: req.params.id });
+        return Responses.UpdateSuccess(res);
     } catch (error) {
         next(error);
     }
@@ -48,7 +48,7 @@ export const getAdminById = async (req: Request, res: Response, next: NextFuncti
             return Responses.BadRequest(res, "id is required.");
         }
         const teacher = await AdminService.getAdminById(req.params.id);
-        return Responses.FetchSucess(res, teacher);
+        return Responses.FetchSuccess(res, teacher);
     } catch (error) {
         next(error);
     }
@@ -69,9 +69,9 @@ export const deleteAdminById = async (req: Request, res: Response, next: NextFun
 // teacher functionality
 export const createTeacher = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const createTeacherdto = mapToDto(DtoMeta.createTeacher.meta, req.body);
-        const teacher = await TeacherService.createTeacher(createTeacherdto);
-        return Responses.CreateSucess(res, teacher);
+        const createTeacherDto = mapToDto(DtoMeta.createTeacher.meta, req.body);
+        const teacher = await TeacherService.createTeacher(createTeacherDto);
+        return Responses.CreateSuccess(res, teacher);
     } catch (error) {
         next(error);
     }
@@ -80,7 +80,7 @@ export const createTeacher = async (req: Request, res: Response, next: NextFunct
 export const getTeachers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const pagedTeachers = await TeacherService.getTeachers(res.locals.paging, res.locals.filter);
-        return Responses.FetchPagedSucess(res, pagedTeachers);
+        return Responses.FetchPagedSuccess(res, pagedTeachers);
     } catch (error) {
         next(error);
     }
@@ -92,7 +92,7 @@ export const getTeacherById = async (req: Request, res: Response, next: NextFunc
             return Responses.BadRequest(res, "id is required.");
         }
         const teacher = await TeacherService.getTeacherById(req.params.id);
-        return Responses.FetchSucess(res, teacher);
+        return Responses.FetchSuccess(res, teacher);
     } catch (error) {
         next(error);
     }
@@ -103,9 +103,9 @@ export const updateTeacher = async (req: Request, res: Response, next: NextFunct
         return Responses.BadRequest(res, "id is required.");
     }
     try {
-        const updateTeacherdto = mapToDto(DtoMeta.updateTeacher.meta, req.body);
-        await TeacherService.updateTeacherById({ ...updateTeacherdto, id: req.params.id });
-        return Responses.UpdateSucess(res);
+        const updateTeacherDto = mapToDto(DtoMeta.updateTeacher.meta, req.body);
+        await TeacherService.updateTeacherById({ ...updateTeacherDto, id: req.params.id });
+        return Responses.UpdateSuccess(res);
     } catch (error) {
         next(error);
     }
@@ -129,7 +129,7 @@ export const getTeacherByCode = async (req: Request, res: Response, next: NextFu
             return Responses.BadRequest(res);
         }
         const teacher = await TeacherService.getTeacherByCode(req.params.code);
-        return Responses.FetchSucess(res, teacher);
+        return Responses.FetchSuccess(res, teacher);
     } catch (error) {
         next(error);
     }
@@ -141,7 +141,7 @@ export const regenerateTeacherPassword = async (req: Request, res: Response, nex
             return Responses.BadRequest(res);
         }
         const teacher = await TeacherService.regenerateTeacherPassword(req.params.teacherId);
-        return Responses.UpdateSucess(res, teacher);
+        return Responses.UpdateSuccess(res, teacher);
     } catch (error) {
         next(error);
     }
@@ -149,9 +149,9 @@ export const regenerateTeacherPassword = async (req: Request, res: Response, nex
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const createUserdto = mapToDto(DtoMeta.createUser.meta, req.body);
-        const user = await UserService.createUser(createUserdto);
-        return Responses.CreateSucess(res, user);
+        const createUserDto = mapToDto(DtoMeta.createUser.meta, req.body);
+        const user = await UserService.createUser(createUserDto);
+        return Responses.CreateSuccess(res, user);
     } catch (error) {
         next(error);
     }
@@ -160,7 +160,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const pagedUsers = await UserService.getUsers(res.locals.paging, res.locals.filter);
-        return Responses.FetchPagedSucess(res, pagedUsers);
+        return Responses.FetchPagedSuccess(res, pagedUsers);
     } catch (error) {
         next(error);
     }
@@ -172,7 +172,7 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
     }
     try {
         const user = await UserService.getUserById(req.params.id);
-        return Responses.FetchSucess(res, user);
+        return Responses.FetchSuccess(res, user);
     } catch (error) {
         next(error);
     }
@@ -183,9 +183,9 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
         return Responses.BadRequest(res, "id is required.");
     }
     try {
-        const updateUserdto = mapToDto(DtoMeta.updateUser.meta, req.body);
-        await UserService.updateUserById({ ...updateUserdto, id: req.params.id });
-        return Responses.UpdateSucess(res);
+        const updateUserDto = mapToDto(DtoMeta.updateUser.meta, req.body);
+        await UserService.updateUserById({ ...updateUserDto, id: req.params.id });
+        return Responses.UpdateSuccess(res);
     } catch (error) {
         next(error);
     }
@@ -207,9 +207,9 @@ export const deleteUserById = async (req: Request, res: Response, next: NextFunc
 
 export const createGroup = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const createGroupdto = mapToDto(DtoMeta.createGroup.meta, req.body);
-        const admin = await GroupService.createGroup(createGroupdto);
-        return Responses.CreateSucess(res, admin);
+        const createGroupDto = mapToDto(DtoMeta.createGroup.meta, req.body);
+        const admin = await GroupService.createGroup(createGroupDto);
+        return Responses.CreateSuccess(res, admin);
     } catch (error) {
         next(error);
     }
@@ -218,7 +218,7 @@ export const createGroup = async (req: Request, res: Response, next: NextFunctio
 export const getGroups = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const pagedGroups = await GroupService.getGroups(res.locals.paging, res.locals.filter);
-        return Responses.FetchPagedSucess(res, pagedGroups);
+        return Responses.FetchPagedSuccess(res, pagedGroups);
     } catch (error) {
         next(error);
     }
@@ -230,7 +230,7 @@ export const getGroupById = async (req: Request, res: Response, next: NextFuncti
     }
     try {
         const group = await GroupService.getGroupById(req.params.id);
-        return Responses.FetchSucess(res, group);
+        return Responses.FetchSuccess(res, group);
     } catch (error) {
         next(error);
     }
@@ -238,9 +238,9 @@ export const getGroupById = async (req: Request, res: Response, next: NextFuncti
 
 export const updateGroup = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const updateGroupdto = mapToDto(DtoMeta.updateGroup.meta, req.body);
-        await GroupService.updateGroupById({ ...updateGroupdto, id: req.params.id });
-        return Responses.UpdateSucess(res);
+        const updateGroupDto = mapToDto(DtoMeta.updateGroup.meta, req.body);
+        await GroupService.updateGroupById({ ...updateGroupDto, id: req.params.id });
+        return Responses.UpdateSuccess(res);
     } catch (error) {
         next(error);
     }
@@ -265,7 +265,7 @@ const getTeacherGroups = async (req: Request, res: Response, next: NextFunction)
     }
     try {
         const entities = await GroupService.getTeacherGroups(req.query.teacherId, res.locals.paging);
-        return Responses.FetchSucess(res, entities);
+        return Responses.FetchSuccess(res, entities);
     } catch (error) {
         next(error);
     }
@@ -277,7 +277,7 @@ export const getGroupUsers = async (req: Request, res: Response, next: NextFunct
     }
     try {
         const users = await GroupService.getGroupUsers(req.params.id, res.locals.paging);
-        return Responses.FetchSucess(res, users);
+        return Responses.FetchSuccess(res, users);
     } catch (error) {
         next(error);
     }
@@ -287,7 +287,7 @@ export const enrollUserToGroup = async (req: Request, res: Response, next: NextF
     try {
         const { userId, groupId } = mapToDto(DtoMeta.enrollUserToGroup.meta, req.body);
         await GroupService.enrollUserToGroup(userId, groupId);
-        return Responses.UpdateSucess(res);
+        return Responses.UpdateSuccess(res);
     } catch (error) {
         next(error);
     }
@@ -309,7 +309,7 @@ export const createCardForUser = async (req: Request, res: Response, next: NextF
     try {
         const createUserCardDto = mapToDto(DtoMeta.createCard.meta, req.body);
         const result = await CardService.createUserCard({ ...createUserCardDto, id: req.params.id });
-        return Responses.CreateSucess(res, result);
+        return Responses.CreateSuccess(res, result);
     } catch (error) {
         next(error);
     }
@@ -321,7 +321,7 @@ export const getUserLastCard = async (req: Request, res: Response, next: NextFun
     }
     try {
         const card = await CardService.getUserLastCard(req.params.userId);
-        return Responses.FetchSucess(res, card);
+        return Responses.FetchSuccess(res, card);
     } catch (error) {
         next(error);
     }
@@ -330,7 +330,7 @@ export const getUserLastCard = async (req: Request, res: Response, next: NextFun
 export const getCompetitions = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const pagedCompetitions = await CompetitionService.getCompetitions(res.locals.paging, res.locals.filter);
-        return Responses.FetchPagedSucess(res, pagedCompetitions);
+        return Responses.FetchPagedSuccess(res, pagedCompetitions);
     } catch (error) {
         next(error);
     }
@@ -340,7 +340,7 @@ export const createCompetition = async (req: Request, res: Response, next: NextF
     try {
         const createCompetitionDto = mapToDto(DtoMeta.createCompetition.meta, req.body);
         const admin = await CompetitionService.createCompetition(createCompetitionDto);
-        return Responses.CreateSucess(res, admin);
+        return Responses.CreateSuccess(res, admin);
     } catch (error) {
         next(error);
     }
@@ -351,9 +351,9 @@ export const updateCompetition = async (req: Request, res: Response, next: NextF
         return Responses.BadRequest(res, "id is required.");
     }
     try {
-        const updateComeptitionDto = mapToDto(DtoMeta.updateCompetition.meta, req.body);
-        await CompetitionService.updateCompetitionById({ ...updateComeptitionDto, id: req.params.id });
-        return Responses.UpdateSucess(res);
+        const updateCompetitionDto = mapToDto(DtoMeta.updateCompetition.meta, req.body);
+        await CompetitionService.updateCompetitionById({ ...updateCompetitionDto, id: req.params.id });
+        return Responses.UpdateSuccess(res);
     } catch (error) {
         next(error);
     }
@@ -365,7 +365,7 @@ export const getCompetitionById = async (req: Request, res: Response, next: Next
             return Responses.BadRequest(res, "id is required.");
         }
         const teacher = await CompetitionService.getCompetitionById(req.params.id);
-        return Responses.FetchSucess(res, teacher);
+        return Responses.FetchSuccess(res, teacher);
     } catch (error) {
         next(error);
     }
@@ -389,7 +389,7 @@ export const getCompetitionRegistrations = async (req: Request, res: Response, n
             res.locals.paging,
             res.locals.filter
         );
-        return Responses.FetchPagedSucess(res, pagedCompetitions);
+        return Responses.FetchPagedSuccess(res, pagedCompetitions);
     } catch (error) {
         next(error);
     }
@@ -399,7 +399,7 @@ export const createCompetitionRegistration = async (req: Request, res: Response,
     try {
         const createCompetitionDto = mapToDto(DtoMeta.createCompetitionRegistration.meta, req.body);
         const admin = await CompetitionRegistrationService.createRegistration(createCompetitionDto);
-        return Responses.CreateSucess(res, admin);
+        return Responses.CreateSuccess(res, admin);
     } catch (error) {
         next(error);
     }
@@ -410,9 +410,9 @@ export const updateCompetitionRegistrationById = async (req: Request, res: Respo
         return Responses.BadRequest(res, "id is required.");
     }
     try {
-        const updateComeptitionDto = mapToDto(DtoMeta.updateCompetitionRegistration.meta, req.body);
-        await CompetitionRegistrationService.updateRegistration({ ...updateComeptitionDto, id: req.params.id });
-        return Responses.UpdateSucess(res);
+        const updateCompetitionDto = mapToDto(DtoMeta.updateCompetitionRegistration.meta, req.body);
+        await CompetitionRegistrationService.updateRegistration({ ...updateCompetitionDto, id: req.params.id });
+        return Responses.UpdateSuccess(res);
     } catch (error) {
         next(error);
     }
@@ -424,7 +424,7 @@ export const getCompetitionRegistrationById = async (req: Request, res: Response
             return Responses.BadRequest(res, "id is required.");
         }
         const teacher = await CompetitionRegistrationService.getRegistrationById(req.params.id);
-        return Responses.FetchSucess(res, teacher);
+        return Responses.FetchSuccess(res, teacher);
     } catch (error) {
         next(error);
     }

@@ -8,7 +8,7 @@ import { Dto } from "../../DTOs/dto";
 export class ExamBound extends AbstractEntity {
     @DtoField({ dto: [Dto.createExamBound], validator: Validators.REQ_TEXT })
     @Column()
-    desciption: string;
+    description: string;
 
     @DtoField({ dto: [Dto.createExamBound], validator: Validators.BOOL })
     @Column({ default: false })

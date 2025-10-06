@@ -52,7 +52,7 @@ export class AuthService {
         if (!admin) {
             throw new AppErrors.BadCredentials();
         }
-        const isPasswordValid = encrypt.comparepassword(admin.password, password);
+        const isPasswordValid = encrypt.comparePassword(admin.password, password);
         if (!isPasswordValid) {
             throw new AppErrors.BadCredentials();
         }
@@ -71,7 +71,7 @@ export class AuthService {
 
     public static teacherLogin = async (code: string, password: string) => {
         const teacher = await teacherRepository.findOne({ where: { code }, relations: ["user"] });
-        const isPasswordValid = encrypt.comparepassword(teacher?.password ?? "", password);
+        const isPasswordValid = encrypt.comparePassword(teacher?.password ?? "", password);
         if (!teacher || !isPasswordValid) {
             throw new AppErrors.BadCredentials();
         }
@@ -101,7 +101,7 @@ export class AuthService {
         const correspondingAccessToken = decodedToken.accessToken ?? "";
         await RefreshTokenRepo.checkValidity(refreshToken, decodedToken.id, decodedToken.expiration);
         RefreshTokenRepo.blacklist(decodedToken.id, refreshToken, decodedToken.expiration);
-        // if the access token got unvalidated in a way requiring refresh token to be invalid too.
+        // if the access token got invalid in a way requiring refresh token to be invalid too.
         await RefreshTokenRepo.checkValidity(correspondingAccessToken, decodedToken.id, decodedToken.expiration);
 
         switch (decodedToken.tokenType) {

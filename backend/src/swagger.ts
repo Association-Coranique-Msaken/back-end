@@ -18,15 +18,15 @@ const swaggerDefinition = {
             description: "Authentication APIs",
         },
         {
-            name: "adminapi",
+            name: "admin-api",
             description: "Admin APIs",
         },
         {
-            name: "userapi",
+            name: "user-api",
             description: "User APIs",
         },
         {
-            name: "teacherapi",
+            name: "teacher-api",
             description: "Teacher APIs",
         },
     ],

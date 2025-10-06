@@ -45,7 +45,7 @@ export class AdminService {
     public static createAdmin = async (adminData: any): Promise<Admin> => {
         // FIXME should we check also for deleted ?
         if (await adminRepository.findOne({ where: { username: adminData.username } })) {
-            throw new AppErrors.AlreadyExists(`username '${adminData.username}' aleady exists`);
+            throw new AppErrors.AlreadyExists(`username '${adminData.username}' already exists`);
         }
 
         let user: User | null =
@@ -56,7 +56,7 @@ export class AdminService {
                     `Admin with the user identifier '${adminData.identifier}' already exists.`
                 );
             }
-            const encryptedPassword = await encrypt.encryptpass(adminData.password!);
+            const encryptedPassword = await encrypt.encryptPass(adminData.password!);
             const newAdmin = new Admin();
             newAdmin.username = adminData.username!;
             newAdmin.password = encryptedPassword!;
@@ -72,7 +72,7 @@ export class AdminService {
     public static updateAdminById = async (updateData: any) => {
         const admin = await AdminService.getAdminOrThrow(updateData.id);
         await Promise.all([
-            AdminService.unvalidateAccessTokenIfNeeded(updateData, admin),
+            AdminService.invalidateAccessTokenIfNeeded(updateData, admin),
             await adminRepository.update(admin.id, updateData),
         ]);
     };
@@ -121,7 +121,7 @@ export class AdminService {
     public static resetAdminPassword = async (token: string, newPassword: string) => {
         const { id, expiration } = await decodeAndCheckResetPasswordToken(token);
         const admin = await AdminService.getAdminOrThrow(id);
-        admin.password = await encrypt.encryptpass(newPassword);
+        admin.password = await encrypt.encryptPass(newPassword);
         const res = await adminRepository.update(admin.id, admin);
         if (!res.affected) {
             throw new AppErrors.InternalError();
@@ -132,13 +132,13 @@ export class AdminService {
         return admin;
     };
 
-    private static unvalidateAccessTokenIfNeeded = async (updateData: any, currentData: Admin): Promise<void> => {
-        if (AdminService.shouldUnvalidateAccessToken(updateData, currentData)) {
+    private static invalidateAccessTokenIfNeeded = async (updateData: any, currentData: Admin): Promise<void> => {
+        if (AdminService.shouldInvalidateAccessToken(updateData, currentData)) {
             return await AccessTokenRepo.blacklistAll(currentData.id);
         }
     };
 
-    private static shouldUnvalidateAccessToken = (updateData: any, currentData: Admin): boolean => {
+    private static shouldInvalidateAccessToken = (updateData: any, currentData: Admin): boolean => {
         if (updateData.role != undefined) {
             return updateData.role != currentData.role;
         }

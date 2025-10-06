@@ -89,7 +89,7 @@ export class CompetitionRegistrationService {
                 where: { user: { id: userId }, competition: { id: competitionId }, isDeleted: false },
             })
         ) {
-            throw new AppErrors.AlreadyExists("User already registred in the competition.");
+            throw new AppErrors.AlreadyExists("User already registered in the competition.");
         }
     };
 

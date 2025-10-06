@@ -23,13 +23,13 @@ docker-compose up
 
 # About
 
-This project is a combinisation between:
+This project contains:
 
 -   Express ts
 -   MySql
 -   TypeOrm as an ORM
--   JWT Auth (accessToekn & refreshToken)
--   Asmin Roles (fullAccessAdmin, limitedAccess, readOnly)
+-   JWT Auth (accessToken & refreshToken)
+-   Admin Roles (fullAccessAdmin, limitedAccess, readOnly)
 -   Docker :
     -   Docker.dev for easy and fast development environment
     -   Docker.prod for production environment (TODO)

@@ -1,6 +1,6 @@
 import { QueryItemType, QueryRelation } from "./types";
 
-const FITRABLE_NAME = "Filtrable";
+const FILTRABLE_NAME = "Filtrable";
 
 export interface FilterableConfig {
     names?: string[];
@@ -23,7 +23,7 @@ export function Filterable(options?: FilterableConfig): PropertyDecorator {
         const className = target.constructor.name.toLowerCase();
         const names = options?.names ?? [className];
         for (const name of names) {
-            const dtoFieldsMetadataKey = FITRABLE_NAME + name;
+            const dtoFieldsMetadataKey = FILTRABLE_NAME + name;
             const existingDtoFields = Reflect.getMetadata(dtoFieldsMetadataKey, target) || {};
             const type = options?.type ?? QueryItemType.STRING;
             const attributeName = options?.fieldName ?? propertyKey.toString();
@@ -52,7 +52,7 @@ export interface FiltrableMetaData {
 
 export function generateFilterMetaData(name: string, ...prototypes: any[]): FiltrableMetaData {
     const fieldsList = prototypes.map(
-        (prototype) => (Reflect.getMetadata(FITRABLE_NAME + name, prototype) as MetaField) || {}
+        (prototype) => (Reflect.getMetadata(FILTRABLE_NAME + name, prototype) as MetaField) || {}
     );
 
     // Merge all fields
