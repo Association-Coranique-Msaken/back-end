@@ -16,7 +16,6 @@ const female = "female";
 export class User extends AbstractEntity {
     @Filterable({ names: ["user", "admin", "teacher", "competitionRegistration"] })
     @DtoField({ dto: [Dto.userLogin], validator: Validators.REQ_IDENTIFIER })
-    @Index()
     @Column({ unique: true })
     identifier: string;
 
