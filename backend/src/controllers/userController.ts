@@ -6,10 +6,10 @@ import { DtoMeta } from "../DTOs/dtoMeta";
 
 export const updateData = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const updateUserdto = mapToDto(DtoMeta.updateUser.meta, req.body);
+        const updateUserDto = mapToDto(DtoMeta.updateUser.meta, req.body);
         const id = res.locals.decodedToken.id;
-        await UserService.updateUserById({ ...updateUserdto, id });
-        return Responses.UpdateSucess(res);
+        await UserService.updateUserById({ ...updateUserDto, id });
+        return Responses.UpdateSuccess(res);
     } catch (error) {
         next(error);
     }

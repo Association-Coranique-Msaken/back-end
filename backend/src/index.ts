@@ -35,14 +35,13 @@ app.use(bodyParser.json());
 
 // Define API routes
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/adminapi", AdminRouter);
-app.use("/api/v1/userapi", UserRouter);
-app.use("/api/v1/teacherapi", TeacherRouter);
-app.use("/api/v1/tokenapi", InvalidTokensRouter);
+app.use("/api/v1/admin-api", AdminRouter);
+app.use("/api/v1/user-api", UserRouter);
+app.use("/api/v1/teacher-api", TeacherRouter);
+app.use("/api/v1/token-api", InvalidTokensRouter);
 
 app.use(errorHandler);
 
-// s chaima
 // Default route
 app.get("/", (req: Request, res: Response) => {
     res.send("Welcome to Express & TypeScript Server :) nice");

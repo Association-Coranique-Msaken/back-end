@@ -6,11 +6,11 @@ const userRouter = express.Router();
 
 /**
  * @swagger
- * /api/v1/userapi:
+ * /api/v1/user-api:
  *   patch:
  *     summary: Update user.
  *     description: Requires user access token. Updates the user.
- *     tags: [userapi]
+ *     tags: [user-api]
  */
 userRouter.patch("/user", userAuthentication, updateData);
 

@@ -44,7 +44,7 @@ export class TokensRepository {
     };
 
     public readonly blacklistAll = async (elementId: string) => {
-        // when would the last expired token exire at worst case. new tokens will have an expiration higher than maxExpiration.
+        // when would the last expired token expire at worst case. new tokens will have an expiration higher than maxExpiration.
         const maxExpiration = this._getEstimatedExpiration();
         this.lock.writeLock(elementId, async (release: ReadWriteLock.Release) => {
             try {
@@ -80,7 +80,7 @@ export class TokensRepository {
                         resolve(false);
                     }
                     // 3- if not invalid then add to valid cache.
-                    this._addToValidCachelist(elementId, tokenHash, expiration);
+                    this._addToValidCacheList(elementId, tokenHash, expiration);
                     resolve(true);
                 } finally {
                     release();
@@ -91,7 +91,7 @@ export class TokensRepository {
 
     private readonly _blacklist = async (elementId: string, tokenHash: HashedString, expiration: Date) => {
         this._removeFromWhitelistIfExists(elementId, tokenHash);
-        this._addToInvalidCachelist(elementId, tokenHash);
+        this._addToInvalidCacheList(elementId, tokenHash);
         await this._persistInDB(elementId, tokenHash, expiration);
     };
 
@@ -143,7 +143,7 @@ export class TokensRepository {
             },
         });
         if (tokenInDb) {
-            this._addToInvalidCachelist(elementId, tokenHash);
+            this._addToInvalidCacheList(elementId, tokenHash);
             return true;
         }
         return false;
@@ -174,7 +174,7 @@ export class TokensRepository {
         return false;
     };
 
-    private readonly _addToInvalidCachelist = (elementId: string, tokenHash: HashedString) => {
+    private readonly _addToInvalidCacheList = (elementId: string, tokenHash: HashedString) => {
         const elementCache = this.invalidCache.get(elementId);
         if (elementCache) {
             elementCache.add(tokenHash);
@@ -186,7 +186,7 @@ export class TokensRepository {
         }
     };
 
-    private readonly _addToValidCachelist = (elementId: string, tokenHash: HashedString, expiration: Date) => {
+    private readonly _addToValidCacheList = (elementId: string, tokenHash: HashedString, expiration: Date) => {
         const elementCache = this.validCache.get(elementId);
         if (elementCache) {
             elementCache.set(tokenHash, expiration);

@@ -40,9 +40,9 @@ const teacherLogin = async (req: Request, res: Response, next: NextFunction) => 
 // Admin signup - only for testing.
 const adminSignup = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const createAdmindto = mapToDto(DtoMeta.createUserAdmin.meta, req.body);
-        const admin = await AdminService.createAdminWithUser(createAdmindto);
-        return Responses.CreateSucess(res, admin);
+        const createAdminDto = mapToDto(DtoMeta.createUserAdmin.meta, req.body);
+        const admin = await AdminService.createAdminWithUser(createAdminDto);
+        return Responses.CreateSuccess(res, admin);
     } catch (error) {
         next(error);
     }
@@ -55,7 +55,7 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
         const header = req.headers.authorization;
         const rawToken = header!.split(" ")[1];
         await AuthService.logout(rawToken, decodedToken);
-        return Responses.LogoutSucess(res);
+        return Responses.LogoutSuccess(res);
     } catch (error) {
         next(error);
     }

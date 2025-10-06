@@ -17,7 +17,7 @@ export enum QueryItemType {
     BOOL,
     NUMBER,
     DATE,
-    UNKOWN,
+    UNKNOWN,
     EMAIL,
     GUID,
 }

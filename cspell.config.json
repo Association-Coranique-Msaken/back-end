@@ -1,0 +1,34 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "ignorePaths": [
+    "**/node_modules",
+    "**/dist",
+    "**/build",
+    "**/coverage"
+  ],
+  "words": [
+    "typeorm",
+    "mysql",
+    "vite",
+    "backend",
+    "frontend",
+    "rwlock",
+
+    "regs",
+    "Pswd",
+    "strs",
+
+    "Coranique",
+
+    "mysqldb",
+    "PSWD",
+    "HIZB",
+    "lajna",
+    "koteb",
+    "Hizbs",
+    "Hizb",
+    "M'saken"
+  ],
+  "enableFiletypes": ["ts", "tsx", "js", "jsx", "json", "md"]
+}

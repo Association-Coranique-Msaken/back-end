@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+npm run spellcheck
+npx lint-staged
 cd backend || exit 1
 npm run lint-staged
 npm run test

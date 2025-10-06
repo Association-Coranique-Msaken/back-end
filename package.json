@@ -1,0 +1,17 @@
+{
+  "name": "Association-coranique-msaken",
+  "version": "1.0.0",
+  "description": "",
+  "devDependencies": {
+    "cspell": "^9.2.1",
+    "lint-staged": "^16.2.3"
+  },
+  "scripts": {
+    "spellcheck": "cspell './backend/**/*.{ts,tsx,js,jsx,md}' './frontend/**/*.{ts,tsx,js,jsx,md}'"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix"
+    ]
+  }
+}

@@ -9,6 +9,4 @@ export class Exam extends AbstractEntity {
 
     @Column({ default: false })
     end: ExamBound;
-
-    // TODO: add mawadhe3
 }

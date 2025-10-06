@@ -7,11 +7,11 @@ import { DtoMeta } from "../DTOs/dtoMeta";
 
 export const updateData = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const updateUserdto = mapToDto(DtoMeta.updateUser.meta, req.body);
+        const updateUserDto = mapToDto(DtoMeta.updateUser.meta, req.body);
         const id = res.locals.decodedToken.userId;
         // update the user corresponding to the teacher
-        await UserService.updateUserById({ ...updateUserdto, id });
-        return Responses.UpdateSucess(res);
+        await UserService.updateUserById({ ...updateUserDto, id });
+        return Responses.UpdateSuccess(res);
     } catch (error) {
         next(error);
     }
@@ -21,7 +21,7 @@ export const getGroups = async (req: Request, res: Response, next: NextFunction)
     try {
         const teacherId = res.locals.decodedToken.id;
         const groups = await GroupService.getTeacherGroups(teacherId, res.locals.paging);
-        return Responses.FetchSucess(res, groups);
+        return Responses.FetchSuccess(res, groups);
     } catch (error) {
         next(error);
     }

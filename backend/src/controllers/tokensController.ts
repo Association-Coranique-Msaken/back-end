@@ -13,7 +13,7 @@ export const clearExpiredTokens = async (req: Request, res: Response) => {
     }
 };
 
-export const unvalidateUserTokens = async (req: Request, res: Response) => {
+export const invalidateUserTokens = async (req: Request, res: Response) => {
     if (!req.body?.id) {
         return Responses.BadRequest(res);
     }

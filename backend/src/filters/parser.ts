@@ -35,11 +35,11 @@ const processValue = (value: string, type: QueryItemType): any => {
     }
 };
 
-const itemTypeToQueryPlaceolder = (type: QueryItemType): string => {
+const itemTypeToQueryPlaceholder = (type: QueryItemType): string => {
     switch (type) {
         case QueryItemType.CASE_SENSITIVE:
         case QueryItemType.STRING:
-        case QueryItemType.UNKOWN:
+        case QueryItemType.UNKNOWN:
         case QueryItemType.EMAIL:
         case QueryItemType.NUMBER:
         case QueryItemType.BOOL:
@@ -55,7 +55,7 @@ export const generateFilterQuery = (query: qs.ParsedQs, filterableMetaData: Filt
     const placeholders: { [id: string]: string } = {};
     for (const q of parsedQuery) {
         const fullName = `${q.entityAlias}.${q.name}`;
-        const typePlaceholder = itemTypeToQueryPlaceolder(q.type);
+        const typePlaceholder = itemTypeToQueryPlaceholder(q.type);
         const rhs = q.relation.replace("?", typePlaceholder).replace("?", `:${fullName}`);
         filterList.push(`${fullName} ${rhs}`);
         placeholders[fullName] = processValue(q.value.toString(), q.type);

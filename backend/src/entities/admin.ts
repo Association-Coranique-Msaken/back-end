@@ -8,7 +8,7 @@ import { QueryRelation } from "../filters/types";
 import { Dto } from "../DTOs/dto";
 
 export type AdminRole = "fullAccessAdmin" | "limitedAccess" | "readOnly";
-const adminRroleValues: AdminRole[] = ["fullAccessAdmin", "limitedAccess", "readOnly"];
+const adminRoleValues: AdminRole[] = ["fullAccessAdmin", "limitedAccess", "readOnly"];
 
 @Entity({ name: "admin" })
 export class Admin extends AbstractEntity {
@@ -28,15 +28,15 @@ export class Admin extends AbstractEntity {
     @Filterable({ relation: QueryRelation.EQ })
     @DtoField({
         dto: [Dto.updateAdmin],
-        validator: Validators.ONE_OF(...adminRroleValues),
+        validator: Validators.ONE_OF(...adminRoleValues),
     })
     @DtoField({
         dto: [Dto.createUserAdmin, Dto.createAdmin],
-        validator: Validators.REQ_ONE_OF(...adminRroleValues),
+        validator: Validators.REQ_ONE_OF(...adminRoleValues),
     })
     @Column({
         type: "enum",
-        enum: adminRroleValues,
+        enum: adminRoleValues,
         default: "fullAccessAdmin",
     })
     role: AdminRole;

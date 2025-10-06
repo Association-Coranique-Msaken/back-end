@@ -6,8 +6,8 @@ import { Filterable } from "../../filters/annotations";
 import { QueryItemType, QueryRelation } from "../../filters/types";
 import { Dto } from "../../DTOs/dto";
 
-export type CompetionScope = "Local" | "Regional" | "National";
-const CompetionScopeValues: CompetionScope[] = ["Local", "Regional", "National"];
+export type CompetitionScope = "Local" | "Regional" | "National";
+const CompetitionScopeValues: CompetitionScope[] = ["Local", "Regional", "National"];
 
 @Entity({ name: "competition" })
 export class Competition extends AbstractEntity {
@@ -27,10 +27,10 @@ export class Competition extends AbstractEntity {
         relation: QueryRelation.EQ,
         type: QueryItemType.STRING,
     })
-    @DtoField({ dto: [Dto.createCompetition], validator: Validators.REQ_ONE_OF(...CompetionScopeValues) })
-    @DtoField({ dto: [Dto.updateCompetition], validator: Validators.ONE_OF(...CompetionScopeValues) })
-    @Column({ type: "enum", enum: CompetionScopeValues })
-    scope: CompetionScope;
+    @DtoField({ dto: [Dto.createCompetition], validator: Validators.REQ_ONE_OF(...CompetitionScopeValues) })
+    @DtoField({ dto: [Dto.updateCompetition], validator: Validators.ONE_OF(...CompetitionScopeValues) })
+    @Column({ type: "enum", enum: CompetitionScopeValues })
+    scope: CompetitionScope;
 
     @Filterable({ relation: QueryRelation.EQ, type: QueryItemType.BOOL })
     @DtoField({ dto: [Dto.updateCompetition, Dto.createCompetition], validator: Validators.BOOL })

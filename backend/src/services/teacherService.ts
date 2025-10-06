@@ -28,7 +28,7 @@ export class TeacherService {
                 ...teacherData,
                 user: user,
                 code: code,
-                password: await encrypt.encryptpass(password),
+                password: await encrypt.encryptPass(password),
             } as DeepPartial<Teacher>);
             await teacherRepository.save(teacher);
             return { ...teacher, password: password };
@@ -44,8 +44,8 @@ export class TeacherService {
             .from(Teacher, "teacher")
             .where('code LIKE "":codeType"%" ', { codeType: codeType })
             .execute();
-        const perviouscode = queryResult?.[0]?.code;
-        return TeacherService.computeNextCode(codeType, perviouscode);
+        const perviousCode = queryResult?.[0]?.code;
+        return TeacherService.computeNextCode(codeType, perviousCode);
     };
 
     private static computeNextCode = (codeType: string, previousCode: string | undefined): string => {
@@ -99,7 +99,7 @@ export class TeacherService {
             throw new AppErrors.NotFound(`Unable to find teacher with id: ${updateData.id}`);
         }
         Promise.all([
-            TeacherService.unvalidateAccessTokenIfNeeded(updateData, teacher),
+            TeacherService.invalidateAccessTokenIfNeeded(updateData, teacher),
             teacherRepository.update(teacher.id, updateData),
         ]);
     };
@@ -134,7 +134,7 @@ export class TeacherService {
             throw new AppErrors.NotFound();
         }
         const newPassword = generatePassword(TEACHER_PASSWORD_LENGTH);
-        const hashedPassword = await encrypt.encryptpass(newPassword);
+        const hashedPassword = await encrypt.encryptPass(newPassword);
         await teacherRepository.update(teacherId, { password: hashedPassword });
         // FIXME: this should not be blocking call for the response to return.
         Promise.all([AccessTokenRepo.blacklistAll(teacherId), RefreshTokenRepo.blacklistAll(teacherId)]);
@@ -145,13 +145,13 @@ export class TeacherService {
         return newTeacher;
     };
 
-    private static unvalidateAccessTokenIfNeeded = async (updateData: any, currentData: Teacher): Promise<void> => {
-        if (TeacherService.shouldUnvalidateAccessToken(updateData, currentData)) {
+    private static invalidateAccessTokenIfNeeded = async (updateData: any, currentData: Teacher): Promise<void> => {
+        if (TeacherService.shouldInvalidateAccessToken(updateData, currentData)) {
             return await AccessTokenRepo.blacklistAll(currentData.id);
         }
     };
 
-    private static shouldUnvalidateAccessToken = (updateData: any, currentData: Teacher): boolean => {
+    private static shouldInvalidateAccessToken = (updateData: any, currentData: Teacher): boolean => {
         if (updateData.isActive != undefined) {
             return updateData.isActive != currentData.isActive;
         }
