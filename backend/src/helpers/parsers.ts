@@ -1,7 +1,7 @@
 import { PagingOrder } from "../DTOs/paging/order";
 
 export function parseAsNumber(
-    queryParam: undefined | string | string[] | qs.ParsedQs | qs.ParsedQs[],
+    queryParam: any,
     defaultValue: number
 ): number {
     if (typeof queryParam === "string") {
@@ -12,7 +12,7 @@ export function parseAsNumber(
 }
 
 export function parseAsString(
-    queryParam: undefined | string | string[] | qs.ParsedQs | qs.ParsedQs[],
+    queryParam: any,
     defaultValue: string
 ): string {
     if (typeof queryParam === "string") {
@@ -22,7 +22,7 @@ export function parseAsString(
 }
 
 export function parseAsOrder(
-    queryParam: undefined | string | string[] | qs.ParsedQs | qs.ParsedQs[],
+    queryParam: any,
     defaultValue: PagingOrder
 ): PagingOrder {
     if (typeof queryParam === "string") {

@@ -4,7 +4,7 @@ import "reflect-metadata";
 const { MYSQL_HOST, MYSQL_DB, MYSQL_USER, MYSQL_PASSWORD, MYSQL_PORT, NODE_ENV } = process.env;
 export const appDataSource = new DataSource({
     type: "mysql",
-    host: NODE_ENV === "prod" ? MYSQL_HOST : "localhost",
+    host: NODE_ENV === "prod" ? MYSQL_HOST : "mysqldb",
     port: NODE_ENV === "prod" ? parseInt(MYSQL_PORT!) : 3306,
     username: NODE_ENV === "prod" ? MYSQL_USER : "root",
     password: NODE_ENV === "prod" ? MYSQL_PASSWORD : "",

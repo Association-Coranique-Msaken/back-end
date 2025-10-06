@@ -1,7 +1,7 @@
 version: "3.9"
 services:
     mysqldb:
-        image: mysql:latest
+        image: mysql:8.0
         restart: always
         ports:
             - 3360:3306
@@ -10,17 +10,34 @@ services:
             MYSQL_DATABASE: "AssociationCoranique"
         volumes:
             - db:/var/lib/mysql
-    express:
+        networks:
+            - backend-net
+    frontend:
+        depends_on:
+            - backend
+        build: ./frontend
+        restart: unless-stopped
+        ports:
+            - "5173:5173"
+        volumes:
+            - ./frontend/src:/app/src/
+        environment:
+            - NODE_ENV=development
+    backend:
         depends_on:
             - mysqldb
-        build: .
+        build: ./backend
         restart: unless-stopped
         ports:
             - 5000:5000
+        env_file:
+            - ./backend/.env
         stdin_open: true
         tty: true
         volumes:
-            - ./src:/app/src/
+            - ./backend/src:/app/src/
+        networks:
+            - backend-net
 
     phpmyadmin:
         image: phpmyadmin
@@ -29,6 +46,12 @@ services:
             - 8099:80
         environment:
             - PMA_ARBITRARY=1
+        networks:
+            - backend-net
 
 volumes:
     db:
+
+networks:
+  backend-net:
+    driver: bridge
