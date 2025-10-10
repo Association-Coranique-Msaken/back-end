@@ -15,6 +15,12 @@
     "frontend",
     "rwlock",
 
+    "Sitemark",
+    "Edgesensor",
+    "Sitemark",
+    "Remy",
+    "doesn",
+
     "regs",
     "Pswd",
     "strs",
@@ -30,5 +36,8 @@
     "Hizb",
     "M'saken"
   ],
-  "enableFiletypes": ["ts", "tsx", "js", "jsx", "json", "md"]
+  "enableFiletypes": ["ts", "tsx", "js", "jsx", "json", "md"],
+  "ignoreRegExpList": [
+    "[\\u0600-\\u06FF]+"
+  ]
 }
