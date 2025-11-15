@@ -12,6 +12,7 @@ import InvalidTokensRouter from "./routes/tokensRouter";
 import { ScheduleInvalidTokensWorker } from "./workers/invalidTokensWorker";
 import { errorHandler } from "./middlewares/error.middleware";
 import { setupSwagger } from "./swagger";
+import { apiRateLimiter } from "./middlewares/rateLimitMiddleware";
 
 // establish database connection
 appDataSource
@@ -32,6 +33,9 @@ const port = process.env.SERVER_PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// Apply general rate limiting to all API routes
+app.use("/api/", apiRateLimiter);
 
 // Define API routes
 app.use("/api/v1/auth", authRouter);

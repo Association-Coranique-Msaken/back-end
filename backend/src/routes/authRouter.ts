@@ -1,6 +1,7 @@
 import express from "express";
 import auth from "../controllers/authController";
 import { genericAuthentication } from "../middlewares/authMiddleware";
+import { authRateLimiter, passwordResetRateLimiter, tokenRefreshRateLimiter } from "../middlewares/rateLimitMiddleware";
 const authRouter = express.Router();
 
 /**
@@ -11,10 +12,10 @@ const authRouter = express.Router();
  *     description: Admin login.
  *     tags: [auth]
  */
-authRouter.post("/admin/login", auth.adminLogin);
+authRouter.post("/admin/login", authRateLimiter, auth.adminLogin);
 
 // Hidden Api for testing purposes only.
-authRouter.post("/admin/signup", auth.adminSignup);
+authRouter.post("/admin/signup", authRateLimiter, auth.adminSignup);
 
 /**
  * @swagger
@@ -24,7 +25,7 @@ authRouter.post("/admin/signup", auth.adminSignup);
  *     description: User login.
  *     tags: [auth]
  */
-authRouter.post("/user/login", auth.userLogin);
+authRouter.post("/user/login", authRateLimiter, auth.userLogin);
 
 /**
  * @swagger
@@ -34,7 +35,7 @@ authRouter.post("/user/login", auth.userLogin);
  *     description: Teacher login.
  *     tags: [auth]
  */
-authRouter.post("/teacher/login", auth.teacherLogin);
+authRouter.post("/teacher/login", authRateLimiter, auth.teacherLogin);
 
 /**
  * @swagger
@@ -54,7 +55,7 @@ authRouter.post("/logout", genericAuthentication, auth.logout);
  *     description: Refresh token.
  *     tags: [auth]
  */
-authRouter.post("/refresh-token/", auth.refreshToken);
+authRouter.post("/refresh-token/", tokenRefreshRateLimiter, auth.refreshToken);
 
 /**
  * @swagger
@@ -64,6 +65,6 @@ authRouter.post("/refresh-token/", auth.refreshToken);
  *     description: reset admin password with a reset token.
  *     tags: [auth]
  */
-authRouter.post("/admin/reset-password/", auth.resetAdminPassword);
+authRouter.post("/admin/reset-password/", passwordResetRateLimiter, auth.resetAdminPassword);
 
 export default authRouter;
