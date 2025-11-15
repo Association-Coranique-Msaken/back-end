@@ -7,11 +7,14 @@
     "lint-staged": "^16.2.3"
   },
   "scripts": {
-    "spellcheck": "cspell './backend/**/*.{ts,tsx,js,jsx,md}' './frontend/**/*.{ts,tsx,js,jsx,md}'"
+    "spellcheck": "cspell \"./backend/**/*.{ts,tsx,js,jsx,md}\" \"./frontend/**/*.{ts,tsx,js,jsx,md}\""
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
       "eslint --fix"
     ]
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0"
   }
 }
