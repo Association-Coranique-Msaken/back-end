@@ -4,8 +4,12 @@ logs/
 data/
 .vscode/
 .env
-package-lock.json
 .DS_Store
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
 
 # Package lock 
 pnpm-lock.yaml
