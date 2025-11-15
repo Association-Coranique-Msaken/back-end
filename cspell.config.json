@@ -14,6 +14,7 @@
     "backend",
     "frontend",
     "rwlock",
+    "mysqladmin",
 
     "Sitemark",
     "Edgesensor",
