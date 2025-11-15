@@ -83,6 +83,8 @@ backend/
 
 -   ✅ **JWT Authentication** - Access & refresh tokens
 -   ✅ **Rate Limiting** - Prevents brute force attacks
+-   ✅ **Helmet.js Security Headers** - XSS protection, clickjacking prevention, MIME type sniffing protection
+-   ✅ **CORS Configuration** - Configurable allowed origins with credentials support
 -   ✅ **Role-Based Access Control** - Admin roles (fullAccessAdmin, limitedAccess, readOnly)
 -   ✅ **Password Hashing** - BCrypt encryption
 -   ✅ **Token Blacklisting** - Logout invalidation
@@ -114,6 +116,51 @@ backend/
 -   [Testing Guide](./TESTING.md) - How to write and run tests
 -   [CI/CD Guide](./CI.md) - GitHub Actions configuration
 -   [API Documentation](http://localhost:5000/api-docs) - Swagger UI (when running)
+
+## Security Configuration
+
+### Helmet.js Security Headers
+
+The application uses Helmet.js to set secure HTTP headers with **route-specific Content Security Policy**:
+
+#### API Routes (`/api/*`) - Restrictive CSP
+
+-   **X-Content-Type-Options**: Prevents MIME type sniffing
+-   **X-Frame-Options**: Prevents clickjacking attacks
+-   **X-XSS-Protection**: Enables browser XSS protection
+-   **Strict-Transport-Security**: Enforces HTTPS connections
+-   **Cross-Origin-Embedder-Policy**: `require-corp` for cross-origin isolation
+-   **Content-Security-Policy**: Strict resource loading (`'self'` only)
+-   **X-DNS-Prefetch-Control**: Controls DNS prefetching
+-   **X-Download-Options**: Prevents file downloads from opening directly
+
+#### Swagger Routes (`/api-docs/*`, `/swagger/*`) - Permissive CSP (Development Only)
+
+-   Same security headers as API routes
+-   **Content-Security-Policy**: Allows `'unsafe-inline'` for styles and scripts (required for Swagger UI)
+-   **connect-src**: Allows API calls to `'self'`
+-   **Environment**: Only available when `NODE_ENV ≠ prod`
+
+**Security Note**: Swagger UI is disabled in production environments to prevent exposing API documentation and interactive testing capabilities to end users.
+
+### CORS Configuration
+
+Configure allowed origins in `.env`:
+
+```env
+# Single origin
+FRONTEND_URL=http://localhost:3000
+
+# Multiple origins (comma-separated)
+FRONTEND_URL=http://localhost:3000,https://yourdomain.com,https://www.yourdomain.com
+```
+
+CORS settings:
+
+-   ✅ Credentials support enabled
+-   ✅ Allowed methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+-   ✅ Allowed headers: Content-Type, Authorization
+-   ✅ Requests with no origin allowed (mobile apps, curl)
 
 # Swagger-ts
 

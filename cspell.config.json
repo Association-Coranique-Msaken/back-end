@@ -16,6 +16,13 @@
     "rwlock",
     "mysqladmin",
 
+    "clickjacking",
+    "COEP",
+    "nosniff",
+    "SAMEORIGIN",
+    "noopen",
+    "Embedder",
+
     "Sitemark",
     "Edgesensor",
     "Sitemark",
