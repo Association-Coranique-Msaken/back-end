@@ -43,9 +43,5 @@ export const navbarItemDict: NavbarItem[] = [
   {
     title: "الاتصال بنا",
     children: [],
-  },
-  {
-    title: "تسجيل دخول",
-    children: [],
-  },
+  }
 ];

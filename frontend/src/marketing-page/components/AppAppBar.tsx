@@ -12,7 +12,7 @@ import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
-import Sitemark from './SitemarkIcon';
+import logo from "../../assets/logo_s.png";
 import { navbarItemDict } from '../../models/NavbarItem';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
@@ -52,31 +52,13 @@ export default function AppAppBar() {
       <Container className="rtl" maxWidth="lg">
         <StyledToolbar variant="dense" disableGutters>
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
-            <Sitemark />
+            <img src={logo} className="App-logo-mini" alt='logo'></img>
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
 
 
                 { navbarItemDict.map((item) => <Button variant="text" color="info" size="small">{item.title}</Button>) }
 
 
-              {/* <Button variant="text" color="info" size="small">
-                Features
-              </Button>
-              <Button variant="text" color="info" size="small">
-                Testimonials
-              </Button>
-              <Button variant="text" color="info" size="small">
-                Highlights
-              </Button>
-              <Button variant="text" color="info" size="small">
-                Pricing
-              </Button>
-              <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
-                FAQ
-              </Button>
-              <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
-                Blog
-              </Button> */}
             </Box>
           </Box>
           <Box
@@ -86,11 +68,8 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Button color="primary" variant="text" size="small">
-              Sign in
-            </Button>
             <Button color="primary" variant="contained" size="small">
-              Sign up
+              تسجيل دخول
             </Button>
             <ColorModeIconDropdown />
           </Box>

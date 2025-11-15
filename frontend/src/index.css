@@ -70,3 +70,8 @@ button:focus-visible {
 .rtl {
   direction: rtl;
 }
+
+.App-logo-mini {
+  height: 2em;
+  margin-left: 2em;
+}

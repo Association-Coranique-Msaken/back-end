@@ -8,6 +8,8 @@ import { navigationCustomizations } from './customizations/navigation';
 import { surfacesCustomizations } from './customizations/surfaces';
 import { colorSchemes, typography, shadows, shape } from './themePrimitives';
 
+import bgLight from '../assets/bg.jpg';
+
 interface AppThemeProps {
   children: React.ReactNode;
   /**
@@ -38,6 +40,27 @@ export default function AppTheme(props: AppThemeProps) {
             ...feedbackCustomizations,
             ...navigationCustomizations,
             ...surfacesCustomizations,
+
+
+MuiCssBaseline: {
+          styleOverrides: {
+            body: {
+              backgroundImage: `url(${bgLight})`,
+              // backgroundRepeat: 'no-repeat',
+              // backgroundSize: 'cover',
+              // backgroundPosition: 'center',
+
+
+
+              transition: 'background 0.5s ease',
+            },
+            '[data-mui-color-scheme="dark"] &': {
+              backgroundImage: `url(${bgLight})`,
+            },
+          },
+        },
+
+
             ...themeComponents,
           },
         });

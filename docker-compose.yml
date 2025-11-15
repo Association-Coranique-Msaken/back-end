@@ -22,6 +22,8 @@ services:
             - ./frontend/src:/app/src/
         environment:
             - NODE_ENV=development
+        networks:
+            - backend-net
     backend:
         depends_on:
             - mysqldb
