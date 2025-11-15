@@ -131,12 +131,35 @@ See `.github/workflows/backend-ci.yml` for CI configuration.
 
 ## Test Environment Variables
 
-All test environment variables are configured in `tests/setup.ts`:
+All test environment variables are configured in `backend/.env.test`:
 
 -   `NODE_ENV=test`
--   JWT secrets (test values)
--   Database configuration
--   Rate limiting (faster for tests)
+-   `MYSQL_HOST=localhost`, `MYSQL_PORT=3306`
+-   JWT secrets (test values - not sensitive)
+-   Rate limiting (faster windows: 60000ms for testing)
+-   Database credentials (test database)
+
+### Using .env.test locally
+
+To run tests locally with the same environment as CI:
+
+```bash
+# Copy test env file (one-time setup)
+cp .env.test .env
+
+# Run tests
+npm test
+```
+
+### Adding New Environment Variables
+
+When adding new environment variables:
+
+1. Add to `backend/.env.example` with documentation
+2. Add to `backend/.env.test` with test-appropriate values
+3. Update CI workflow automatically uses `.env.test`
+
+This ensures CI and local tests use identical configurations!
 
 ## Best Practices
 

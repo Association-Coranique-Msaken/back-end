@@ -36,6 +36,9 @@ docker-compose up
 # Run in development mode with auto-reload
 npm run dev
 
+# Setup test environment (one-time)
+npm run test:setup
+
 # Run tests
 npm test
 

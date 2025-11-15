@@ -9,6 +9,7 @@
         "lint-staged": "lint-staged",
         "check": "tsc --noEmit",
         "dev": "nodemon ./src/index.ts",
+        "test:setup": "node -e \"const fs = require('fs'); fs.copyFileSync('.env.test', '.env');\"",
         "test": "jest --config ./jest.config.js",
         "test:watch": "jest --config ./jest.config.js --watch",
         "test:coverage": "jest --config ./jest.config.js --coverage",
