@@ -43,6 +43,6 @@ const swaggerSpec = swaggerJSDoc(options);
 export const setupSwagger = (app: any) => {
     // Serve Swagger UI with the dynamically generated Swagger JSON
     fs.writeFileSync("./swagger.json", JSON.stringify(swaggerSpec, null, 2));
-    // Serve Swagger UI with the dynamically generated Swagger JSON
-    app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
+    // Serve Swagger UI at /api-docs endpoint
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 };
