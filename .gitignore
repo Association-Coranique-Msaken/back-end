@@ -13,3 +13,5 @@ coverage/
 
 # Package lock 
 pnpm-lock.yaml
+
+local-docs/

@@ -1,0 +1,1297 @@
+{
+    "item": [
+        {
+            "id": "e2c5517d-f93e-4230-8a97-a36f3ecdb35d",
+            "name": "auth",
+            "description": {
+                "content": "Authentication APIs",
+                "type": "text/plain"
+            },
+            "item": [
+                {
+                    "id": "4b807c8f-c29f-4903-b30b-0ce1ea11d363",
+                    "name": "Admin Login",
+                    "request": {
+                        "name": "Admin Login",
+                        "description": {
+                            "content": "Authenticate admin with username and password.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/auth/admin/login",
+                        "method": "POST",
+                        "auth": null
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "fc72c4a1-87ac-4232-90bd-01f03d6508e0",
+                    "name": "Admin Signup",
+                    "request": {
+                        "name": "Admin Signup",
+                        "description": {
+                            "content": "Register a new admin account (testing only).",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/auth/admin/signup",
+                        "method": "POST",
+                        "auth": null
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "aa303def-4f86-41b7-a714-e156d0d75fdb",
+                    "name": "User Login",
+                    "request": {
+                        "name": "User Login",
+                        "description": {
+                            "content": "Authenticate user with identifier and birth date.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/auth/user/login",
+                        "method": "POST",
+                        "auth": null
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "97617337-de13-415b-81b0-9bcb28641d4b",
+                    "name": "Teacher Login",
+                    "request": {
+                        "name": "Teacher Login",
+                        "description": {
+                            "content": "Authenticate teacher with code and password.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/auth/teacher/login",
+                        "method": "POST",
+                        "auth": null
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "9415e7f4-9b8f-4385-b3f9-fc39e6c43dd9",
+                    "name": "Logout",
+                    "request": {
+                        "name": "Logout",
+                        "description": {
+                            "content": "Invalidate current authentication token.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/auth/logout",
+                        "method": "POST",
+                        "auth": null
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "67a9c6af-de6f-4836-973e-13bef163db9a",
+                    "name": "Refresh Token",
+                    "request": {
+                        "name": "Refresh Token",
+                        "description": {
+                            "content": "Get new access token using refresh token.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/auth/refresh-token",
+                        "method": "POST",
+                        "auth": null
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "e346df7c-75c6-4634-8027-b68385677e0b",
+                    "name": "Reset Admin Password",
+                    "request": {
+                        "name": "Reset Admin Password",
+                        "description": {
+                            "content": "Reset admin password using a reset token.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/auth/admin/reset-password",
+                        "method": "POST",
+                        "auth": null
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                }
+            ],
+            "event": []
+        },
+        {
+            "id": "3cc1d8ef-0a0c-493e-8cd5-0f1948b4b0ae",
+            "name": "admin-api",
+            "description": {
+                "content": "Admin APIs",
+                "type": "text/plain"
+            },
+            "item": [
+                {
+                    "id": "380ac831-ca2b-497e-8731-f28192928332",
+                    "name": "Create an admin.",
+                    "request": {
+                        "name": "Create an admin.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Creates an admin.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/admin",
+                        "method": "POST",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "2362f236-deb5-47fe-9587-2f05625de056",
+                    "name": "Get admins.",
+                    "request": {
+                        "name": "Get admins.",
+                        "description": {
+                            "content": "Requires admin access token. Get admins.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/admin/list",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "431c83d5-65cd-40fe-b734-2301065642b3",
+                    "name": "Get admin by id.",
+                    "request": {
+                        "name": "Get admin by id.",
+                        "description": {
+                            "content": "Requires admin access token. Get admin by id.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/admin/:id",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "f0dfe65b-45ae-4b59-b741-97a109c7d2ab",
+                    "name": "Update admin.",
+                    "request": {
+                        "name": "Update admin.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Update admin.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/admin/:id",
+                        "method": "PATCH",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "cc0e82d4-d164-4201-856f-549be27c0079",
+                    "name": "Delete admin.",
+                    "request": {
+                        "name": "Delete admin.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Delete admin.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/admin/:id",
+                        "method": "DELETE",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "9186fb55-779f-4807-b395-29023070f8de",
+                    "name": "Generates password reset link for an admin user with id {id}.",
+                    "request": {
+                        "name": "Generates password reset link for an admin user with id {id}.",
+                        "description": {
+                            "content": "Requires admin access token. generates reset password link.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/admin/password-reset-link/:id",
+                        "method": "POST",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "44918e80-1724-4519-9140-db8236f1c730",
+                    "name": "Create teacher.",
+                    "request": {
+                        "name": "Create teacher.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Create a teacher.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/teacher",
+                        "method": "POST",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "27a23e15-e196-4b6d-af75-7f10568eec7c",
+                    "name": "Get teachers.",
+                    "request": {
+                        "name": "Get teachers.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Get teachers.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/teacher/list",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "bd156916-d3ac-4123-96ec-7f64fb9c9a05",
+                    "name": "Get teacher by id.",
+                    "request": {
+                        "name": "Get teacher by id.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Get teacher by id.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/teacher/:id",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "ce62b944-44e3-4dfa-8a3a-9c7bcba0f8f9",
+                    "name": "Update teacher.",
+                    "request": {
+                        "name": "Update teacher.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Update teacher.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/teacher/:id",
+                        "method": "PATCH",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "efd147df-5d27-498b-9953-b77d7f5d411d",
+                    "name": "Delete teacher by id.",
+                    "request": {
+                        "name": "Delete teacher by id.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Delete teacher by id.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/teacher/:id",
+                        "method": "DELETE",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "38f34af6-3e69-434b-a46a-a6a265c5d6b4",
+                    "name": "resets teacher password.",
+                    "request": {
+                        "name": "resets teacher password.",
+                        "description": {
+                            "content": "Requires admin access token with write access.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/teacher/password/:teacherId",
+                        "method": "POST",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "6dbec693-cba9-4066-a4a2-178aea43da24",
+                    "name": "Create user.",
+                    "request": {
+                        "name": "Create user.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Create user.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/user",
+                        "method": "POST",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "599ab209-5ae6-4160-bb32-a76e300ce536",
+                    "name": "Get users.",
+                    "request": {
+                        "name": "Get users.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Get user.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/user/list",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "d42f4a12-087e-48e8-9494-37bed96f3499",
+                    "name": "Get user by id.",
+                    "request": {
+                        "name": "Get user by id.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Get user by id.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/user/:id",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "ef876dd0-8c51-4710-a6eb-4e7f53d2275d",
+                    "name": "Update user.",
+                    "request": {
+                        "name": "Update user.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Update user.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/user/:id",
+                        "method": "PATCH",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "ce5fcefe-671d-4442-8cae-c02036a45526",
+                    "name": "Delete user by id.",
+                    "request": {
+                        "name": "Delete user by id.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Delete user by id.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/user/:id",
+                        "method": "DELETE",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "cccbd647-2a05-4f33-bcbf-a764c80559bf",
+                    "name": "Update a group.",
+                    "request": {
+                        "name": "Update a group.",
+                        "description": {
+                            "content": "Requires admin access token. Updates a group.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/group",
+                        "method": "POST",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "f965817a-3f36-4cca-88c7-396b2228e2dd",
+                    "name": "Get groups.",
+                    "request": {
+                        "name": "Get groups.",
+                        "description": {
+                            "content": "Requires admin access token. Get groups. Supports pagination.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/group/list",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "33fc1d01-68c8-47c4-8b16-2f32600a62f5",
+                    "name": "Get a group by id.",
+                    "request": {
+                        "name": "Get a group by id.",
+                        "description": {
+                            "content": "Requires admin access token. Gets a group by id.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/group/:id",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "3b76f125-35ad-4bd4-9731-30c31b1ed51c",
+                    "name": "update a group.",
+                    "request": {
+                        "name": "update a group.",
+                        "description": {
+                            "content": "Requires admin access token. Updates a group.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/group/:id",
+                        "method": "PATCH",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "748d2d65-6697-47b1-a18f-f98450d0c0e2",
+                    "name": "Delete a group by id.",
+                    "request": {
+                        "name": "Delete a group by id.",
+                        "description": {
+                            "content": "Requires admin access token. Deletes a group by id.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/group/:id",
+                        "method": "DELETE",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "37ad05fc-22b1-4078-846f-4267fda5018b",
+                    "name": "Gets a list of a user groups.",
+                    "request": {
+                        "name": "Gets a list of a user groups.",
+                        "description": {
+                            "content": "Requires admin access token. Gets a list of a user groups.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/group/user/list/:id",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "dba4cc6a-e5b9-4ae2-9c09-95f0e3dbcd0c",
+                    "name": "Enrolls a user to a group.",
+                    "request": {
+                        "name": "Enrolls a user to a group.",
+                        "description": {
+                            "content": "Requires admin access token. Enrolls a user to a group.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/group/user/enroll",
+                        "method": "POST",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "fb38ad19-23a7-4f37-a43d-fb04dda82251",
+                    "name": "Create card for user.",
+                    "request": {
+                        "name": "Create card for user.",
+                        "description": {
+                            "content": "Creates card for user.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/card/user",
+                        "method": "POST",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "2ce1ed63-5e75-4930-b6b6-5e32baf92f1e",
+                    "name": "Get user last card by userId.",
+                    "request": {
+                        "name": "Get user last card by userId.",
+                        "description": {
+                            "content": "Get user last card by userId. null is returned if there is no card.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/card/user/:userId",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "10772020-e96a-4fcc-a187-d8fa8ed7e2d9",
+                    "name": "Create a competition.",
+                    "request": {
+                        "name": "Create a competition.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Creates a new competition.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/competition",
+                        "method": "POST",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "9bd040f9-e53f-4dbe-9f7b-a45d74273d42",
+                    "name": "Get competitions.",
+                    "request": {
+                        "name": "Get competitions.",
+                        "description": {
+                            "content": "Requires admin access token. Get competitions.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/competition/list",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "1c399a3e-8c0b-466f-b7ee-71aa215e11e2",
+                    "name": "Get competition by id.",
+                    "request": {
+                        "name": "Get competition by id.",
+                        "description": {
+                            "content": "Requires admin access token. Get competition by id.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/competition/:id",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "4dab1d97-3c90-49b7-a65e-6a7ba7cd9726",
+                    "name": "Update competition.",
+                    "request": {
+                        "name": "Update competition.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Update competition.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/competition/:id",
+                        "method": "PATCH",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "8233d597-9a36-4e16-b5e5-c70a349498f6",
+                    "name": "Delete competition.",
+                    "request": {
+                        "name": "Delete competition.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Delete competition.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/competition/:id",
+                        "method": "DELETE",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "3837bd21-337e-4e5e-97e6-318c197d6440",
+                    "name": "Create a competition registration.",
+                    "request": {
+                        "name": "Create a competition registration.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Creates a new competition registration.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/competition/registration",
+                        "method": "POST",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "8a946f19-c4f4-4a4c-a018-7b02f2dbbedc",
+                    "name": "Get competition registrations.",
+                    "request": {
+                        "name": "Get competition registrations.",
+                        "description": {
+                            "content": "Requires admin access token. Get competition registrations.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/competition/registration/list",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "9e5fc737-25d0-4feb-8025-f3968ecba039",
+                    "name": "Get competition registration by id.",
+                    "request": {
+                        "name": "Get competition registration by id.",
+                        "description": {
+                            "content": "Requires admin access token. Get competition registration by id.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/competition/registration/:id",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "63c679c9-c012-4c01-a1d3-13e81a7d0410",
+                    "name": "Update competition registration.",
+                    "request": {
+                        "name": "Update competition registration.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Update competition registration.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/competition/registration/:id",
+                        "method": "PATCH",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "b1f12520-f197-4fb9-aaa2-d37fa979b96e",
+                    "name": "Delete competition registration.",
+                    "request": {
+                        "name": "Delete competition registration.",
+                        "description": {
+                            "content": "Requires admin access token with write access. Delete competition registration.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/admin-api/competition/registration/:id",
+                        "method": "DELETE",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                }
+            ],
+            "event": []
+        },
+        {
+            "id": "b5f3f963-377b-4350-8d6f-78265d170e1b",
+            "name": "user-api",
+            "description": {
+                "content": "User APIs",
+                "type": "text/plain"
+            },
+            "item": [
+                {
+                    "id": "c8defa98-ab6d-476b-8b52-a82522be7851",
+                    "name": "Update user.",
+                    "request": {
+                        "name": "Update user.",
+                        "description": {
+                            "content": "Requires user access token. Updates the user.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/user-api/user",
+                        "method": "PATCH",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                }
+            ],
+            "event": []
+        },
+        {
+            "id": "ee55341d-de1b-4f60-8372-2d545f75ae31",
+            "name": "teacher-api",
+            "description": {
+                "content": "Teacher APIs",
+                "type": "text/plain"
+            },
+            "item": [
+                {
+                    "id": "cc7d2b8f-bc45-4b1a-84ec-ce6dd009d871",
+                    "name": "Update teacher.",
+                    "request": {
+                        "name": "Update teacher.",
+                        "description": {
+                            "content": "Requires teacher access token. Updates the teacher.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/teacher-api",
+                        "method": "PATCH",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                },
+                {
+                    "id": "e0fc9e59-4bbc-49b1-bf55-681cdfdf2fea",
+                    "name": "Get teacher groups",
+                    "request": {
+                        "name": "Get teacher groups",
+                        "description": {
+                            "content": "Requires teacher access token. Returns a list of teacher groups. Supports pagination parameters.",
+                            "type": "text/plain"
+                        },
+                        "url": "{{base_url}}/api/v1/teacher-api/group/list",
+                        "method": "GET",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{access_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "event": [],
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    }
+                }
+            ],
+            "event": []
+        }
+    ],
+    "event": [],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:5000",
+            "type": "string"
+        },
+        {
+            "key": "access_token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "refresh_token",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "info": {
+        "_postman_id": "59adb4cc-f833-483b-a678-b3ae48443747",
+        "name": "AQM Backend API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": "Auto-generated from OpenAPI specification. Import into Hoppscotch or Postman."
+    }
+}

@@ -53,7 +53,7 @@ const adminRouter = express.Router();
 
 /**
  * @swagger
- * /api/v1/admin-api:
+ * /api/v1/admin-api/admin:
  *   post:
  *     summary: Create an admin.
  *     description: Requires admin access token with write access. Creates an admin.
@@ -63,7 +63,7 @@ adminRouter.post("/admin/", adminAuthentication, fullAccessAdminAuthorization, c
 
 /**
  * @swagger
- * /api/v1/admin-api/list:
+ * /api/v1/admin-api/admin/list:
  *   get:
  *     summary: Get admins.
  *     description: Requires admin access token. Get admins.
@@ -80,7 +80,7 @@ adminRouter.get(
 
 /**
  * @swagger
- * /api/v1/admin-api/admin{id}:
+ * /api/v1/admin-api/admin/{id}:
  *   get:
  *     summary: Get admin by id.
  *     description: Requires admin access token. Get admin by id.
@@ -90,7 +90,7 @@ adminRouter.get("/admin/:id", adminAuthentication, readOnlyAdminAuthorization, g
 
 /**
  * @swagger
- * /api/v1/admin-api/admin{id}:
+ * /api/v1/admin-api/admin/{id}:
  *   patch:
  *     summary: Update admin.
  *     description: Requires admin access token with write access. Update admin.
@@ -100,7 +100,7 @@ adminRouter.patch("/admin/:id", adminAuthentication, fullAccessAdminAuthorizatio
 
 /**
  * @swagger
- * /api/v1/admin-api/admin{id}:
+ * /api/v1/admin-api/admin/{id}:
  *   delete:
  *     summary: Delete admin.
  *     description: Requires admin access token with write access. Delete admin.
@@ -125,7 +125,7 @@ adminRouter.get(
 
 /**
  * @swagger
- * /api/v1/admin-api/teacher{id}:
+ * /api/v1/admin-api/teacher:
  *   post:
  *     summary: Create teacher.
  *     description: Requires admin access token with write access. Create a teacher.
@@ -152,7 +152,7 @@ adminRouter.get(
 
 /**
  * @swagger
- * /api/v1/admin-api/teacher{id}:
+ * /api/v1/admin-api/teacher/{id}:
  *   get:
  *     summary: Get teacher by id.
  *     description: Requires admin access token with write access. Get teacher by id.
@@ -162,7 +162,7 @@ adminRouter.get("/teacher/:id", adminAuthentication, readOnlyAdminAuthorization,
 
 /**
  * @swagger
- * /api/v1/admin-api/teacher{id}:
+ * /api/v1/admin-api/teacher/{id}:
  *   patch:
  *     summary: Update teacher.
  *     description: Requires admin access token with write access. Update teacher.
@@ -234,7 +234,7 @@ adminRouter.get("/user/:id", adminAuthentication, readOnlyAdminAuthorization, ge
 
 /**
  * @swagger
- * /api/v1/admin-api/user{id}:
+ * /api/v1/admin-api/user/{id}:
  *   patch:
  *     summary: Update user.
  *     description: Requires admin access token with write access. Update user.
@@ -244,7 +244,7 @@ adminRouter.patch("/user/:id", adminAuthentication, fullAccessAdminAuthorization
 
 /**
  * @swagger
- * /api/v1/admin-api/user{id}:
+ * /api/v1/admin-api/user/{id}:
  *   delete:
  *     summary: Delete user by id.
  *     description: Requires admin access token with write access. Delete user by id.
@@ -327,7 +327,7 @@ adminRouter.get(
 
 /**
  * @swagger
- * /api/v1/admin-api/group/user/enroll/:
+ * /api/v1/admin-api/group/user/enroll:
  *   post:
  *     summary: Enrolls a user to a group.
  *     description: Requires admin access token. Enrolls a user to a group.
@@ -337,7 +337,7 @@ adminRouter.post("/group/user/enroll/", adminAuthentication, fullAccessAdminAuth
 
 /**
  * @swagger
- * /api/v1/admin-api/card/user/:
+ * /api/v1/admin-api/card/user:
  *   post:
  *     summary: Create card for user.
  *     description: Creates card for user.
@@ -357,7 +357,7 @@ adminRouter.get("/card/user/:userId", adminAuthentication, readOnlyAdminAuthoriz
 
 /**
  * @swagger
- * /api/v1/admin-api:
+ * /api/v1/admin-api/competition:
  *   post:
  *     summary: Create a competition.
  *     description: Requires admin access token with write access. Creates a new competition.
@@ -384,7 +384,7 @@ adminRouter.get(
 
 /**
  * @swagger
- * /api/v1/admin-api/competition{id}:
+ * /api/v1/admin-api/competition/{id}:
  *   get:
  *     summary: Get competition by id.
  *     description: Requires admin access token. Get competition by id.
@@ -394,7 +394,7 @@ adminRouter.get("/competition/:id", adminAuthentication, readOnlyAdminAuthorizat
 
 /**
  * @swagger
- * /api/v1/admin-api/competition{id}:
+ * /api/v1/admin-api/competition/{id}:
  *   patch:
  *     summary: Update competition.
  *     description: Requires admin access token with write access. Update competition.
@@ -404,7 +404,7 @@ adminRouter.patch("/competition/:id", adminAuthentication, fullAccessAdminAuthor
 
 /**
  * @swagger
- * /api/v1/admin-api/admin{id}:
+ * /api/v1/admin-api/competition/{id}:
  *   delete:
  *     summary: Delete competition.
  *     description: Requires admin access token with write access. Delete competition.
@@ -414,7 +414,7 @@ adminRouter.delete("/competition/:id", adminAuthentication, fullAccessAdminAutho
 
 /**
  * @swagger
- * /api/v1/admin-api:
+ * /api/v1/admin-api/competition/registration:
  *   post:
  *     summary: Create a competition registration.
  *     description: Requires admin access token with write access. Creates a new competition registration.
@@ -446,7 +446,7 @@ adminRouter.get(
 
 /**
  * @swagger
- * /api/v1/admin-api/competition{id}:
+ * /api/v1/admin-api/competition/registration/{id}:
  *   get:
  *     summary: Get competition registration by id.
  *     description: Requires admin access token. Get competition registration by id.
@@ -461,7 +461,7 @@ adminRouter.get(
 
 /**
  * @swagger
- * /api/v1/admin-api/competition{id}:
+ * /api/v1/admin-api/competition/registration/{id}:
  *   patch:
  *     summary: Update competition registration.
  *     description: Requires admin access token with write access. Update competition registration.
@@ -476,7 +476,7 @@ adminRouter.patch(
 
 /**
  * @swagger
- * /api/v1/admin-api/admin{id}:
+ * /api/v1/admin-api/competition/registration/{id}:
  *   delete:
  *     summary: Delete competition registration.
  *     description: Requires admin access token with write access. Delete competition registration.

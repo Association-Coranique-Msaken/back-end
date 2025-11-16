@@ -8,21 +8,28 @@ const authRouter = express.Router();
  * @swagger
  * /api/v1/auth/admin/login:
  *   post:
- *     summary: Admin login.
- *     description: Admin login.
+ *     summary: Admin Login
+ *     description: Authenticate admin with username and password.
  *     tags: [auth]
  */
 authRouter.post("/admin/login", authRateLimiter, auth.adminLogin);
 
-// Hidden Api for testing purposes only.
+/**
+ * @swagger
+ * /api/v1/auth/admin/signup:
+ *   post:
+ *     summary: Admin Signup
+ *     description: Register a new admin account (testing only).
+ *     tags: [auth]
+ */
 authRouter.post("/admin/signup", authRateLimiter, auth.adminSignup);
 
 /**
  * @swagger
- * /api/v1/auth/admin/login:
+ * /api/v1/auth/user/login:
  *   post:
- *     summary: User login.
- *     description: User login.
+ *     summary: User Login
+ *     description: Authenticate user with identifier and birth date.
  *     tags: [auth]
  */
 authRouter.post("/user/login", authRateLimiter, auth.userLogin);
@@ -31,8 +38,8 @@ authRouter.post("/user/login", authRateLimiter, auth.userLogin);
  * @swagger
  * /api/v1/auth/teacher/login:
  *   post:
- *     summary: Teacher login.
- *     description: Teacher login.
+ *     summary: Teacher Login
+ *     description: Authenticate teacher with code and password.
  *     tags: [auth]
  */
 authRouter.post("/teacher/login", authRateLimiter, auth.teacherLogin);
@@ -41,8 +48,8 @@ authRouter.post("/teacher/login", authRateLimiter, auth.teacherLogin);
  * @swagger
  * /api/v1/auth/logout:
  *   post:
- *     summary: Logout.
- *     description: Logout.
+ *     summary: Logout
+ *     description: Invalidate current authentication token.
  *     tags: [auth]
  */
 authRouter.post("/logout", genericAuthentication, auth.logout);
@@ -51,18 +58,18 @@ authRouter.post("/logout", genericAuthentication, auth.logout);
  * @swagger
  * /api/v1/auth/refresh-token:
  *   post:
- *     summary: Refresh token.
- *     description: Refresh token.
+ *     summary: Refresh Token
+ *     description: Get new access token using refresh token.
  *     tags: [auth]
  */
 authRouter.post("/refresh-token/", tokenRefreshRateLimiter, auth.refreshToken);
 
 /**
  * @swagger
- * /api/v1/auth/admin/reset-password/:
+ * /api/v1/auth/admin/reset-password:
  *   post:
- *     summary: reset admin password.
- *     description: reset admin password with a reset token.
+ *     summary: Reset Admin Password
+ *     description: Reset admin password using a reset token.
  *     tags: [auth]
  */
 authRouter.post("/admin/reset-password/", passwordResetRateLimiter, auth.resetAdminPassword);
