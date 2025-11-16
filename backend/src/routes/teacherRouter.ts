@@ -4,6 +4,7 @@ import { getGroups, updateData } from "../controllers/teacherController";
 import { pagingMiddleware } from "../middlewares/pagingMiddleware";
 import { teacherWriteAuthorization } from "../middlewares/teacherWriteAuthorization";
 
+// Teacher API Router
 const teacherRouter = express.Router();
 
 /**

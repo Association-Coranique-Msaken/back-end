@@ -4,3 +4,6 @@ npm run spellcheck
 cd backend || exit 1
 npm run lint-staged
 npm run test
+
+# Regenerate API collection if routes changed
+node scripts/pre-commit-collection.js

@@ -115,7 +115,53 @@ backend/
 
 -   [Testing Guide](./TESTING.md) - How to write and run tests
 -   [CI/CD Guide](./CI.md) - GitHub Actions configuration
+-   [API Testing Guide](./HOPPSCOTCH.md) - Hoppscotch collection usage
 -   [API Documentation](http://localhost:5000/api-docs) - Swagger UI (when running)
+
+## API Testing
+
+### Hoppscotch Collection
+
+A complete Postman-compatible collection is available in `hoppscotch-collection.json` with all API endpoints pre-configured.
+
+**Import to Hoppscotch:**
+
+1. Visit [Hoppscotch.io](https://hoppscotch.io) or run locally: `npx @hoppscotch/cli serve`
+2. Click **Import/Export** → **Import**
+3. Select **Postman Collection** as the format
+4. Upload `hoppscotch-collection.json` from the backend folder
+5. All endpoints will be organized in folders: Authentication, Admin API, User API, Teacher API, Token API
+
+**Collection Features:**
+
+-   ✅ All API endpoints with proper HTTP methods
+-   ✅ Pre-configured request bodies with example data
+-   ✅ Bearer token authentication setup
+-   ✅ Query parameters for pagination
+-   ✅ URL variables for dynamic IDs
+-   ✅ Environment variables for tokens and base URL
+-   ✅ Organized in logical folders by feature
+
+**Usage:**
+
+1. Start the backend server: `docker-compose up` or `npm run dev`
+2. Use Authentication → Login to get an access token
+3. Set the `access_token` variable in the collection or update headers manually
+4. Test any endpoint by selecting it and clicking **Send**
+
+**Environment Variables:**
+
+The collection includes these variables you can set:
+
+-   `base_url`: API base URL (default: http://localhost:5000)
+-   `access_token`: Your JWT access token
+-   `refresh_token`: Your JWT refresh token
+
+**Alternative Testing Tools:**
+
+-   **Postman**: Import the collection directly (native Postman format)
+-   **Swagger UI**: http://localhost:5000/api-docs (development only)
+-   **cURL**: See examples in [API Documentation](http://localhost:5000/api-docs)
 
 ## Security Configuration
 

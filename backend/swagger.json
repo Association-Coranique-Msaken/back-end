@@ -1,16 +1,329 @@
 {
     "openapi": "3.0.0",
     "info": {
+        "title": "REST API for AQM",
         "version": "1.0.0",
-        "title": "Your API Documentation",
-        "description": "API Documentation for your Express server"
+        "description": "This is the REST API for AQM"
     },
+    "url": "https://localhost:5000",
+    "basePath": "/api/v1",
+    "tags": [
+        {
+            "name": "auth",
+            "description": "Authentication APIs"
+        },
+        {
+            "name": "admin-api",
+            "description": "Admin APIs"
+        },
+        {
+            "name": "user-api",
+            "description": "User APIs"
+        },
+        {
+            "name": "teacher-api",
+            "description": "Teacher APIs"
+        }
+    ],
     "paths": {
-        "/api/v1/admin": {
+        "/api/v1/admin-api/admin": {
+            "post": {
+                "summary": "Create an admin.",
+                "description": "Requires admin access token with write access. Creates an admin.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/admin/list": {
             "get": {
-                "summary": "get admin",
-                "description": "Create an admin"
+                "summary": "Get admins.",
+                "description": "Requires admin access token. Get admins.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/admin/{id}": {
+            "get": {
+                "summary": "Get admin by id.",
+                "description": "Requires admin access token. Get admin by id.",
+                "tags": ["admin-api"]
+            },
+            "patch": {
+                "summary": "Update admin.",
+                "description": "Requires admin access token with write access. Update admin.",
+                "tags": ["admin-api"]
+            },
+            "delete": {
+                "summary": "Delete admin.",
+                "description": "Requires admin access token with write access. Delete admin.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/admin/password-reset-link/{id}": {
+            "post": {
+                "summary": "Generates password reset link for an admin user with id {id}.",
+                "description": "Requires admin access token. generates reset password link.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/teacher": {
+            "post": {
+                "summary": "Create teacher.",
+                "description": "Requires admin access token with write access. Create a teacher.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/teacher/list": {
+            "get": {
+                "summary": "Get teachers.",
+                "description": "Requires admin access token with write access. Get teachers.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/teacher/{id}": {
+            "get": {
+                "summary": "Get teacher by id.",
+                "description": "Requires admin access token with write access. Get teacher by id.",
+                "tags": ["admin-api"]
+            },
+            "patch": {
+                "summary": "Update teacher.",
+                "description": "Requires admin access token with write access. Update teacher.",
+                "tags": ["admin-api"]
+            },
+            "delete": {
+                "summary": "Delete teacher by id.",
+                "description": "Requires admin access token with write access. Delete teacher by id.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/teacher/password/{teacherId}": {
+            "post": {
+                "summary": "resets teacher password.",
+                "description": "Requires admin access token with write access.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/user": {
+            "post": {
+                "summary": "Create user.",
+                "description": "Requires admin access token with write access. Create user.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/user/list": {
+            "get": {
+                "summary": "Get users.",
+                "description": "Requires admin access token with write access. Get user.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/user/{id}": {
+            "get": {
+                "summary": "Get user by id.",
+                "description": "Requires admin access token with write access. Get user by id.",
+                "tags": ["admin-api"]
+            },
+            "patch": {
+                "summary": "Update user.",
+                "description": "Requires admin access token with write access. Update user.",
+                "tags": ["admin-api"]
+            },
+            "delete": {
+                "summary": "Delete user by id.",
+                "description": "Requires admin access token with write access. Delete user by id.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/group": {
+            "post": {
+                "summary": "Update a group.",
+                "description": "Requires admin access token. Updates a group.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/group/list": {
+            "get": {
+                "summary": "Get groups.",
+                "description": "Requires admin access token. Get groups. Supports pagination.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/group/{id}": {
+            "get": {
+                "summary": "Get a group by id.",
+                "description": "Requires admin access token. Gets a group by id.",
+                "tags": ["admin-api"]
+            },
+            "patch": {
+                "summary": "update a group.",
+                "description": "Requires admin access token. Updates a group.",
+                "tags": ["admin-api"]
+            },
+            "delete": {
+                "summary": "Delete a group by id.",
+                "description": "Requires admin access token. Deletes a group by id.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/group/user/list/{id}": {
+            "get": {
+                "summary": "Gets a list of a user groups.",
+                "description": "Requires admin access token. Gets a list of a user groups.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/group/user/enroll": {
+            "post": {
+                "summary": "Enrolls a user to a group.",
+                "description": "Requires admin access token. Enrolls a user to a group.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/card/user": {
+            "post": {
+                "summary": "Create card for user.",
+                "description": "Creates card for user.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/card/user/{userId}": {
+            "get": {
+                "summary": "Get user last card by userId.",
+                "description": "Get user last card by userId. null is returned if there is no card.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/competition": {
+            "post": {
+                "summary": "Create a competition.",
+                "description": "Requires admin access token with write access. Creates a new competition.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/competition/list": {
+            "get": {
+                "summary": "Get competitions.",
+                "description": "Requires admin access token. Get competitions.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/competition/{id}": {
+            "get": {
+                "summary": "Get competition by id.",
+                "description": "Requires admin access token. Get competition by id.",
+                "tags": ["admin-api"]
+            },
+            "patch": {
+                "summary": "Update competition.",
+                "description": "Requires admin access token with write access. Update competition.",
+                "tags": ["admin-api"]
+            },
+            "delete": {
+                "summary": "Delete competition.",
+                "description": "Requires admin access token with write access. Delete competition.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/competition/registration": {
+            "post": {
+                "summary": "Create a competition registration.",
+                "description": "Requires admin access token with write access. Creates a new competition registration.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/competition/registration/list": {
+            "get": {
+                "summary": "Get competition registrations.",
+                "description": "Requires admin access token. Get competition registrations.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/admin-api/competition/registration/{id}": {
+            "get": {
+                "summary": "Get competition registration by id.",
+                "description": "Requires admin access token. Get competition registration by id.",
+                "tags": ["admin-api"]
+            },
+            "patch": {
+                "summary": "Update competition registration.",
+                "description": "Requires admin access token with write access. Update competition registration.",
+                "tags": ["admin-api"]
+            },
+            "delete": {
+                "summary": "Delete competition registration.",
+                "description": "Requires admin access token with write access. Delete competition registration.",
+                "tags": ["admin-api"]
+            }
+        },
+        "/api/v1/auth/admin/login": {
+            "post": {
+                "summary": "Admin Login",
+                "description": "Authenticate admin with username and password.",
+                "tags": ["auth"]
+            }
+        },
+        "/api/v1/auth/admin/signup": {
+            "post": {
+                "summary": "Admin Signup",
+                "description": "Register a new admin account (testing only).",
+                "tags": ["auth"]
+            }
+        },
+        "/api/v1/auth/user/login": {
+            "post": {
+                "summary": "User Login",
+                "description": "Authenticate user with identifier and birth date.",
+                "tags": ["auth"]
+            }
+        },
+        "/api/v1/auth/teacher/login": {
+            "post": {
+                "summary": "Teacher Login",
+                "description": "Authenticate teacher with code and password.",
+                "tags": ["auth"]
+            }
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "summary": "Logout",
+                "description": "Invalidate current authentication token.",
+                "tags": ["auth"]
+            }
+        },
+        "/api/v1/auth/refresh-token": {
+            "post": {
+                "summary": "Refresh Token",
+                "description": "Get new access token using refresh token.",
+                "tags": ["auth"]
+            }
+        },
+        "/api/v1/auth/admin/reset-password": {
+            "post": {
+                "summary": "Reset Admin Password",
+                "description": "Reset admin password using a reset token.",
+                "tags": ["auth"]
+            }
+        },
+        "/api/v1/teacher-api": {
+            "patch": {
+                "summary": "Update teacher.",
+                "description": "Requires teacher access token. Updates the teacher.",
+                "tags": ["teacher-api"]
+            }
+        },
+        "/api/v1/teacher-api/group/list": {
+            "get": {
+                "summary": "Get teacher groups",
+                "description": "Requires teacher access token. Returns a list of teacher groups. Supports pagination parameters.",
+                "tags": ["teacher-api"]
+            }
+        },
+        "/api/v1/user-api/user": {
+            "patch": {
+                "summary": "Update user.",
+                "description": "Requires user access token. Updates the user.",
+                "tags": ["user-api"]
             }
         }
-    }
+    },
+    "components": {}
 }

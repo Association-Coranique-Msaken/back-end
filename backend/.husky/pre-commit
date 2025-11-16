@@ -1,0 +1,11 @@
+#!/bin/sh
+# Husky pre-commit hook
+
+# Run lint-staged (prettier formatting)
+npm run lint-staged
+
+# Run tests
+npm run test
+
+# Regenerate API collection if routes changed (cross-platform Node.js script)
+node scripts/pre-commit-collection.js
