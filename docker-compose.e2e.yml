@@ -1,0 +1,18 @@
+# Docker Compose Configuration for E2E Testing
+# This file extends the base docker-compose.yml and only overrides rate limits
+# WARNING: DO NOT USE IN PRODUCTION
+
+services:
+    backend:
+        environment:
+            # E2E Testing Rate Limits (significantly relaxed for automated testing)
+            # These limits are 20-100x higher than production to prevent test failures
+            RATE_LIMIT_AUTH_MAX_REQUESTS: "100"
+            RATE_LIMIT_AUTH_WINDOW_MS: "900000"
+            RATE_LIMIT_PASSWORD_RESET_MAX_REQUESTS: "50"
+            RATE_LIMIT_PASSWORD_RESET_WINDOW_MS: "3600000"
+            RATE_LIMIT_TOKEN_REFRESH_MAX_REQUESTS: "100"
+            RATE_LIMIT_TOKEN_REFRESH_WINDOW_MS: "900000"
+            RATE_LIMIT_API_MAX_REQUESTS: "1000"
+            RATE_LIMIT_API_WINDOW_MS: "900000"
+

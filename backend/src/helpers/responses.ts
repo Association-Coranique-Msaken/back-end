@@ -2,17 +2,18 @@ import { type Response } from "express";
 import type Joi from "joi";
 import { PageDto } from "../DTOs/paging/pageDto";
 import { TokenResultDto } from "../DTOs/tokenResultDto";
+import type { ApiResponse, LoginResponse } from "@shared/types";
 
 export namespace Responses {
-    export const OperationSuccess = (response: Response, data?: any) => {
+    export const OperationSuccess = <T = any>(response: Response, data?: T): Response<ApiResponse<T>> => {
         return response.status(200).json({ success: true, message: "Operation completed successfully.", data });
     };
 
-    export const FetchSuccess = (response: Response, data: any) => {
+    export const FetchSuccess = <T = any>(response: Response, data: T): Response<ApiResponse<T>> => {
         return response.status(200).json({ success: true, message: "Data successfully fetched.", data });
     };
 
-    export const FetchPagedSuccess = <T>(response: Response, pagingInfo: PageDto<T>) => {
+    export const FetchPagedSuccess = <T>(response: Response, pagingInfo: PageDto<T>): Response<ApiResponse<T[]>> => {
         return response.status(200).json({
             success: true,
             message: "Data successfully fetched.",
@@ -21,7 +22,11 @@ export namespace Responses {
         });
     };
 
-    export const LoginSuccess = (response: Response, data: any, tokenResult: TokenResultDto) => {
+    export const LoginSuccess = <T = any>(
+        response: Response,
+        data: T,
+        tokenResult: TokenResultDto
+    ): Response<LoginResponse<T>> => {
         return response.status(200).json({
             success: true,
             message: "Login Successful.",
@@ -30,23 +35,27 @@ export namespace Responses {
         });
     };
 
-    export const LogoutSuccess = (response: Response) => {
+    export const LogoutSuccess = (response: Response): Response<ApiResponse<void>> => {
         return response.status(200).json({ success: true, message: "Logout completed successfully." });
     };
 
-    export const DeleteSuccess = (response: Response) => {
+    export const DeleteSuccess = (response: Response): Response<ApiResponse<void>> => {
         return response.status(200).json({ success: true, message: "Item(s) successfully deleted." });
     };
 
-    export const UpdateSuccess = (response: Response, data?: any) => {
+    export const UpdateSuccess = <T = any>(response: Response, data?: T): Response<ApiResponse<T>> => {
         return response.status(201).json({ success: true, message: "Data updated.", data });
     };
 
-    export const CreateSuccess = (response: Response, data: any) => {
+    export const CreateSuccess = <T = any>(response: Response, data: T): Response<ApiResponse<T>> => {
         return response.status(201).json({ success: true, message: "Data created.", data });
     };
 
-    export const RefreshTokenSuccess = (response: Response, data: any, tokenResult: TokenResultDto) => {
+    export const RefreshTokenSuccess = <T = any>(
+        response: Response,
+        data: T,
+        tokenResult: TokenResultDto
+    ): Response<LoginResponse<T>> => {
         return response.status(200).json({
             success: true,
             message: "Token refreshed successfully.",
