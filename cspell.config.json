@@ -52,7 +52,8 @@
     "koteb",
     "Hizbs",
     "Hizb",
-    "M'saken"
+    "M'saken",
+    "testadmin"
   ],
   "enableFiletypes": ["ts", "tsx", "js", "jsx", "json", "md"],
   "ignoreRegExpList": [

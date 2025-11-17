@@ -1,30 +1,12 @@
 // ==================== Common Types ====================
+// Import shared API response types from the shared module
+import type { ApiResponse, LoginResponse as SharedLoginResponse, PaginationParams, PageMeta, PagedResponse } from '../../../shared/types';
 
-export interface PaginationParams {
-  page?: number;
-  take?: number;
-  order?: 'ASC' | 'DESC';
-  orderBy?: string;
-}
+// Re-export shared types for convenience
+export type { ApiResponse, PaginationParams, PageMeta, PagedResponse };
 
-export interface PageMeta {
-  page: number;
-  take: number;
-  itemCount: number;
-  pageCount: number;
-  hasPreviousPage: boolean;
-  hasNextPage: boolean;
-}
-
-export interface PagedResponse<T> {
-  data: T[];
-  meta: PageMeta;
-}
-
-export interface ApiResponse<T> {
-  data: T;
-  message?: string;
-}
+// Extend LoginResponse with entity types (Generic in shared, specific here)
+export type LoginResponse = SharedLoginResponse<Admin | User | Teacher>;
 
 // ==================== User Types ====================
 
@@ -283,14 +265,6 @@ export interface UpdateCompetitionRegistrationDto {
 }
 
 // ==================== Auth Types ====================
-
-export interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  user?: User;
-  admin?: Admin;
-  teacher?: Teacher;
-}
 
 export interface UserLoginDto {
   identifier: string;

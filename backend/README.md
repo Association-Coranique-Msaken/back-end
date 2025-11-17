@@ -39,7 +39,7 @@ npm run dev
 # Setup test environment (one-time)
 npm run test:setup
 
-# Run tests
+# Run unit tests
 npm test
 
 # Run tests with coverage
@@ -47,6 +47,9 @@ npm run test:coverage
 
 # Run tests in watch mode
 npm run test:watch
+
+# Run E2E tests (requires E2E Docker environment)
+npm run test:e2e
 
 # Type checking
 npm run check
@@ -56,6 +59,37 @@ npm run format
 
 # Build for production
 npm run build
+```
+
+## Testing
+
+### Unit Tests
+
+Standard Jest unit tests for business logic, services, and controllers:
+
+```bash
+npm test
+```
+
+### E2E Tests
+
+End-to-end tests validate the complete API workflow against a running Docker instance.
+
+**Important**: E2E tests require the E2E Docker Compose configuration with relaxed rate limits:
+
+```bash
+# Start E2E environment (from project root)
+docker-compose -f docker-compose.yml -f docker-compose.e2e.yml up -d
+
+# Wait for services to start
+sleep 10
+
+# Run E2E tests
+cd backend
+npm run test:e2e
+
+# Cleanup
+docker-compose -f docker-compose.yml -f docker-compose.e2e.yml down
 ```
 
 ## Project Structure

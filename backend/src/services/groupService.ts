@@ -29,7 +29,8 @@ export class GroupService {
     public static createGroup = async (groupData: any): Promise<Group> => {
         const teacherId: string = groupData.teacherId;
         const teacher = await GroupService.fetchTeacherWithId(teacherId);
-        return groupRepository.create({ ...groupData, teacher } as DeepPartial<Group>);
+        const group = groupRepository.create({ ...groupData, teacher } as DeepPartial<Group>);
+        return await groupRepository.save(group);
     };
 
     private static buildGroupQuery = (): SelectQueryBuilder<Group> => {
@@ -53,11 +54,11 @@ export class GroupService {
 
     public static getGroupById = async (id: string): Promise<Group> => {
         const query = GroupService.buildGroupQuery().where("group.id = :id", { id });
-        const [itemCount, group] = await Promise.all([query.getCount(), query.execute()]);
-        if (!group) {
+        const groups = await query.execute();
+        if (!groups || groups.length === 0) {
             throw new AppErrors.NotFound();
         }
-        return group;
+        return groups[0];
     };
 
     public static updateGroupById = async (updateData: any) => {

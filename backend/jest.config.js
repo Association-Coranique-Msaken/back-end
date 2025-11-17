@@ -3,7 +3,7 @@ module.exports = {
     transform: {
         "^.+\\.ts?$": "ts-jest",
     },
-    testRegex: "(/tests/.*\\.(test|spec))\\.ts?$",
+    testRegex: "(/tests/(?!e2e).*\\.(test|spec))\\.ts?$", // Exclude e2e tests
     moduleFileExtensions: ["ts", "js", "json", "node"],
     collectCoverage: false, // Set to false for faster test runs. Use --coverage flag to enable.
     coverageDirectory: "coverage",
@@ -14,4 +14,7 @@ module.exports = {
     testEnvironment: "node",
     testTimeout: 10000,
     setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
+    moduleNameMapper: {
+        "^@shared/(.*)$": "<rootDir>/../shared/$1",
+    },
 };
