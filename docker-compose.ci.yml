@@ -1,0 +1,15 @@
+# Docker Compose Configuration for CI Testing
+# This file extends the base docker-compose.yml for GitHub Actions
+# Key changes: No volume mounts (use image files only), no restart policies
+
+services:
+    backend:
+        restart: "no"
+        volumes: []  # Override to remove all volume mounts - use files from image only
+    
+    frontend:
+        restart: "no"
+        volumes: []  # Override to remove all volume mounts - use files from image only
+    
+    mysqldb:
+        restart: "no"

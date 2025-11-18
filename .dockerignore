@@ -1,0 +1,15 @@
+backend/node_modules
+backend/npm-debug.log
+backend/.git
+backend/.gitignore
+backend/.vscode
+backend/dist
+backend/coverage
+frontend/node_modules
+frontend/npm-debug.log
+frontend/.git
+frontend/.gitignore
+frontend/.vscode
+frontend/dist
+.git
+node_modules
