@@ -26,7 +26,7 @@ jobs:
         find . -maxdepth 2 -type f | head -20
         echo "=== Specific files we need ==="
         ls -lah backend/tsconfig.json
-        ls -lah backend/dockerfile  
+        ls -lah backend/Dockerfile  
         ls -lah shared/types.ts || echo "shared/types.ts not found"
         file backend/tsconfig.json
 
@@ -84,11 +84,11 @@ jobs:
 
     - name: Build Docker images
       run: |
-        # Build backend with absolute minimal flags
-        docker build --no-cache -t back-end-backend:latest -f ./backend/dockerfile .
+        # Build backend (cache enabled for faster builds)
+        docker build -t back-end-backend:latest -f ./backend/Dockerfile .
         
         # Build frontend
-        docker build --no-cache -t back-end-frontend:latest -f ./frontend/dockerfile ./frontend
+        docker build -t back-end-frontend:latest -f ./frontend/Dockerfile ./frontend
         
         # Verify images were created
         docker images | grep back-end
@@ -180,10 +180,10 @@ jobs:
           -H "Content-Type: application/json" \
           -d '{"username":"test","password":"test"}')
         echo "Admin login endpoint response: $response"
-        if [ "$response" != "400" ] && [ "$response" != "401" ] && [ "$response" != "404" ]; then
-          echo "Admin login endpoint may not be working correctly (status: $response)"
-        else
+        if [ "$response" = "400" ] || [ "$response" = "401" ] || [ "$response" = "404" ]; then
           echo "✓ Admin login endpoint exists (returned expected auth error)"
+        else
+          echo "Admin login endpoint may not be working correctly (status: $response)"
         fi
 
         # Test teacher login endpoint exists
@@ -191,10 +191,10 @@ jobs:
           -H "Content-Type: application/json" \
           -d '{"code":"test","password":"test"}')
         echo "Teacher login endpoint response: $response"
-        if [ "$response" != "400" ] && [ "$response" != "401" ] && [ "$response" != "404" ]; then
-          echo "Teacher login endpoint may not be working correctly (status: $response)"
-        else
+        if [ "$response" = "400" ] || [ "$response" = "401" ] || [ "$response" = "404" ]; then
           echo "✓ Teacher login endpoint exists (returned expected auth error)"
+        else
+          echo "Teacher login endpoint may not be working correctly (status: $response)"
         fi
 
         # Test user login endpoint exists
@@ -202,10 +202,10 @@ jobs:
           -H "Content-Type: application/json" \
           -d '{"identifier":"test","birthDate":"01/01/2000"}')
         echo "User login endpoint response: $response"
-        if [ "$response" != "400" ] && [ "$response" != "401" ] && [ "$response" != "404" ]; then
-          echo "User login endpoint may not be working correctly (status: $response)"
-        else
+        if [ "$response" = "400" ] || [ "$response" = "401" ] || [ "$response" = "404" ]; then
           echo "✓ User login endpoint exists (returned expected auth error)"
+        else
+          echo "User login endpoint may not be working correctly (status: $response)"
         fi
 
     - name: Test frontend is running

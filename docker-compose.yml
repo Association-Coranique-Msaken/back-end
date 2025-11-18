@@ -29,7 +29,7 @@ services:
             - mysqldb
         build:
             context: .
-            dockerfile: ./backend/dockerfile
+            dockerfile: ./backend/Dockerfile
         restart: unless-stopped
         ports:
             - 5000:5000
