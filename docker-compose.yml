@@ -27,7 +27,9 @@ services:
     backend:
         depends_on:
             - mysqldb
-        build: ./backend
+        build:
+            context: .
+            dockerfile: ./backend/dockerfile
         restart: unless-stopped
         ports:
             - 5000:5000
@@ -37,6 +39,9 @@ services:
         tty: true
         volumes:
             - ./backend/src:/app/src/
+            - ./backend/tsconfig.json:/app/tsconfig.json
+            - ./backend/nodemon.json:/app/nodemon.json
+            - ./shared:/app/shared
         networks:
             - backend-net
 
