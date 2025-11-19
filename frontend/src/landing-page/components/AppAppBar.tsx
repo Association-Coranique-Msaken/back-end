@@ -62,11 +62,11 @@ export default function AppAppBar() {
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
             <img src={logo} className="App-logo-mini" alt='logo'></img>
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-
-
-                { navbarItemDict.map((item) => <Button variant="text" color="info" size="small">{item.title}</Button>) }
-
-
+                { navbarItemDict.map((item, index) => (
+                  <Button key={index} variant="text" color="info" size="small">
+                    {item.title}
+                  </Button>
+                )) }
             </Box>
           </Box>
           <Box

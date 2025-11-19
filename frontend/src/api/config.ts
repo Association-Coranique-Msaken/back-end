@@ -41,12 +41,18 @@ apiClient.interceptors.response.use(
         if (refreshToken) {
           const response = await axios.post(
             `${API_BASE_URL}/auth/refresh-token`,
-            { refreshToken },
+            { refresh_token: refreshToken },
             { withCredentials: true }
           );
 
-          const { accessToken } = response.data;
+          const { data } = response.data;
+          const { accessToken, expiresIn } = data.tokenResult;
+          
           localStorage.setItem('accessToken', accessToken);
+          
+          // Calculate and store expiry time
+          const expiryTime = Date.now() + expiresIn * 1000;
+          localStorage.setItem('tokenExpiry', expiryTime.toString());
 
           // Retry original request with new token
           if (originalRequest.headers) {
@@ -58,7 +64,9 @@ apiClient.interceptors.response.use(
         // If refresh fails, clear tokens and redirect to login
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+        localStorage.removeItem('userData');
+        localStorage.removeItem('tokenExpiry');
+        window.location.href = '/';
         return Promise.reject(refreshError);
       }
     }
